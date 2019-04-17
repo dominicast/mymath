@@ -1,3 +1,4 @@
+import math
 import numpy as np
 import numpy.linalg as la
 import matplotlib.pyplot as plt
@@ -87,7 +88,8 @@ class DiffEq:
     def f( self, pos, vel, n ):
         result = np.array([0,0])
 
-        G = 0.1
+        G = 0.1    # yes thats not the real value
+        rexp = 1   # 3 is correct but we us 1 for convenience
 
         for b in bodies:
 
@@ -98,9 +100,7 @@ class DiffEq:
 
             m = b.get_size()
             rn = la.norm(r)
-
-            #rnq = math.pow( rn, 3 )
-            rnq = rn
+            rnq = math.pow( rn, rexp )
 
             fact = G * ( m / rnq )
 
