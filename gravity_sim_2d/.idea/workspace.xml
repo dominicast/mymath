@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9f223fa1-2dd7-4b59-b9db-c1f79bb4bdce" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../common/integ.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gravity_sim_2d.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gravity_sim_2d.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,19 +13,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="39" selection-start-line="10" selection-start-column="39" selection-end-line="10" selection-end-column="39" />
+            <state relative-caret-position="1773">
+              <caret line="220" selection-start-line="220" selection-end-line="220" />
               <folding>
-                <element signature="e#0#18#0" expanded="true" />
+                <element signature="e#0#11#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../common/integ.py">
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
@@ -40,14 +39,19 @@
       </list>
     </option>
   </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>EulerSemiImplicit</find>
+    </findStrings>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/../common/integ.py" />
+        <option value="$PROJECT_DIR$/main.py" />
       </list>
     </option>
   </component>
@@ -69,6 +73,11 @@
             <path>
               <item name="gravity_sim_2d" type="b2602c69:ProjectViewProjectNode" />
               <item name="gravity_sim_2d" type="47feb1d3:ProjectViewModuleNode" />
+            </path>
+            <path>
+              <item name="gravity_sim_2d" type="b2602c69:ProjectViewProjectNode" />
+              <item name="gravity_sim_2d" type="47feb1d3:ProjectViewModuleNode" />
+              <item name="gravity_sim_2d" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="gravity_sim_2d" type="b2602c69:ProjectViewProjectNode" />
@@ -137,6 +146,14 @@
       <option name="presentableId" value="Default" />
       <updated>1555529172758</updated>
     </task>
+    <task id="LOCAL-00001" summary="gravity_sim_2d">
+      <created>1555531292069</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1555531292069</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -147,7 +164,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32885906" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32885906" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -161,13 +178,17 @@
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
     </layout>
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="gravity_sim_2d" />
+    <option name="LAST_COMMIT_MESSAGE" value="gravity_sim_2d" />
+  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="39" selection-start-line="10" selection-start-column="39" selection-end-line="10" selection-end-column="39" />
+        <state relative-caret-position="1773">
+          <caret line="220" selection-start-line="220" selection-end-line="220" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>

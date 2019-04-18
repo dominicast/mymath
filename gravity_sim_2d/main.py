@@ -38,7 +38,7 @@ class Euler:
             if not ( observer is None ):
                 observer.notify( pos_n, vel_n )
 
-            acc_n = self._eq.f(pos_n, vel_n)
+            acc_n = self._eq.f(pos=pos_n, vel=vel_n, n=i)
 
             vel_o = vel_n + h * acc_n
             pos_o = pos_n + h * vel_n
@@ -46,7 +46,7 @@ class Euler:
             vel_n = vel_o
             pos_n = pos_o
 
-class EulerSemiImplicit:
+class SIEuler:
 
     def __init__( self, eq, init_pos, init_vel ):
         self._eq = eq
@@ -63,13 +63,69 @@ class EulerSemiImplicit:
             if not ( observer is None ):
                 observer.notify( pos_n, vel_n )
 
-            acc_n = self._eq.f(pos_n, vel_n, i)
+            acc_n = self._eq.f(pos=pos_n, vel=vel_n, n=i)
 
             vel_o = vel_n + h * acc_n
             pos_o = pos_n + h * vel_o
 
             vel_n = vel_o
             pos_n = pos_o
+
+class Verlet:
+
+    def __init__( self, eq, init_pos, init_vel ):
+        self._eq = eq
+        self._init_pos = init_pos
+        self._init_vel = init_vel
+
+    def execute( self, h, n, observer=None ):
+
+        pos_m = self._init_pos
+
+        pos_n = pos_m + self._init_vel * h + 0.5 * self._eq.f(pos=pos_m, vel=None, n=0) * math.pow( h, 2 )
+
+        for i in range(n):
+
+            if not ( observer is None ):
+                observer.notify( pos_n, None )
+
+            pos_o = 2 * pos_n - pos_m + self._eq.f(pos=pos_n, vel=None, n=i) * math.pow( h, 2 )
+
+            pos_m = pos_n
+            pos_n = pos_o
+
+class Beeman:
+
+    def __init__( self, eq, init_pos, init_vel ):
+        self._eq = eq
+        self._init_pos = init_pos
+        self._init_vel = init_vel
+
+    def execute( self, h, n, observer=None ):
+
+        pos_m = self._init_pos
+        vel_m = self._init_vel
+
+        acc_m = np.array([0, 0])
+        acc_n = np.array([0, 0])
+
+        for i in range(n):
+
+            pos_n = pos_m + h * vel_m + math.pow( h, 2 ) * ( (2/3) * acc_n - (1/6) * acc_m )
+
+            if not ( observer is None ):
+                observer.notify( pos_n, None )
+
+            acc_o = self._eq.f(pos=pos_n, vel=None, n=i)
+
+            vel_n = vel_m + h * ( (1/3) * acc_o + (5/6) * acc_n - (1/6) * acc_m )
+
+            acc_m = acc_n
+            acc_n = acc_o
+
+            vel_m = vel_n
+
+            pos_m = pos_n
 
 class Body:
 
@@ -160,8 +216,8 @@ ax.arrow(init_pos[0], init_pos[1], init_vel[0], init_vel[1], fc='r', ec='r', wid
 
 # -- simulate equation
 
-integ = EulerSemiImplicit( DiffEq(), init_pos, init_vel )
-integ.execute( h, n, Observer() )
+integ = Beeman( DiffEq(), init_pos, init_vel )
+integ.execute( h, n, observer=Observer() )
 
 # -- display plot
 
