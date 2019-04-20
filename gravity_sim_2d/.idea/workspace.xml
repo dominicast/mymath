@@ -16,8 +16,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1773">
-              <caret line="220" selection-start-line="220" selection-end-line="220" />
+            <state relative-caret-position="-1075">
+              <caret line="169" lean-forward="true" selection-start-line="169" selection-end-line="169" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -42,6 +42,9 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>EulerSemiImplicit</find>
+      <find>1/h</find>
+      <find>f(</find>
+      <find>eq.f(</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -51,6 +54,7 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/../common/integ.py" />
+        <option value="$PROJECT_DIR$/test.py" />
         <option value="$PROJECT_DIR$/main.py" />
       </list>
     </option>
@@ -153,7 +157,21 @@
       <option name="project" value="LOCAL" />
       <updated>1555531292069</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="more">
+      <created>1555615616387</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1555615616387</updated>
+    </task>
+    <task id="LOCAL-00003" summary="more">
+      <created>1555675131111</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1555675131111</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -180,21 +198,35 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="gravity_sim_2d" />
-    <option name="LAST_COMMIT_MESSAGE" value="gravity_sim_2d" />
+    <MESSAGE value="more" />
+    <option name="LAST_COMMIT_MESSAGE" value="more" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/../common/integ.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/surface3d_frontpage.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="27" column="10" selection-start-line="27" selection-start-column="10" selection-end-line="27" selection-end-column="10" />
+          <folding>
+            <element signature="e#0#67#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1773">
-          <caret line="220" selection-start-line="220" selection-end-line="220" />
+        <state relative-caret-position="-1075">
+          <caret line="169" lean-forward="true" selection-start-line="169" selection-end-line="169" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../common/integ.py">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
   </component>
 </project>
