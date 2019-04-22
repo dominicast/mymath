@@ -27,14 +27,12 @@ class Euler:
         t_n = 0
 
         if not (observer is None):
-            observer.notify(pos_n, vel_n, t_n)
+            if not observer.notify(pos_n, vel_n, t_n, 0):
+                return
 
-        for i in range(n):
+        for i in range(1, n):
 
             acc_n = self._eq.f(pos=pos_n, vel=vel_n, t=t_n, n=i)
-
-            if acc_n is None:
-                return
 
             vel_o = vel_n + h * acc_n
             pos_o = pos_n + h * vel_n
@@ -44,7 +42,8 @@ class Euler:
             t_n += h
 
             if not ( observer is None ):
-                observer.notify( pos_n, vel_n, t_n )
+                if not observer.notify( pos_n, vel_n, t_n, i ):
+                    return
 
 class SIEuler:
 
@@ -60,14 +59,12 @@ class SIEuler:
         t_n = 0
 
         if not (observer is None):
-            observer.notify(pos_n, vel_n, t_n)
+            if not observer.notify(pos_n, vel_n, t_n, 0):
+                return
 
-        for i in range(n):
+        for i in range(1, n):
 
             acc_n = self._eq.f(pos=pos_n, vel=vel_n, t=t_n, n=i)
-
-            if acc_n is None:
-                return
 
             vel_o = vel_n + h * acc_n
             pos_o = pos_n + h * vel_o
@@ -77,7 +74,8 @@ class SIEuler:
             t_n += h
 
             if not ( observer is None ):
-                observer.notify( pos_n, vel_n, t_n )
+                if not observer.notify( pos_n, vel_n, t_n, i ):
+                    return
 
 class Verlet:
 
@@ -96,22 +94,17 @@ class Verlet:
 
         acc_n = self._eq.f(pos=pos_m, vel=vel_n, t=t_n, n=0)
 
-        if acc_n is None:
-            return
-
         pos_n = pos_m + vel_n * h + (1/2) * acc_n * math.pow( h, 2 )
 
         if not (observer is None):
-            observer.notify(pos_n, vel_n, t_n)
+            if not observer.notify(pos_n, vel_n, t_n, 0):
+                return
 
-        for i in range(n):
+        for i in range(1, n):
 
             vel_n = ( pos_n - pos_m ) * hr
 
             acc_n = self._eq.f(pos=pos_n, vel=vel_n, t=t_n, n=i)
-
-            if acc_n is None:
-                return
 
             pos_o = 2 * pos_n - pos_m + acc_n * math.pow( h, 2 )
 
@@ -120,9 +113,9 @@ class Verlet:
             t_n += h
 
             if not (observer is None):
-                observer.notify(pos_n, vel_n, t_n)
+                if not observer.notify(pos_n, vel_n, t_n, i): return
 
-class Beeman:
+class BeemanBTF:
 
     def __init__( self, eq, init_pos, init_vel ):
         self._eq = eq
@@ -131,27 +124,35 @@ class Beeman:
 
     def execute( self, h, n, observer=None ):
 
-        acc_m = np.array([0, 0])
+        pos = self._init_pos
+        vel = self._init_vel
+
+        acc_p = np.array([0, 0])
+        acc = np.array([0, 0])
         acc_n = np.array([0, 0])
 
-        pos_n = self._init_pos
-        vel_n = self._init_vel
-        t_n = 0
+        t = 0
+        dt = h
 
         if not (observer is None):
-            observer.notify(pos_n, vel_n, t_n)
+            if not observer.notify(pos, vel, t, 0):
+                return
 
-        for i in range(n):
+        for i in range(1, n):
 
-            pos_o = pos_n + h * vel_n + math.pow( h, 2 ) * ( (2/3) * acc_n - (1/6) * acc_m )
-            acc_o = self._eq.f(pos=pos_n, vel=vel_n, t=t_n, n=i)
-            vel_o = vel_n + h * ( (1/3) * acc_o + (5/6) * acc_n - (1/6) * acc_m )
+            t += dt
 
-            acc_m = acc_n
-            acc_n = acc_o
-            vel_n = vel_o
-            pos_n = pos_o
-            t_n += h
+            pos = pos + vel * dt + math.pow( dt, 2 ) * ( (2/3) * acc - (1/6) * acc_p )
 
             if not (observer is None):
-                observer.notify( pos_n, vel_n, t_n )
+                if not observer.notify(pos, vel, t, i):
+                    return
+
+            acc_n = self._eq.f(pos=pos, vel=vel, t=t, n=i)
+
+            vel = vel + dt * ( (1/3) * acc_n + (5/6) * acc - (1/6) * acc_p )
+
+            tmp = acc_p
+            acc_p = acc
+            acc = acc_n
+            acc_n = tmp

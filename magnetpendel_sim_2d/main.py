@@ -21,29 +21,15 @@ from triangle import *
 
 class DiffEq:
 
-    def __init__(self):
-        self._closest_src = None
-        self._n = 0
-        self._len = 0
-
     def f( self, pos, vel, t, n ):
 
         result = np.array([0,0])
-
-        closest_dist = None
 
         for src in cfg.sources:
 
             r = pos - src.get_pos()
 
-            #ax.arrow(pos[0], pos[1], r[0], r[1], fc='b', ec='b', width=0.01, head_width=1, head_length=1, alpha=.05)
-
             dist = math.sqrt( math.pow( r[0], 2 ) + math.pow( r[1], 2 ) + math.pow( cfg.m_fHeight, 2 ) )
-
-            if ( src.get_is_magnet ):
-                if ( ( closest_dist == None ) or ( dist < closest_dist ) ):
-                    closest_dist = dist
-                    self._closest_src = src
 
             if src.get_type() == SourceType.LINEAR:
                 force = src.get_mult() * r
@@ -56,18 +42,69 @@ class DiffEq:
 
             result = result - force
 
-            #ax.arrow(pos[0], pos[1], result[0], result[1], fc='b', ec='b', width=0.01, head_width=1, head_length=1, alpha=.5)
-
-            if src.get_is_magnet():
-                if ( ( n > cfg.m_nMinSteps ) and ( la.norm(r) < src.get_size() ) and ( la.norm(vel) < cfg.m_fAbortVel ) ):
-                    return None
-
         result = result - vel * cfg.m_fFriction
 
-        self._n = n
-        self._len = self._len + la.norm(vel)
-
         return result
+
+class Observer:
+
+    def __init__(self):
+        self._closest_src = None
+        self._n = 0
+        self._len = 0
+
+    def notify(self, pos, vel, t, n):
+
+        # plot probe
+
+        if n % cfg.m_nProbeModulo == 0:
+            ax.scatter(pos[0], pos[1], c='k', s=0.01)
+
+        # update _len
+
+        norm_vel = la.norm(vel)
+
+        self._len += norm_vel
+
+        # check for stop condition
+
+        if n < cfg.m_nMinSteps:
+            return True
+
+        if norm_vel > cfg.m_fAbortVel:
+            return True
+
+        b = False
+        for src in cfg.sources:
+            r = pos - src.get_pos()
+            if la.norm(r) < src.get_size():
+                b = True
+                break
+
+        if not b:
+            return True
+
+        # stop condition satisfied
+        # calculate some values
+
+        self._n = n
+
+        closest_dist = None
+
+        for src in cfg.sources:
+
+            if not src.get_is_magnet:
+                continue
+
+            r = pos - src.get_pos()
+
+            dist = math.sqrt(math.pow(r[0], 2) + math.pow(r[1], 2) + math.pow(cfg.m_fHeight, 2))
+
+            if (closest_dist is None) or (dist < closest_dist):
+                closest_dist = dist
+                self._closest_src = src
+
+        return False
 
     def get_n(self):
         return self._n
@@ -77,12 +114,6 @@ class DiffEq:
 
     def get_closest_src(self):
         return self._closest_src
-
-class Observer:
-
-    def notify(self, pos_n, vel_n, t_n):
-        if t_n %10 == 0:
-          ax.scatter(pos_n[0], pos_n[1], c='k', s=0.01)
 
 # -- setup parameters
 
@@ -94,7 +125,8 @@ for src in cfg.sources:
     pos = np.array([x, y])
     src.set_pos( pos )
 
-init_pos = np.array([200,600])
+#init_pos = np.array([200,600])
+init_pos = np.array([800,600])
 init_vel = np.array([0,0])
 
 h = cfg.m_fTimeStep
@@ -128,14 +160,16 @@ ax.arrow(init_pos[0], init_pos[1], init_vel[0], init_vel[1], fc='r', ec='r', wid
 
 # -- simulate equation
 
-eq = DiffEq()
+#integ = it.Euler( DiffEq(), init_pos, init_vel )
+#integ = it.SIEuler( DiffEq(), init_pos, init_vel )
+integ = it.Verlet( DiffEq(), init_pos, init_vel )
+#integ = it.Beeman( DiffEq(), init_pos, init_vel )
 
-integ = it.Beeman( eq, init_pos, init_vel )
-#integ = it.Verlet( eq, init_pos, init_vel )
-#integ = it.SIEuler( eq, init_pos, init_vel )
-integ.execute( h, n, observer=Observer() )
+obs = Observer()
 
-print( eq.get_closest_src().get_color() + ' : ' + repr( eq.get_n() ) + ' : ' + repr( eq.get_len() ) )
+integ.execute( h, n, observer=obs )
+
+print( obs.get_closest_src().get_color() + ' : ' + repr( obs.get_n() ) + ' : ' + repr( obs.get_len() ) )
 
 # -- display plot
 

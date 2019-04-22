@@ -8,10 +8,10 @@ class TriangleConfig:
 
     m_fFriction = 0.0005
     m_fHeight = 10
-    m_fTimeStep = 0.5
-    #m_fTimeStep = 2
+    m_fTimeStep = 0.2
+    m_nProbeModulo = 20
     m_nMinSteps = 1000
-    m_nMaxSteps = 100000
+    m_nMaxSteps = 1000000
     m_fAbortVel = 0.04
 
     sources = []
