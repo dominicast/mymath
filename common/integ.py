@@ -33,6 +33,9 @@ class Euler:
 
             acc_n = self._eq.f(pos=pos_n, vel=vel_n, t=t_n, n=i)
 
+            if acc_n is None:
+                return
+
             vel_o = vel_n + h * acc_n
             pos_o = pos_n + h * vel_n
 
@@ -63,6 +66,9 @@ class SIEuler:
 
             acc_n = self._eq.f(pos=pos_n, vel=vel_n, t=t_n, n=i)
 
+            if acc_n is None:
+                return
+
             vel_o = vel_n + h * acc_n
             pos_o = pos_n + h * vel_o
 
@@ -88,7 +94,12 @@ class Verlet:
         vel_n = self._init_vel
         t_n = 0
 
-        pos_n = pos_m + vel_n * h + (1/2) * self._eq.f(pos=pos_m, vel=vel_n, t=t_n, n=0) * math.pow( h, 2 )
+        acc_n = self._eq.f(pos=pos_m, vel=vel_n, t=t_n, n=0)
+
+        if acc_n is None:
+            return
+
+        pos_n = pos_m + vel_n * h + (1/2) * acc_n * math.pow( h, 2 )
 
         if not (observer is None):
             observer.notify(pos_n, vel_n, t_n)
@@ -96,7 +107,13 @@ class Verlet:
         for i in range(n):
 
             vel_n = ( pos_n - pos_m ) * hr
-            pos_o = 2 * pos_n - pos_m + self._eq.f(pos=pos_n, vel=vel_n, t=t_n, n=i) * math.pow( h, 2 )
+
+            acc_n = self._eq.f(pos=pos_n, vel=vel_n, t=t_n, n=i)
+
+            if acc_n is None:
+                return
+
+            pos_o = 2 * pos_n - pos_m + acc_n * math.pow( h, 2 )
 
             pos_m = pos_n
             pos_n = pos_o
