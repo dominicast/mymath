@@ -21,15 +21,18 @@ from triangle import *
 
 class DiffEq:
 
-    def f( self, pos, vel, t, n ):
+    def __init__(self, cfg):
+        self._cfg = cfg
+
+    def f(self, pos, vel, t, n):
 
         result = np.array([0,0])
 
-        for src in cfg.sources:
+        for src in self._cfg.sources:
 
             r = pos - src.get_pos()
 
-            dist = math.sqrt( math.pow( r[0], 2 ) + math.pow( r[1], 2 ) + math.pow( cfg.m_fHeight, 2 ) )
+            dist = math.sqrt( math.pow( r[0], 2 ) + math.pow( r[1], 2 ) + math.pow( self._cfg.m_fHeight, 2 ) )
 
             if src.get_type() == SourceType.LINEAR:
                 force = src.get_mult() * r
@@ -42,13 +45,14 @@ class DiffEq:
 
             result = result - force
 
-        result = result - vel * cfg.m_fFriction
+        result = result - vel * self._cfg.m_fFriction
 
         return result
 
 class Observer:
 
-    def __init__(self):
+    def __init__(self, cfg):
+        self._cfg = cfg
         self._closest_src = None
         self._n = 0
         self._len = 0
@@ -57,7 +61,7 @@ class Observer:
 
         # plot probe
 
-        if n % cfg.m_nProbeModulo == 0:
+        if n % self._cfg.m_nProbeModulo == 0:
             ax.scatter(pos[0], pos[1], c='k', s=0.01)
 
         # update _len
@@ -68,14 +72,14 @@ class Observer:
 
         # check for stop condition
 
-        if n < cfg.m_nMinSteps:
+        if n < self._cfg.m_nMinSteps:
             return
 
-        if norm_vel > cfg.m_fAbortVel:
+        if norm_vel > self._cfg.m_fAbortVel:
             return
 
         b = False
-        for src in cfg.sources:
+        for src in self._cfg.sources:
             r = pos - src.get_pos()
             if la.norm(r) < src.get_size():
                 b = True
@@ -91,14 +95,14 @@ class Observer:
 
         closest_dist = None
 
-        for src in cfg.sources:
+        for src in self._cfg.sources:
 
             if not src.get_is_magnet:
                 continue
 
             r = pos - src.get_pos()
 
-            dist = math.sqrt(math.pow(r[0], 2) + math.pow(r[1], 2) + math.pow(cfg.m_fHeight, 2))
+            dist = math.sqrt(math.pow(r[0], 2) + math.pow(r[1], 2) + math.pow(self._cfg.m_fHeight, 2))
 
             if (closest_dist is None) or (dist < closest_dist):
                 closest_dist = dist
@@ -160,12 +164,12 @@ ax.arrow(init_pos[0], init_pos[1], init_vel[0], init_vel[1], fc='r', ec='r', wid
 
 # -- simulate equation
 
-#integ = it.Euler( DiffEq(), init_pos, init_vel )
-#integ = it.SIEuler( DiffEq(), init_pos, init_vel )
-#integ = it.Verlet( DiffEq(), init_pos, init_vel )
-integ = it.Beeman( DiffEq(), init_pos, init_vel )
+#integ = it.Euler( DiffEq(cfg), init_pos, init_vel )
+#integ = it.SIEuler( DiffEq(cfg), init_pos, init_vel )
+#integ = it.Verlet( DiffEq(cfg), init_pos, init_vel )
+integ = it.Beeman( DiffEq(cfg), init_pos, init_vel )
 
-obs = Observer()
+obs = Observer(cfg)
 
 integ.execute( h, n, observer=obs )
 
