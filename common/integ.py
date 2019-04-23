@@ -1,19 +1,10 @@
 import math
 import numpy as np
 
+
 # Jorge Rodriguez (14.07.2016)
 # Math for Game Developers - Spaceship Orbits (Semi-Implicit Euler)
 # https://www.youtube.com/watch?v=kxWBXd7ujx0
-#
-# Jorge Rodriguez (21.07.2016)
-# Math for Game Developers - Verlet Integration
-# https://www.youtube.com/watch?v=AZ8IGOHsjBk
-#
-# Wikipedia
-# Beeman's algorithm
-# https://en.wikipedia.org/wiki/Beeman%27s_algorithm#Equation
-
-
 class EulerBase:
 
     def __init__(self, eq, init_pos, init_vel):
@@ -66,6 +57,9 @@ class SIEuler(EulerBase):
         return vel_n
 
 
+# Jorge Rodriguez (21.07.2016)
+# Math for Game Developers - Verlet Integration
+# https://www.youtube.com/watch?v=AZ8IGOHsjBk
 class Verlet:
 
     def __init__(self, eq, init_pos, init_vel):
@@ -123,44 +117,57 @@ class Verlet:
             pos = pos_n
 
 
-# class BeemanBTF:
+# This is the algorithmy used by:
 #
-#     def __init__( self, eq, init_pos, init_vel ):
-#         self._eq = eq
-#         self._init_pos = init_pos
-#         self._init_vel = init_vel
+# beltoforion.de
+# Introducing the Magnetic Pendulum
+# https://beltoforion.de/article.php?a=magnetic_pendulum&hl=en
 #
-#     def execute( self, h, n, observer=None ):
+# I am not sure how complete or good it is
+# Probably it would be better to use is with 'Predictor-corrector modifications'
 #
-#         pos = self._init_pos
-#         vel = self._init_vel
-#
-#         acc_p = np.array([0, 0])
-#         acc = np.array([0, 0])
-#         acc_n = np.array([0, 0])
-#
-#         t = 0
-#         dt = h
-#
-#         if not (observer is None):
-#             if observer.notify(pos, vel, t, 0):
-#                 return
-#
-#         for i in range(1, n):
-#
-#             t += dt
-#
-#             pos = pos + vel * dt + math.pow( dt, 2 ) * ( (2/3) * acc - (1/6) * acc_p )
-#
-#             if not (observer is None):
-#                 if observer.notify(pos, vel, t, i):
-#                     return
-#
-#             acc_n = self._eq.f(pos=pos, vel=vel, t=t, n=i)
-#
-#             vel = vel + dt * ( (1/3) * acc_n + (5/6) * acc - (1/6) * acc_p )
-#
-#             tmp = acc_p
-#             acc_p = acc
-#             acc = acc_n
-#             acc_n = tmp
+# Wikipedia
+# Beeman's algorithm
+# https://en.wikipedia.org/wiki/Beeman%27s_algorithm#Equation
+class Beeman:
+
+    def __init__(self, eq, init_pos, init_vel):
+        self._eq = eq
+        self._init_pos = init_pos
+        self._init_vel = init_vel
+
+    def execute(self, dt, n_max, observer=None):
+
+        acc_p = np.array([0, 0])
+        acc = np.array([0, 0])
+
+        pos = self._init_pos
+        vel = self._init_vel
+
+        n = 0
+        t = 0
+
+        if not (observer is None):
+            if observer.notify(pos, vel, t, n):
+                return
+
+        while True:
+
+            n += 1
+            t += dt
+
+            if n > n_max:
+                return
+
+            pos = pos + vel * dt + math.pow( dt, 2 ) * ( (2/3) * acc - (1/6) * acc_p )
+
+            if not (observer is None):
+                if observer.notify(pos, vel, t, n):
+                    return
+
+            acc_n = self._eq.f(pos=pos, vel=vel, t=t, n=n)
+
+            vel = vel + dt * ( (1/3) * acc_n + (5/6) * acc - (1/6) * acc_p )
+
+            acc_p = acc
+            acc = acc_n

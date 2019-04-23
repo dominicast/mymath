@@ -162,8 +162,8 @@ ax.arrow(init_pos[0], init_pos[1], init_vel[0], init_vel[1], fc='r', ec='r', wid
 
 #integ = it.Euler( DiffEq(), init_pos, init_vel )
 #integ = it.SIEuler( DiffEq(), init_pos, init_vel )
-integ = it.Verlet( DiffEq(), init_pos, init_vel )
-#integ = it.Beeman( DiffEq(), init_pos, init_vel )
+#integ = it.Verlet( DiffEq(), init_pos, init_vel )
+integ = it.Beeman( DiffEq(), init_pos, init_vel )
 
 obs = Observer()
 
