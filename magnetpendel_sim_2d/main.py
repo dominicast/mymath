@@ -69,10 +69,10 @@ class Observer:
         # check for stop condition
 
         if n < cfg.m_nMinSteps:
-            return True
+            return
 
         if norm_vel > cfg.m_fAbortVel:
-            return True
+            return
 
         b = False
         for src in cfg.sources:
@@ -82,7 +82,7 @@ class Observer:
                 break
 
         if not b:
-            return True
+            return
 
         # stop condition satisfied
         # calculate some values
@@ -104,7 +104,7 @@ class Observer:
                 closest_dist = dist
                 self._closest_src = src
 
-        return False
+        return True
 
     def get_n(self):
         return self._n
@@ -125,8 +125,8 @@ for src in cfg.sources:
     pos = np.array([x, y])
     src.set_pos( pos )
 
-#init_pos = np.array([200,600])
-init_pos = np.array([800,600])
+init_pos = np.array([200,600])
+#init_pos = np.array([800,600])
 init_vel = np.array([0,0])
 
 h = cfg.m_fTimeStep
@@ -169,7 +169,10 @@ obs = Observer()
 
 integ.execute( h, n, observer=obs )
 
-print( obs.get_closest_src().get_color() + ' : ' + repr( obs.get_n() ) + ' : ' + repr( obs.get_len() ) )
+if not obs.get_closest_src() is None:
+    print( obs.get_closest_src().get_color() + ' : ' + repr( obs.get_n() ) + ' : ' + repr( obs.get_len() ) )
+else:
+    print( 'did not end' )
 
 # -- display plot
 

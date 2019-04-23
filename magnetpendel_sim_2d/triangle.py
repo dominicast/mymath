@@ -11,7 +11,7 @@ class TriangleConfig:
     m_fTimeStep = 0.2
     m_nProbeModulo = 20
     m_nMinSteps = 1000
-    m_nMaxSteps = 1000000
+    m_nMaxSteps = 100000
     m_fAbortVel = 0.04
 
     sources = []
