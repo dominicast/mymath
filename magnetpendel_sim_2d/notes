@@ -1,0 +1,13 @@
+# Solved the following equation
+#
+# ddot(vec(x)) = sum(G*((m_{body})/(abs(vec(r))^3))*vec(r))
+# vec(x): Path
+# G: Universal gravitational constant ( 6.67408E-11 m^3 * kg^-1 * s^-2)
+# m_{body}: Mass of the attracting body
+# vec(r): Vector from current position the the attracting body
+#
+# http://asciimath.org/
+#
+# Jorge Rodriguez (14.07.2016)
+# Math for Game Developers - Spaceship Orbits (Semi-Implicit Euler)
+# https://www.youtube.com/watch?v=kxWBXd7ujx0

@@ -1,7 +1,8 @@
-
 from source import *
+from config import ConfigBase
 
-class TriangleConfig:
+
+class TriangleConfig(ConfigBase):
 
     m_fSimWidth = 2000
     m_fSimHeight = 2000
@@ -25,3 +26,5 @@ class TriangleConfig:
         self.sources.append(Source(170, 90, 10, 10, SourceType.INV_SQR, True, True, 'r'))
         self.sources.append(Source(170, 210, 10, 10, SourceType.INV_SQR, True, True, 'g'))
         self.sources.append(Source(170, 330, 10, 10, SourceType.INV_SQR, True, True, 'b'))
+
+        self.calc_positions()
