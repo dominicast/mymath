@@ -169,7 +169,8 @@ ax.arrow(init_pos[0], init_pos[1], init_vel[0], init_vel[1], fc='r', ec='r', wid
 #integ = it.SIEuler( DiffEq(cfg), init_pos, init_vel )
 #integ = it.Verlet( DiffEq(cfg), init_pos, init_vel )
 #integ = it.Beeman( DiffEq(cfg), init_pos, init_vel )
-integ = it.Midpoint( DiffEq(cfg), init_pos, init_vel )
+#integ = it.Midpoint( DiffEq(cfg), init_pos, init_vel )
+integ = it.RungeKutta4th( DiffEq(cfg), init_pos, init_vel )
 
 
 obs = Observer(cfg)

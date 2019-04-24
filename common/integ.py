@@ -215,3 +215,61 @@ class Beeman:
 
             acc_p = acc
             acc = acc_n
+
+
+# Jorge Rodriguez (04.08.2016)
+# Math for Game Developers - Runge-Kutta Order 4
+# https://www.youtube.com/watch?v=hGCP6I2WisM
+#
+# Aleksandr Spiridonov (29.04.2011)
+# Runge Kutta 4th order method for ODE2
+# https://www.youtube.com/watch?v=smfX0Jt_f0I
+class RungeKutta4th:
+
+    def __init__(self, eq, init_pos, init_vel):
+        self._eq = eq
+        self._init_pos = init_pos
+        self._init_vel = init_vel
+
+    def f(self, pos, vel, t, n, dt):
+        return self._eq.f(pos=pos, vel=vel, t=t, n=n)
+
+    def execute(self, dt, n_max, observer=None):
+
+        n = 0
+        t = 0
+
+        pos = self._init_pos
+        vel = self._init_vel
+
+        while True:
+
+            if not (observer is None):
+                if observer.notify(pos, vel, t, n):
+                    return
+
+            dx1 = dt * vel
+            dv1 = dt * self._eq.f(pos=pos, vel=vel, t=t, n=n)
+
+            dx2 = dt * (vel+(dv1/2))
+            dv2 = dt * self._eq.f(pos=pos+(dx1/2), vel=vel+(dv1/2), t=t+(dt/2), n=n)
+
+            dx3 = dt * (vel+(dv2/2))
+            dv3 = dt * self._eq.f(pos=pos+(dx2/2), vel=vel+(dv2/2), t=t+(dt/2), n=n)
+
+            dx4 = dt * (vel+dv3)
+            dv4 = dt * self._eq.f(pos=pos+dx3, vel=vel+dv3, t=t+dt, n=n)
+
+            dx = ( dx1 + 2*dx2 + 2*dx3 + dx4 ) / 6
+            dv = ( dv1 + 2*dv2 + 2*dv3 + dv4 ) / 6
+
+            pos_n = pos + dx
+            vel_n = vel + dv
+
+            # --
+
+            n += 1
+            t += dt
+
+            pos = pos_n
+            vel = vel_n
