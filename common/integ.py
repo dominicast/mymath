@@ -12,8 +12,8 @@ class EulerBase:
         self._init_pos = init_pos
         self._init_vel = init_vel
 
-    def f(self, pos, vel, t, n, dt):
-        return self._eq.f(pos=pos, vel=vel, t=t, n=n)
+    def f(self, pos, vel, t, dt):
+        return self._eq.f(pos=pos, vel=vel, t=t)
 
     def execute(self, dt, n_max, observer=None):
 
@@ -29,7 +29,7 @@ class EulerBase:
                 if observer.notify(pos, vel, t, n):
                     return
 
-            acc = self.f(pos=pos, vel=vel, t=t, n=n, dt=dt)
+            acc = self.f(pos=pos, vel=vel, t=t, dt=dt)
 
             vel_n = vel + dt * acc
             pos_n = pos + dt * self._chose_velocity(vel, vel_n)
@@ -53,6 +53,13 @@ class Euler(EulerBase):
         return vel
 
 
+class SIEuler(EulerBase):
+
+    @staticmethod
+    def _chose_velocity(vel, vel_n):
+        return vel_n
+
+
 # I am not sure if this is implemented correctly for for 2nd order ODE's
 # as I use Midpoint method only for the integration of the velocity
 # the results are not too bad but it could maybe implemented better
@@ -67,8 +74,8 @@ class Midpoint:
         self._init_pos = init_pos
         self._init_vel = init_vel
 
-    def f(self, pos, vel, t, n, dt):
-        return self._eq.f(pos=pos, vel=vel, t=t, n=n)
+    def f(self, pos, vel, t, dt):
+        return self._eq.f(pos=pos, vel=vel, t=t)
 
     def execute(self, dt, n_max, observer=None):
 
@@ -84,8 +91,8 @@ class Midpoint:
                 if observer.notify(pos, vel, t, n):
                     return
 
-            vel_mp = vel + (dt/2) * self._eq.f(pos=pos, vel=vel, t=t, n=n)
-            vel_n = vel + dt * self._eq.f(pos=pos, vel=vel_mp, t=t+(dt/2), n=n)
+            vel_mp = vel + (dt/2) * self._eq.f(pos=pos, vel=vel, t=t)
+            vel_n = vel + dt * self._eq.f(pos=pos, vel=vel_mp, t=t+(dt/2))
 
             pos_n = pos + dt * vel_n
 
@@ -122,7 +129,7 @@ class Verlet:
 
         pos = self._init_pos
         vel = self._init_vel
-        acc = self._eq.f(pos=pos, vel=vel, t=t, n=n)
+        acc = self._eq.f(pos=pos, vel=vel, t=t)
 
         if not (observer is None):
             if observer.notify(pos, vel, t, n):
@@ -141,7 +148,7 @@ class Verlet:
         while True:
 
             vel = (pos - pos_p) * dt_rez
-            acc = self._eq.f(pos=pos, vel=vel, t=t, n=n)
+            acc = self._eq.f(pos=pos, vel=vel, t=t)
 
             if not (observer is None):
                 if observer.notify(pos, vel, t, n):
@@ -209,7 +216,7 @@ class Beeman:
                 if observer.notify(pos, vel, t, n):
                     return
 
-            acc_n = self._eq.f(pos=pos, vel=vel, t=t, n=n)
+            acc_n = self._eq.f(pos=pos, vel=vel, t=t)
 
             vel = vel + dt * ( (1/3) * acc_n + (5/6) * acc - (1/6) * acc_p )
 
@@ -231,9 +238,6 @@ class RungeKutta4th:
         self._init_pos = init_pos
         self._init_vel = init_vel
 
-    def f(self, pos, vel, t, n, dt):
-        return self._eq.f(pos=pos, vel=vel, t=t, n=n)
-
     def execute(self, dt, n_max, observer=None):
 
         n = 0
@@ -249,16 +253,16 @@ class RungeKutta4th:
                     return
 
             dx1 = dt * vel
-            dv1 = dt * self._eq.f(pos=pos, vel=vel, t=t, n=n)
+            dv1 = dt * self._eq.f(pos=pos, vel=vel, t=t)
 
             dx2 = dt * (vel+(dv1/2))
-            dv2 = dt * self._eq.f(pos=pos+(dx1/2), vel=vel+(dv1/2), t=t+(dt/2), n=n)
+            dv2 = dt * self._eq.f(pos=pos+(dx1/2), vel=vel+(dv1/2), t=t+(dt/2))
 
             dx3 = dt * (vel+(dv2/2))
-            dv3 = dt * self._eq.f(pos=pos+(dx2/2), vel=vel+(dv2/2), t=t+(dt/2), n=n)
+            dv3 = dt * self._eq.f(pos=pos+(dx2/2), vel=vel+(dv2/2), t=t+(dt/2))
 
             dx4 = dt * (vel+dv3)
-            dv4 = dt * self._eq.f(pos=pos+dx3, vel=vel+dv3, t=t+dt, n=n)
+            dv4 = dt * self._eq.f(pos=pos+dx3, vel=vel+dv3, t=t+dt)
 
             dx = ( dx1 + 2*dx2 + 2*dx3 + dx4 ) / 6
             dv = ( dv1 + 2*dv2 + 2*dv3 + dv4 ) / 6
@@ -270,6 +274,9 @@ class RungeKutta4th:
 
             n += 1
             t += dt
+
+            if n > n_max:
+                return
 
             pos = pos_n
             vel = vel_n

@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import integ as it
-from triangle import *
-from eq import DiffEq
-from observer import Observer
+from config.triangle import *
+from mp.eq import DiffEq
+from mp.observer import Observer
 import numpy as np
 
 

@@ -1,5 +1,5 @@
-from source import *
-from config import ConfigBase
+from mp.source import *
+from config.config import ConfigBase
 
 
 class TriangleConfig(ConfigBase):

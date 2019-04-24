@@ -1,4 +1,4 @@
-from triangle import *
+from config.triangle import *
 import numpy as np
 import math
 
