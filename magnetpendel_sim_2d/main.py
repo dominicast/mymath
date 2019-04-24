@@ -19,6 +19,7 @@ from triangle import *
 # Math for Game Developers - Spaceship Orbits (Semi-Implicit Euler)
 # https://www.youtube.com/watch?v=kxWBXd7ujx0
 
+
 class DiffEq:
 
     def __init__(self, cfg):
@@ -48,6 +49,7 @@ class DiffEq:
         result = result - vel * self._cfg.m_fFriction
 
         return result
+
 
 class Observer:
 
@@ -119,7 +121,6 @@ class Observer:
     def get_closest_src(self):
         return self._closest_src
 
-# -- setup parameters
 
 cfg = TriangleConfig()
 
@@ -167,7 +168,9 @@ ax.arrow(init_pos[0], init_pos[1], init_vel[0], init_vel[1], fc='r', ec='r', wid
 #integ = it.Euler( DiffEq(cfg), init_pos, init_vel )
 #integ = it.SIEuler( DiffEq(cfg), init_pos, init_vel )
 #integ = it.Verlet( DiffEq(cfg), init_pos, init_vel )
-integ = it.Beeman( DiffEq(cfg), init_pos, init_vel )
+#integ = it.Beeman( DiffEq(cfg), init_pos, init_vel )
+integ = it.Midpoint( DiffEq(cfg), init_pos, init_vel )
+
 
 obs = Observer(cfg)
 

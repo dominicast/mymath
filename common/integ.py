@@ -12,6 +12,9 @@ class EulerBase:
         self._init_pos = init_pos
         self._init_vel = init_vel
 
+    def f(self, pos, vel, t, n, dt):
+        return self._eq.f(pos=pos, vel=vel, t=t, n=n)
+
     def execute(self, dt, n_max, observer=None):
 
         n = 0
@@ -26,7 +29,7 @@ class EulerBase:
                 if observer.notify(pos, vel, t, n):
                     return
 
-            acc = self._eq.f(pos=pos, vel=vel, t=t, n=n)
+            acc = self.f(pos=pos, vel=vel, t=t, n=n, dt=dt)
 
             vel_n = vel + dt * acc
             pos_n = pos + dt * self._chose_velocity(vel, vel_n)
@@ -50,11 +53,52 @@ class Euler(EulerBase):
         return vel
 
 
-class SIEuler(EulerBase):
+# I am not sure if this is implemented correctly for for 2nd order ODE's
+# as I use Midpoint method only for the integration of the velocity
+# the results are not too bad but it could maybe implemented better
+#
+# Jorge Rodriguez (28.07.2016)
+# Math for Game Developers - Midpoint Method
+# https://www.youtube.com/watch?v=2hjoqAaH5kc
+class Midpoint:
 
-    @staticmethod
-    def _chose_velocity(vel, vel_n):
-        return vel_n
+    def __init__(self, eq, init_pos, init_vel):
+        self._eq = eq
+        self._init_pos = init_pos
+        self._init_vel = init_vel
+
+    def f(self, pos, vel, t, n, dt):
+        return self._eq.f(pos=pos, vel=vel, t=t, n=n)
+
+    def execute(self, dt, n_max, observer=None):
+
+        n = 0
+        t = 0
+
+        pos = self._init_pos
+        vel = self._init_vel
+
+        while True:
+
+            if not (observer is None):
+                if observer.notify(pos, vel, t, n):
+                    return
+
+            vel_mp = vel + (dt/2) * self._eq.f(pos=pos, vel=vel, t=t, n=n)
+            vel_n = vel + dt * self._eq.f(pos=pos, vel=vel_mp, t=t+(dt/2), n=n)
+
+            pos_n = pos + dt * vel_n
+
+            # --
+
+            n += 1
+            t += dt
+
+            if n > n_max:
+                return
+
+            vel = vel_n
+            pos = pos_n
 
 
 # Jorge Rodriguez (21.07.2016)
