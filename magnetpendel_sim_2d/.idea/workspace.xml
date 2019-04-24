@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c825bdcf-4c75-42f1-8c12-8e934ab4613f" name="Default Changelist" comment="more">
-      <change afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/eq.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/observer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../common/integ.py" beforeDir="false" afterPath="$PROJECT_DIR$/../common/integ.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/triangle.py" beforeDir="false" afterPath="$PROJECT_DIR$/triangle.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/triple_far_away.py" beforeDir="false" />
-    </list>
+    <list default="true" id="c825bdcf-4c75-42f1-8c12-8e934ab4613f" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,11 +10,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="18" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
+            <state relative-caret-position="150">
+              <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -42,7 +32,7 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/observer.py">
+        <entry file="file://$PROJECT_DIR$/mp/observer.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="240">
               <caret line="16" selection-start-line="16" selection-end-line="16" />
@@ -53,8 +43,8 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/eq.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mp/eq.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="45">
               <caret line="3" selection-start-line="3" selection-end-line="3" />
@@ -78,7 +68,7 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/triangle.py">
+        <entry file="file://$PROJECT_DIR$/config/triangle.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="380">
               <caret line="30" selection-start-line="30" selection-end-line="30" />
@@ -90,7 +80,7 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config.py">
+        <entry file="file://$PROJECT_DIR$/config/config.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="15">
               <caret line="1" selection-start-line="1" selection-end-line="2" />
@@ -99,7 +89,7 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source.py">
+        <entry file="file://$PROJECT_DIR$/mp/source.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="735">
               <caret line="49" selection-start-line="49" selection-end-line="49" />
@@ -146,8 +136,8 @@
         <option value="$PROJECT_DIR$/ConfigBase.py" />
         <option value="$PROJECT_DIR$/config.py" />
         <option value="$PROJECT_DIR$/triangle.py" />
-        <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/eq.py" />
+        <option value="$PROJECT_DIR$/main.py" />
       </list>
     </option>
   </component>
@@ -178,6 +168,18 @@
             <path>
               <item name="magnetpendel_sim_2d" type="b2602c69:ProjectViewProjectNode" />
               <item name="magnetpendel_sim_2d" type="47feb1d3:ProjectViewModuleNode" />
+              <item name="magnetpendel_sim_2d" type="462c0819:PsiDirectoryNode" />
+              <item name="config" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="magnetpendel_sim_2d" type="b2602c69:ProjectViewProjectNode" />
+              <item name="magnetpendel_sim_2d" type="47feb1d3:ProjectViewModuleNode" />
+              <item name="magnetpendel_sim_2d" type="462c0819:PsiDirectoryNode" />
+              <item name="mp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="magnetpendel_sim_2d" type="b2602c69:ProjectViewProjectNode" />
+              <item name="magnetpendel_sim_2d" type="47feb1d3:ProjectViewModuleNode" />
               <item name="common" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -194,6 +196,8 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/mp" />
+      <recent name="$PROJECT_DIR$/config" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
@@ -210,7 +214,7 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Path" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="magnetpendel_sim_2d" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -222,7 +226,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/path.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -233,7 +237,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main" />
+        <item itemvalue="Python.Path" />
       </list>
     </recent_temporary>
   </component>
@@ -297,19 +301,32 @@
       <option name="project" value="LOCAL" />
       <updated>1556119974484</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="more">
+      <created>1556122689026</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1556122689026</updated>
+    </task>
+    <task id="LOCAL-00009" summary="more">
+      <created>1556122894176</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1556122894176</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="20" y="23" width="1400" height="837" extended-state="0" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24945612" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24945612" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.34228188" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.34228188" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -395,14 +412,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source.py">
+    <entry file="file://$PROJECT_DIR$/mp/source.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="735">
           <caret line="49" selection-start-line="49" selection-end-line="49" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/observer.py">
+    <entry file="file://$PROJECT_DIR$/mp/observer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
           <caret line="16" selection-start-line="16" selection-end-line="16" />
@@ -419,7 +436,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/triangle.py">
+    <entry file="file://$PROJECT_DIR$/config/triangle.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="380">
           <caret line="30" selection-start-line="30" selection-end-line="30" />
@@ -429,29 +446,32 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config.py">
+    <entry file="file://$PROJECT_DIR$/config/config.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
           <caret line="1" selection-start-line="1" selection-end-line="2" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="18" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/eq.py">
+    <entry file="file://$PROJECT_DIR$/mp/eq.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
           <caret line="3" selection-start-line="3" selection-end-line="3" />
           <folding>
             <element signature="e#0#22#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mp/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
           </folding>
         </state>
       </provider>
