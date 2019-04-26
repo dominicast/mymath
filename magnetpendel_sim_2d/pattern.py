@@ -8,8 +8,8 @@ import numpy as np
 from multiprocessing import Process, Queue, Event
 
 
-# Display path from init_pos with velocity init_vel
-# to one of the magnets
+# Display the arising mapping pattern of all points
+# on the canvas to the magnets
 
 
 class Point:
@@ -71,7 +71,7 @@ def worker(w_idx, w_cnt, w_points, w_cfg, q, e):
 def animate(i):
     while not point_queue.empty():
         point = point_queue.get()
-        ax.scatter(point.get_x(), point.get_y(), c=point.get_color(), s=10)
+        ax.scatter(point.get_x(), point.get_y(), c=point.get_color(), s=point_size)
 
 
 if __name__ == '__main__':
@@ -80,12 +80,15 @@ if __name__ == '__main__':
 
     worker_count = 10
 
+    point_size = 5
+    point_delta = 5
+
     # -- setup worker
 
     points = []
 
-    for x in range(0, cfg.m_fSimWidth, 18):
-        for y in range(0, cfg.m_fSimHeight, 18):
+    for x in range(point_size, cfg.m_fSimWidth-point_size, point_delta):
+        for y in range(point_size, cfg.m_fSimHeight-point_size, point_delta):
             points.append(Point(x, y))
 
     point_queue = Queue()
@@ -101,7 +104,7 @@ if __name__ == '__main__':
 
     fig, ax = plt.subplots()
 
-    ax.set_title('Magnetpendel Path')
+    ax.set_title('Magnetpendel Pattern')
 
     ax.set_xlabel('x', fontsize=15)
     ax.set_xlim(0, cfg.m_fSimWidth)
