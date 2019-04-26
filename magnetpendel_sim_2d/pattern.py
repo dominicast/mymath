@@ -18,6 +18,7 @@ class Point:
         self._x = x
         self._y = y
         self._color = None
+        self._found = None
 
     def get_x(self):
         return self._x
@@ -30,6 +31,12 @@ class Point:
 
     def get_color(self):
         return self._color
+
+    def get_found(self):
+        return self._found
+
+    def set_found(self, found):
+        self._found = found
 
 
 def worker(w_idx, w_cnt, w_points, w_cfg, q, e):
@@ -53,15 +60,11 @@ def worker(w_idx, w_cnt, w_points, w_cfg, q, e):
 
         integ = it.RungeKutta4th(DiffEq(w_cfg), init_pos, init_vel)
         obs = Observer(w_cfg, None)
-        integ.execute(w_cfg.m_fTimeStep, w_cfg.m_nMaxSteps, observer=obs)
-
-        if not obs.get_closest_src() is None:
-            clr = obs.get_closest_src().get_color()
-        else:
-            clr = 'b'
+        integ.execute(w_cfg.m_fTimeStep, None, observer=obs)
 
         result = Point(w_point.get_x(), w_point.get_y())
-        result.set_color(clr)
+        result.set_color(obs.get_closest_src().get_color())
+        result.set_found(obs.get_found())
 
         q.put(result)
 
@@ -71,7 +74,11 @@ def worker(w_idx, w_cnt, w_points, w_cfg, q, e):
 def animate(i):
     while not point_queue.empty():
         point = point_queue.get()
-        ax.scatter(point.get_x(), point.get_y(), c=point.get_color(), s=point_size)
+        if point.get_found():
+            alpha = 1
+        else:
+            alpha = 0.5
+        ax.scatter(point.get_x(), point.get_y(), c=point.get_color(), s=point_size, alpha=alpha)
 
 
 if __name__ == '__main__':
@@ -80,8 +87,11 @@ if __name__ == '__main__':
 
     worker_count = 10
 
-    point_size = 5
-    point_delta = 5
+    #point_size = 5
+    #point_delta = 5
+
+    point_size = 15
+    point_delta = 40
 
     # -- setup worker
 

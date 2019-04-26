@@ -20,7 +20,7 @@ class TriangleConfig(ConfigBase):
     def __init__(self):
 
         # pendulum force
-        self.sources.append(Source(0, 0, 0.000005, 1, SourceType.LINEAR, False, False, ''))
+        self.sources.append(Source(0, 0, 0.000005, 1, SourceType.LINEAR, False, False, 'k'))
 
         # magnets
         self.sources.append(Source(170, 90, 10, 10, SourceType.INV_SQR, True, True, 'r'))

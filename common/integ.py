@@ -39,7 +39,7 @@ class EulerBase:
             n += 1
             t += dt
 
-            if n > n_max:
+            if n_max is not None and n > n_max:
                 return
 
             vel = vel_n
@@ -101,7 +101,7 @@ class Midpoint:
             n += 1
             t += dt
 
-            if n > n_max:
+            if n_max is not None and n > n_max:
                 return
 
             vel = vel_n
@@ -161,7 +161,7 @@ class Verlet:
             n += 1
             t += dt
 
-            if n > n_max:
+            if n_max is not None and n > n_max:
                 return
 
             pos_p = pos
@@ -207,7 +207,7 @@ class Beeman:
             n += 1
             t += dt
 
-            if n > n_max:
+            if n_max is not None and n > n_max:
                 return
 
             pos = pos + vel * dt + math.pow( dt, 2 ) * ( (2/3) * acc - (1/6) * acc_p )
@@ -275,7 +275,7 @@ class RungeKutta4th:
             n += 1
             t += dt
 
-            if n > n_max:
+            if n_max is not None and n > n_max:
                 return
 
             pos = pos_n
