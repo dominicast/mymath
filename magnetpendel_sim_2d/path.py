@@ -10,10 +10,20 @@ import numpy as np
 # to one of the magnets
 
 
+class PathObserver(Observer):
+
+    def _step_done(self, pos, n):
+        if n % self._cfg.m_nProbeModulo == 0:
+            ax.scatter(pos[0], pos[1], c='k', s=0.01)
+
+    def _process_done(self):
+        pass
+
+
 cfg = TriangleConfig()
 
-init_pos = np.array([200,600])
-#init_pos = np.array([800,600])
+#init_pos = np.array([200,600])
+init_pos = np.array([800,800])
 
 init_vel = np.array([0,0])
 
@@ -45,7 +55,7 @@ ax.arrow(init_pos[0], init_pos[1], init_vel[0], init_vel[1], fc='r', ec='r', wid
 
 integ = it.RungeKutta4th( DiffEq(cfg), init_pos, init_vel )
 
-obs = Observer(cfg, ax)
+obs = PathObserver(cfg)
 
 integ.execute( cfg.m_fTimeStep, cfg.m_nMaxSteps, observer=obs )
 

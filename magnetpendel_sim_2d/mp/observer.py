@@ -4,9 +4,8 @@ import numpy.linalg as la
 
 class Observer:
 
-    def __init__(self, cfg, ax):
+    def __init__(self, cfg):
         self._cfg = cfg
-        self._ax = ax
         self._done = False
         self._found = False
         self._closest_src = None
@@ -14,16 +13,18 @@ class Observer:
         self._n = 0
         self._len = 0
 
+    def _step_done(self, pos, n):
+        pass
+
+    def _process_done(self):
+        pass
+
     def notify(self, pos, vel, t, n):
 
         if self._done:
             return True
 
-        # plot probe
-
-        if self._ax is not None:
-            if n % self._cfg.m_nProbeModulo == 0:
-                self._ax.scatter(pos[0], pos[1], c='k', s=0.01)
+        self._step_done(pos, n)
 
         # update _len
 
@@ -70,6 +71,8 @@ class Observer:
                 self._closest_src_dist = dist
 
         self._done = True
+
+        self._process_done()
 
         return True
 

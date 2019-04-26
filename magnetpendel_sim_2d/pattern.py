@@ -59,7 +59,7 @@ def worker(w_idx, w_cnt, w_points, w_cfg, q, e):
         init_vel = np.array([0, 0])
 
         integ = it.RungeKutta4th(DiffEq(w_cfg), init_pos, init_vel)
-        obs = Observer(w_cfg, None)
+        obs = Observer(w_cfg)
         integ.execute(w_cfg.m_fTimeStep, None, observer=obs)
 
         result = Point(w_point.get_x(), w_point.get_y())
@@ -89,7 +89,7 @@ if __name__ == '__main__':
     #point_size = 5
     #point_delta = 5
 
-    worker_count = 1
+    worker_count = 4
     point_size = 15
     point_delta = 40
 
