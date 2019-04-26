@@ -85,11 +85,11 @@ if __name__ == '__main__':
 
     cfg = TriangleConfig()
 
-    worker_count = 10
-
+    #worker_count = 10
     #point_size = 5
     #point_delta = 5
 
+    worker_count = 1
     point_size = 15
     point_delta = 40
 
@@ -97,8 +97,8 @@ if __name__ == '__main__':
 
     points = []
 
-    for x in range(point_size, cfg.m_fSimWidth-point_size, point_delta):
-        for y in range(point_size, cfg.m_fSimHeight-point_size, point_delta):
+    for x in range(point_size, cfg.m_fSimWidth-(point_size-1), point_delta):
+        for y in range(point_size, cfg.m_fSimHeight-(point_size-1), point_delta):
             points.append(Point(x, y))
 
     point_queue = Queue()

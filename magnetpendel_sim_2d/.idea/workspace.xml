@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c825bdcf-4c75-42f1-8c12-8e934ab4613f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../common/integ.py" beforeDir="false" afterPath="$PROJECT_DIR$/../common/integ.py" afterDir="false" />
+    <list default="true" id="c825bdcf-4c75-42f1-8c12-8e934ab4613f" name="Default Changelist" comment="more">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/triangle.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/triangle.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mp/observer.py" beforeDir="false" afterPath="$PROJECT_DIR$/mp/observer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pattern.py" beforeDir="false" afterPath="$PROJECT_DIR$/pattern.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pattern_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/pattern_1.png" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,8 +17,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pattern.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="79">
-              <caret line="87" column="21" selection-start-line="87" selection-start-column="21" selection-end-line="87" selection-end-column="21" />
+            <state relative-caret-position="60">
+              <caret line="89" column="5" selection-start-line="89" selection-start-column="5" selection-end-line="89" selection-end-column="5" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -44,7 +42,7 @@
         <entry file="file://$PROJECT_DIR$/../common/integ.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="4230">
-              <caret line="282" lean-forward="true" selection-start-line="282" selection-end-line="282" />
+              <caret line="282" selection-start-line="282" selection-end-line="282" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -56,7 +54,7 @@
         <entry file="file://$PROJECT_DIR$/config/triangle.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="195">
-              <caret line="14" column="24" lean-forward="true" selection-start-line="14" selection-start-column="24" selection-end-line="14" selection-end-column="24" />
+              <caret line="14" column="24" selection-start-line="14" selection-start-column="24" selection-end-line="14" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -372,19 +370,26 @@
       <option name="project" value="LOCAL" />
       <updated>1556256228556</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="more">
+      <created>1556267905329</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1556267905329</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="19" y="23" width="1406" height="863" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24837545" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24837545" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3294423" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.3294423" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -449,9 +454,9 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="more" />
     <MESSAGE value="work in progress" />
-    <option name="LAST_COMMIT_MESSAGE" value="work in progress" />
+    <MESSAGE value="more" />
+    <option name="LAST_COMMIT_MESSAGE" value="more" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/triple_far_away.py" />
@@ -507,7 +512,7 @@
     <entry file="file://$PROJECT_DIR$/../common/integ.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4230">
-          <caret line="282" lean-forward="true" selection-start-line="282" selection-end-line="282" />
+          <caret line="282" selection-start-line="282" selection-end-line="282" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
@@ -517,7 +522,7 @@
     <entry file="file://$PROJECT_DIR$/config/triangle.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
-          <caret line="14" column="24" lean-forward="true" selection-start-line="14" selection-start-column="24" selection-end-line="14" selection-end-column="24" />
+          <caret line="14" column="24" selection-start-line="14" selection-start-column="24" selection-end-line="14" selection-end-column="24" />
         </state>
       </provider>
     </entry>
@@ -533,8 +538,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pattern.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="79">
-          <caret line="87" column="21" selection-start-line="87" selection-start-column="21" selection-end-line="87" selection-end-column="21" />
+        <state relative-caret-position="60">
+          <caret line="89" column="5" selection-start-line="89" selection-start-column="5" selection-end-line="89" selection-end-column="5" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
           </folding>
