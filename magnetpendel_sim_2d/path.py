@@ -110,9 +110,9 @@ if __name__ == '__main__':
     cfg = TriangleConfig()
 
     init_values = [
-        InitialValue(np.array([200, 600]), np.array([0, 0]), 'r', Queue()),
-        InitialValue(np.array([100, 100]), np.array([0, 0]), 'g', Queue()),
-        InitialValue(np.array([800, 800]), np.array([0, 0]), 'b', Queue())
+        #InitialValue(np.array([200, 600]), np.array([0, 0]), 'r', Queue()),
+        InitialValue(np.array([800, 800]), np.array([0, 0]), 'k', Queue())
+        #InitialValue(np.array([100, 100]), np.array([0, 0]), 'k', Queue())
     ]
 
     # -- setup plot
