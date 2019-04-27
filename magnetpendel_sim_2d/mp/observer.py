@@ -16,7 +16,7 @@ class Observer:
     def _step_done(self, pos, n):
         pass
 
-    def _process_done(self):
+    def _process_done(self, pos, n, found):
         pass
 
     def notify(self, pos, vel, t, n):
@@ -24,7 +24,8 @@ class Observer:
         if self._done:
             return True
 
-        self._step_done(pos, n)
+        if self._step_done(pos, n):
+            return True
 
         # update _len
 
@@ -72,7 +73,7 @@ class Observer:
 
         self._done = True
 
-        self._process_done()
+        self._process_done(pos, n, found)
 
         return True
 
