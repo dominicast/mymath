@@ -38,16 +38,17 @@ class Point:
 
 class PathObserver(Observer):
 
-    def __init__(self, cfg, color, q, e):
+    def __init__(self, cfg, color, chunk_size, q, e):
         super().__init__(cfg)
         self._color = color
+        self._chunk_size = chunk_size
         self._q = q
         self._e = e
 
     def _step_done(self, pos, n):
         if self._e.is_set():
             return True
-        if n % self._cfg.m_nProbeModulo == 0:
+        if n % self._chunk_size == 0:
             self._q.put(Point(pos, PointType.PATH, self._color))
             time.sleep(0.005)
 
@@ -84,9 +85,9 @@ class InitialValue:
         self._last_pos = last_pos
 
 
-def worker(w_init_pos, w_init_vel, w_cfg, color, q, e):
+def worker(w_init_pos, w_init_vel, w_cfg, color, chunk_size, q, e):
     integ = it.RungeKutta4th(DiffEq(cfg), w_init_pos, w_init_vel)
-    obs = PathObserver(w_cfg, color, q, e)
+    obs = PathObserver(w_cfg, color, chunk_size, q, e)
     integ.execute(cfg.m_fTimeStep, cfg.m_nMaxSteps, observer=obs)
 
 
@@ -115,6 +116,8 @@ if __name__ == '__main__':
         #InitialValue(np.array([100, 100]), np.array([0, 0]), 'k', Queue())
     ]
 
+    chunk_size = 20
+
     # -- setup plot
 
     fig, ax = plt.subplots()
@@ -138,8 +141,9 @@ if __name__ == '__main__':
 
     for init_value in init_values:
         p = init_value.get_pos()
+        v = init_value.get_vel()
         ax.scatter(p[0], p[1], c=init_value.get_color(), s=30)
-    #ax.arrow(init_pos[0], init_pos[1], init_vel[0], init_vel[1], fc='r', ec='r', width=0.01, head_width=1, head_length=1)
+        ax.arrow(p[0], p[1], v[0], v[1], fc='r', ec='r', width=0.01, head_width=1, head_length=1)
 
     # -- simulate equation
 
@@ -147,7 +151,7 @@ if __name__ == '__main__':
 
     processes = []
     for init_value in init_values:
-        process = Process(target=worker, args=(init_value.get_pos(), init_value.get_vel(), cfg, init_value.get_color(), init_value.get_q(), terminate_event))
+        process = Process(target=worker, args=(init_value.get_pos(), init_value.get_vel(), cfg, init_value.get_color(), chunk_size, init_value.get_q(), terminate_event))
         process.start()
         processes.append(process)
 
