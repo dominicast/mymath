@@ -1,13 +1,46 @@
-# Solved the following equation
-#
-# ddot(vec(x)) = sum(G*((m_{body})/(abs(vec(r))^3))*vec(r))
-# vec(x): Path
-# G: Universal gravitational constant ( 6.67408E-11 m^3 * kg^-1 * s^-2)
-# m_{body}: Mass of the attracting body
-# vec(r): Vector from current position the the attracting body
-#
-# http://asciimath.org/
-#
-# Jorge Rodriguez (14.07.2016)
-# Math for Game Developers - Spaceship Orbits (Semi-Implicit Euler)
-# https://www.youtube.com/watch?v=kxWBXd7ujx0
+
+Use http://asciimath.org/ to show the equations
+
+
+Math:
+-----
+
+Solving the equation of the 2D projection of the magnetic pendulum:
+
+ddot(vec(r)) = vec(F_g) + vec(F_m) + vec(F_r)
+
+vec(F_g) = grad(vec(g)*vec(r))
+vec(F_m) = - grad(sum(V_i(vec(r))))
+vec(F_r) = - gamma * dot(vec(r))
+
+V_i = alpha_i / abs(vec(r) - vec(r_i))^b
+
+-> ddot(vec(r)) = grad(vec(g)*vec(r)) - grad(sum(V_i(vec(r)))) - gamma * dot(vec(r))
+
+vec(F_g): "Rücktriebskraft" (Force pulling back the pendulum to the middle)
+vec(F_m): "Magnetkraft" (Resulting magnetical force considering all magnets)
+vec(F_r): "Reibungskraft" (Force of the friction affecting the motion)
+
+vec(r)(t): Position of the pendulum at time t
+vec(g): Middle point of the pendulum (0, 0)
+vec(r_i): Position of a magnet
+
+alpha_i: Strength of the magnet
+b: Magnet attenuation with distance
+gamma: Strength of the friction
+
+
+Sources:
+--------
+
+The implementation is based on Ingo Berg's implementation of the Megnetpendel. Thank you for your great explanations!
+
+Ingo Berg
+Das Magnetpendel
+https://beltoforion.de/article.php?a=magnetisches_pendel&hl=de
+
+And yes I also used wikipedia
+
+Wikipedia
+Magnetisches Pendel
+https://de.wikipedia.org/wiki/Magnetisches_Pendel
