@@ -234,9 +234,6 @@ class Verlet:
             vel = self._init_vel
             acc = self._eq.f(pos=pos, vel=vel, t=t)
 
-            if self._notify(pos, vel, t, n):
-                return
-
             pos_n = pos + vel * dt + (1 / 2) * acc * math.pow(dt, 2)
 
             # --
@@ -365,9 +362,6 @@ class Beeman:
             t = self._ff_t
 
         n_max = None if count is None else n + count
-
-        if self._notify(pos, vel, t, n):
-            return
 
         while True:
 
