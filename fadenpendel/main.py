@@ -1,13 +1,10 @@
-from mpl_toolkits.mplot3d import axes3d
+
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import juggle_axes
 from matplotlib import animation
 import numpy as np
 import math
 import integ as it
-import sys
-import array
-from datetime import datetime
 
 from scipy.optimize import fsolve
 
@@ -16,26 +13,6 @@ class DiffEq:
 
     def f(self, pos, vel, t):
         return -9.81*radius*math.sin(pos)
-
-
-class PathObserver():
-
-    def __init__(self):
-        self._off = math.radians(0.5)
-
-    def notify(self, pos, vel, t, n):
-
-        if pos > -self._off and pos < self._off:
-            return
-
-        if pos > 0:
-            r = cicle.calc_point(pos, sp)
-        else:
-            pos = -pos
-            r = cicle.calc_point(pos, sp)
-            r[0] = -r[0]
-
-        ax.quiver(mp[0], mp[1], mp[2], r[0], r[1], r[2])
 
 
 class ZAxisCircle:
@@ -121,27 +98,48 @@ class ZAxisCirclePlotter:
         self._point_save = pn
 
 
+def quiver_data_to_segments(ov, v):
+    len = math.sqrt(math.pow(v[0], 2) + math.pow(v[1], 2) + math.pow(v[2], 2))
+    segments =(ov[0], ov[1], ov[2], ov[0]+v[0]*len, ov[1]+v[1]*len, ov[2]+v[2]*len)
+    segments = np.array(segments).reshape(6, -1)
+    return [[[x, y, z], [u, v, w]] for x, y, z, u, v, w in zip(*list(segments))]
+
+
 def set_pendulum_pos(pos):
     global the_pendulum_mass
+    global the_pendulum_line
+    global the_pendulum_vel
+
+    the_pendulum_line.set_data([mp[0], pos[0]], [mp[1], pos[1]])
+    the_pendulum_line.set_3d_properties([mp[2], pos[2]])
 
     the_pendulum_mass.set_data(pos[0], pos[1])
     the_pendulum_mass.set_3d_properties(pos[2])
+
+    the_pendulum_vel.set_segments(quiver_data_to_segments(pos, pos))
 
 
 def animate(i):
     global the_pendulum
 
-    pos,vel = the_pendulum.execute(0.0001, 200)
+    off = math.radians(0.5)
 
-    print(pos)
+    phi,vel = the_pendulum.execute(0.001, 10)
 
-    #set_pendulum_pos(pos)
+    if phi > -off and phi < off:
+        return
 
-    #print(repr(i)+' : '+repr(datetime.now().microsecond/1000))
-    #global lala_n
-    #sct.set_data(lala_n, 0)
-    #sct.set_3d_properties(70)
-    #lala_n -= 1
+    if phi > 0:
+        r = cicle.calc_point(phi, sp)
+    else:
+        phi = -phi
+        r = cicle.calc_point(phi, sp)
+        r[0] = -r[0]
+        r[1] = -r[1]
+
+    new_pendulum_pos = mp + r
+
+    set_pendulum_pos(new_pendulum_pos)
 
 
 if __name__ == '__main__':
@@ -175,9 +173,6 @@ if __name__ == '__main__':
 
     cicle = ZAxisCircle(radius, alpha)
 
-    #print(radius)
-    #print(alpha*180/math.pi)
-
     # -- plot initial situation
 
     # vertical line
@@ -200,23 +195,23 @@ if __name__ == '__main__':
     # sr vector
     #ax.quiver(mp[0], mp[1], mp[2], sr[0], sr[1], sr[2])
 
-    # -- process
-
-    #integ = it.SIEuler(DiffEq(), alpha, 0)
-    #obs = PathObserver()
-    #integ.execute(0.01, 300, observer=obs)
-
     # -- show
 
     global the_pendulum
     global the_pendulum_mass
+    global the_pendulum_line
+    global the_pendulum_vel
 
     the_pendulum_mass, = ax.plot([], [], [], "o", markersize=5)
 
+    the_pendulum_line, = ax.plot([], [], [], lw=0.5)
+
+    the_pendulum_vel = ax.quiver([], [], [], [], [], [])
+
     set_pendulum_pos(sp)
 
-    the_pendulum = it.Beeman(DiffEq(), alpha, 0)
+    the_pendulum = it.RungeKutta4th(DiffEq(), alpha, 0)
 
-    anim = animation.FuncAnimation(fig, animate, interval=200, blit=False)
+    anim = animation.FuncAnimation(fig, animate, interval=10, blit=False)
 
     plt.show()
