@@ -27,7 +27,8 @@ class ZAxisCircle:
         # Coordinate representation of the plain
         # through the starting point
         # and the z-axis
-        b = 100
+        #b = 100
+        b = 1
         a = -(sp[1] / sp[0]) * b
         c = 0
         d = 0
@@ -105,18 +106,42 @@ def quiver_data_to_segments(ov, v):
     return [[[x, y, z], [u, v, w]] for x, y, z, u, v, w in zip(*list(segments))]
 
 
-def set_pendulum_pos(pos):
+def set_pendulum_pos(r, vel, phi):
     global the_pendulum_mass
     global the_pendulum_line
     global the_pendulum_vel
 
+    pos = mp + r
+    rr = -r
+
+    # line
     the_pendulum_line.set_data([mp[0], pos[0]], [mp[1], pos[1]])
     the_pendulum_line.set_3d_properties([mp[2], pos[2]])
 
+    # mass
     the_pendulum_mass.set_data(pos[0], pos[1])
     the_pendulum_mass.set_3d_properties(pos[2])
 
-    the_pendulum_vel.set_segments(quiver_data_to_segments(pos, pos))
+    # velocity
+
+    if the_pendulum_vel is not None:
+        the_pendulum_vel.remove()
+
+    z = pos[2]
+    x = -(rr[2]*z/(rr[0]+rr[1]*(sp[1]/sp[0])))
+    y = (sp[1]/sp[0])*x
+
+    vv = np.array([x, y, z])
+
+    if phi < 0:
+        vv = vv * (-1)
+
+    len = math.sqrt(math.pow(vv[0],2)+math.pow(vv[1],2)+math.pow(vv[2],2))
+
+    vv = vv / len * vel
+
+    the_pendulum_vel = ax.quiver(pos[0], pos[1], pos[2], vv[0], vv[1], vv[2])
+    #the_pendulum_vel.set_segments(quiver_data_to_segments(mp, vv))
 
 
 def animate(i):
@@ -132,14 +157,11 @@ def animate(i):
     if phi > 0:
         r = cicle.calc_point(phi, sp)
     else:
-        phi = -phi
-        r = cicle.calc_point(phi, sp)
+        r = cicle.calc_point(-phi, sp)
         r[0] = -r[0]
         r[1] = -r[1]
 
-    new_pendulum_pos = mp + r
-
-    set_pendulum_pos(new_pendulum_pos)
+    set_pendulum_pos(r, vel, phi)
 
 
 if __name__ == '__main__':
@@ -206,9 +228,9 @@ if __name__ == '__main__':
 
     the_pendulum_line, = ax.plot([], [], [], lw=0.5)
 
-    the_pendulum_vel = ax.quiver([], [], [], [], [], [])
+    the_pendulum_vel = None
 
-    set_pendulum_pos(sp)
+    set_pendulum_pos(sr, 0, alpha)
 
     the_pendulum = it.RungeKutta4th(DiffEq(), alpha, 0)
 
