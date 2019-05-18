@@ -74,7 +74,7 @@ class EulerBase:
             vel = vel_n
             pos = pos_n
 
-            if n_max is not None and n > n_max:
+            if n_max is not None and n >= n_max:
                 break
 
         self._ff_n = n
@@ -172,7 +172,7 @@ class Midpoint:
             vel = vel_n
             pos = pos_n
 
-            if n_max is not None and n > n_max:
+            if n_max is not None and n >= n_max:
                 break
 
         self._ff_n = n
@@ -271,7 +271,7 @@ class Verlet:
             pos_p = pos
             pos = pos_n
 
-            if n_max is not None and n > n_max:
+            if n_max is not None and n >= n_max:
                 break
 
         self._ff_n = n
@@ -368,7 +368,7 @@ class Beeman:
             n += 1
             t += dt
 
-            if n_max is not None and n > n_max:
+            if n_max is not None and n >= n_max:
                 break
 
             pos = pos + vel * dt + math.pow( dt, 2 ) * ( (2/3) * acc - (1/6) * acc_p )
@@ -479,7 +479,7 @@ class RungeKutta4th:
             pos = pos_n
             vel = vel_n
 
-            if n_max is not None and n > n_max:
+            if n_max is not None and n >= n_max:
                 break
 
         self._ff_n = n

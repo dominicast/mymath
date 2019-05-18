@@ -6,6 +6,9 @@ import numpy as np
 import math
 import integ as it
 
+#import datetime
+#import time
+
 from scipy.optimize import fsolve
 
 
@@ -17,9 +20,9 @@ class DiffEq:
 
 class ZAxisCircle:
 
-    def __init__(self, radius, angle):
+    def __init__(self, radius, ov):
         self._radius = radius
-        self._angle = angle
+        self._ov = ov
         self._alpha = None
 
     def _equations(self, p):
@@ -29,7 +32,7 @@ class ZAxisCircle:
         # and the z-axis
         #b = 100
         b = 1
-        a = -(sp[1] / sp[0]) * b
+        a = -(self._ov[1] / self._ov[0]) * b
         c = 0
         d = 0
 
@@ -54,9 +57,9 @@ class ZAxisCircle:
 
         return e1, e2, e3
 
-    def process(self, starting_point, step_size, observer):
+    def process(self, angle, starting_point, step_size, observer):
         one_degree = (math.pi / 180)
-        self._alpha = self._angle
+        self._alpha = angle
         sp = starting_point
         stack = []
         while self._alpha > 0:
@@ -71,8 +74,8 @@ class ZAxisCircle:
             if observer is not None:
                 observer.notify(sp[0], sp[1], sp[2])
 
-    def calc_point(self, alpha, starting_point):
-        self._alpha = alpha
+    def calc_point(self, angle, starting_point):
+        self._alpha = angle
         sp = starting_point
         x, y, z = fsolve(self._equations, (sp[0], sp[1], sp[2]))
         return np.array([x, y, z])
@@ -109,10 +112,12 @@ def quiver_data_to_segments(ov, v):
 def set_pendulum_pos(r, vel, phi):
     global the_pendulum_mass
     global the_pendulum_line
-    global the_pendulum_vel
+    #global the_pendulum_vel
+    #global the_pendulum_acc
+    #global the_pendulum_rr
 
     pos = mp + r
-    rr = -r
+    #rr = -r
 
     # line
     the_pendulum_line.set_data([mp[0], pos[0]], [mp[1], pos[1]])
@@ -124,32 +129,54 @@ def set_pendulum_pos(r, vel, phi):
 
     # velocity
 
-    if the_pendulum_vel is not None:
-        the_pendulum_vel.remove()
+    #if the_pendulum_vel is not None:
+    #    the_pendulum_vel.remove()
 
-    z = pos[2]
-    x = -(rr[2]*z/(rr[0]+rr[1]*(sp[1]/sp[0])))
-    y = (sp[1]/sp[0])*x
+    #z = pos[2]
+    #x = -(rr[2]*z/(rr[0]+rr[1]*(sp[1]/sp[0])))
+    #y = (sp[1]/sp[0])*x
 
-    vv = np.array([x, y, z])
+    #vv = np.array([x, y, z])
 
-    if phi < 0:
-        vv = vv * (-1)
+    #if phi < 0:
+    #    vv = vv * (-1)
 
-    len = math.sqrt(math.pow(vv[0],2)+math.pow(vv[1],2)+math.pow(vv[2],2))
+    #len = math.sqrt(math.pow(vv[0],2)+math.pow(vv[1],2)+math.pow(vv[2],2))
 
-    vv = vv / len * vel
+    #vv = vv / len * vel * radius
 
-    the_pendulum_vel = ax.quiver(pos[0], pos[1], pos[2], vv[0], vv[1], vv[2])
+    #the_pendulum_vel = ax.quiver(pos[0], pos[1], pos[2], vv[0], vv[1], vv[2])
     #the_pendulum_vel.set_segments(quiver_data_to_segments(mp, vv))
+
+    # rr
+
+    #if the_pendulum_rr is not None:
+    #    the_pendulum_rr.remove()
+
+    #the_pendulum_rr = ax.quiver(pos[0], pos[1], pos[2], rr[0], rr[1], rr[2])
+
+    # acceleration
+
+    #if the_pendulum_acc is not None:
+    #    the_pendulum_acc.remove()
+
+    #x = (r[1] * vv[2] - r[2] * vv[1])
+    #y = (r[2] * vv[0] - r[0] * vv[2])
+    #z = (r[0] * vv[1] - r[1] * vv[0])
+
+    #acc = np.array([x, y, z])
+
+    #the_pendulum_acc = ax.quiver(pos[0], pos[1], pos[2], acc[0], acc[1], acc[2])
 
 
 def animate(i):
     global the_pendulum
 
-    off = math.radians(0.5)
+    off = math.radians(2)
 
-    phi,vel = the_pendulum.execute(0.001, 10)
+    #start = time.time()
+
+    phi,vel = the_pendulum.execute(0.01, 10)
 
     if phi > -off and phi < off:
         return
@@ -163,8 +190,13 @@ def animate(i):
 
     set_pendulum_pos(r, vel, phi)
 
+    #print(time.time() - start)
+
 
 if __name__ == '__main__':
+
+    radius = 1
+    alpha = math.radians(30)
 
     # -- setup plot
 
@@ -172,28 +204,26 @@ if __name__ == '__main__':
     ax = fig.gca(projection='3d')
 
     ax.set_xlabel('x', fontsize=15)
-    ax.set_xlim3d(-30, 30)
+    ax.set_xlim3d(-1, 1)
 
     ax.set_ylabel('y', fontsize=15)
-    ax.set_ylim3d(-30, 30)
+    ax.set_ylim3d(-1, 1)
 
     ax.set_zlabel('z', fontsize=15)
-    ax.set_zlim3d(50, 100)
+    ax.set_zlim3d(98.5, 100.5)
 
     # -- define initial situation
 
     # mount point
     mp = np.array([0, 0, 100])
 
+    # representing the circle of the pendulum
+    cicle = ZAxisCircle(radius, np.array([radius, mp[1], mp[2]]))
+
     # starting point
-    sp = np.array([20, 0, 60])
+    sp = cicle.calc_point(alpha, np.array([radius, mp[1], mp[2]]))
 
     sr = sp - mp
-
-    radius = math.sqrt(math.pow(sr[0], 2) + math.pow(sr[1], 2) + math.pow(sr[2], 2))
-    alpha = math.acos((0*sr[0] + 0*sr[1] + (-1)*sr[2]) / (1 * radius))
-
-    cicle = ZAxisCircle(radius, alpha)
 
     # -- plot initial situation
 
@@ -204,7 +234,7 @@ if __name__ == '__main__':
     ax.scatter(mp[0], mp[1], mp[2], c='r')
 
     # expected circle
-    cicle.process(sp, 5, ZAxisCirclePlotter(mp))
+    cicle.process(alpha, sp, 5, ZAxisCirclePlotter(mp))
 
     # -- plot a point on the path
 
@@ -222,18 +252,24 @@ if __name__ == '__main__':
     global the_pendulum
     global the_pendulum_mass
     global the_pendulum_line
+    global the_pendulum_rr
     global the_pendulum_vel
+    global the_pendulum_acc
 
     the_pendulum_mass, = ax.plot([], [], [], "o", markersize=5)
 
     the_pendulum_line, = ax.plot([], [], [], lw=0.5)
 
+    the_pendulum_rr = None
+
     the_pendulum_vel = None
+
+    the_pendulum_acc = None
 
     set_pendulum_pos(sr, 0, alpha)
 
     the_pendulum = it.RungeKutta4th(DiffEq(), alpha, 0)
 
-    anim = animation.FuncAnimation(fig, animate, interval=10, blit=False)
+    anim = animation.FuncAnimation(fig, animate, interval=100, blit=False)
 
     plt.show()
