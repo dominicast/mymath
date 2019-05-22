@@ -34,36 +34,6 @@ class Circle:
         return v
 
 
-class PathPlotter:
-
-    def __init__(self, circle, max_angle):
-        self._circle = circle
-        self._max_angle = max_angle
-        self._point_save = None
-
-    def plot(self, x, y, z):
-
-        pn = np.array([x, y, z])
-
-        if self._point_save is None:
-            self._point_save = pn
-            return
-
-        pp = self._point_save
-
-        ax.plot(np.array([pp[0], pn[0]]), np.array([pp[1], pn[1]]), np.array([pp[2], pn[2]]), c='k', lw=0.5)
-
-        self._point_save = pn
-
-    def process(self, step_size):
-        angle = self._max_angle
-
-        while angle >= -(self._max_angle+math.pi/1000):
-            p = self._circle.calc(angle)
-            self.plot(p[0], p[1], p[2])
-            angle -= math.radians(step_size)
-
-
 def animate(i):
     global the_pendulum
 
@@ -165,7 +135,13 @@ if __name__ == '__main__':
     ax.scatter(mp[0], mp[1], mp[2], c='r')
 
     # expected circle
-    PathPlotter(cicle, phi_max).process(5)
+    pp = cicle.calc(phi_max)
+    phi_tmp = phi_max - math.radians(5)
+    while phi_tmp >= -(phi_max + math.pi / 1000):
+        pn = cicle.calc(phi_tmp)
+        ax.plot(np.array([pp[0], pn[0]]), np.array([pp[1], pn[1]]), np.array([pp[2], pn[2]]), c='k', lw=0.5)
+        pp = pn
+        phi_tmp -= math.radians(5)
 
     # -- show
 
