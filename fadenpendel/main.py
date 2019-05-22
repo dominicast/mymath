@@ -37,9 +37,9 @@ class Circle:
 def animate(i):
     global the_pendulum
 
-    phi,vel = the_pendulum.execute(0.01, 10)
+    rho,vel = the_pendulum.execute(0.01, 10)
 
-    pos = cicle.calc(phi)
+    pos = cicle.calc(rho)
 
     # ---
 
@@ -68,7 +68,7 @@ def animate(i):
 
     #vv = np.array([x, y, z])
 
-    #if phi < 0:
+    #if rho < 0:
     #    vv = vv * (-1)
 
     #len = math.sqrt(math.pow(vv[0],2)+math.pow(vv[1],2)+math.pow(vv[2],2))
@@ -102,15 +102,18 @@ def animate(i):
 if __name__ == '__main__':
 
     radius = 1
-    phi_max = math.radians(40)
+
+    rho_max = math.radians(40)
+
+    phi = math.radians(0)
 
     # -- define initial situation
 
     # mount point
-    mp = np.array([0, 0, 100])
+    mp = np.array([0, 0, radius+(radius/10)])
 
     # representing the circle of the pendulum
-    cicle = Circle(radius, mp, math.radians(0))
+    cicle = Circle(radius, mp, phi)
 
     # -- setup plot
 
@@ -118,13 +121,13 @@ if __name__ == '__main__':
     ax = fig.gca(projection='3d')
 
     ax.set_xlabel('x', fontsize=15)
-    ax.set_xlim3d(-1, 1)
+    ax.set_xlim3d(-radius, radius)
 
     ax.set_ylabel('y', fontsize=15)
-    ax.set_ylim3d(-1, 1)
+    ax.set_ylim3d(-radius, radius)
 
     ax.set_zlabel('z', fontsize=15)
-    ax.set_zlim3d(98.5, 100.5)
+    ax.set_zlim3d(0, radius+2*(radius/10))
 
     # -- plot initial situation
 
@@ -135,13 +138,13 @@ if __name__ == '__main__':
     ax.scatter(mp[0], mp[1], mp[2], c='r')
 
     # expected circle
-    pp = cicle.calc(phi_max)
-    phi_tmp = phi_max - math.radians(5)
-    while phi_tmp >= -(phi_max + math.pi / 1000):
-        pn = cicle.calc(phi_tmp)
+    pp = cicle.calc(rho_max)
+    rho_tmp = rho_max - math.radians(5)
+    while rho_tmp >= -(rho_max + math.pi / 1000):
+        pn = cicle.calc(rho_tmp)
         ax.plot(np.array([pp[0], pn[0]]), np.array([pp[1], pn[1]]), np.array([pp[2], pn[2]]), c='k', lw=0.5)
         pp = pn
-        phi_tmp -= math.radians(5)
+        rho_tmp -= math.radians(5)
 
     # -- show
 
@@ -162,9 +165,9 @@ if __name__ == '__main__':
 
     #the_pendulum_acc = None
 
-    #set_pendulum_pos(sr, 0, phi_max)
+    #set_pendulum_pos(sr, 0, rho_max)
 
-    the_pendulum = it.RungeKutta4th(DiffEq(), phi_max, 0)
+    the_pendulum = it.RungeKutta4th(DiffEq(), rho_max, 0)
 
     anim = animation.FuncAnimation(fig, animate, interval=100, blit=False)
 
