@@ -45,9 +45,9 @@ def animate(i):
 
     global the_pendulum_mass
     global the_pendulum_line
-    #global the_pendulum_vel
+    global the_pendulum_rr
+    global the_pendulum_vel
     #global the_pendulum_acc
-    #global the_pendulum_rr
 
     # line
     the_pendulum_line.set_data([mp[0], pos[0]], [mp[1], pos[1]])
@@ -57,33 +57,34 @@ def animate(i):
     the_pendulum_mass.set_data(pos[0], pos[1])
     the_pendulum_mass.set_3d_properties(pos[2])
 
-    # velocity
-
-    #if the_pendulum_vel is not None:
-    #    the_pendulum_vel.remove()
-
-    #z = pos[2]
-    #x = -(rr[2]*z/(rr[0]+rr[1]*(sp[1]/sp[0])))
-    #y = (sp[1]/sp[0])*x
-
-    #vv = np.array([x, y, z])
-
-    #if rho < 0:
-    #    vv = vv * (-1)
-
-    #len = math.sqrt(math.pow(vv[0],2)+math.pow(vv[1],2)+math.pow(vv[2],2))
-
-    #vv = vv / len * vel * radius
-
-    #the_pendulum_vel = ax.quiver(pos[0], pos[1], pos[2], vv[0], vv[1], vv[2])
-    #the_pendulum_vel.set_segments(quiver_data_to_segments(mp, vv))
-
     # rr
 
-    #if the_pendulum_rr is not None:
-    #    the_pendulum_rr.remove()
+    rr = mp - pos
 
-    #the_pendulum_rr = ax.quiver(pos[0], pos[1], pos[2], rr[0], rr[1], rr[2])
+    if the_pendulum_rr is not None:
+        the_pendulum_rr.remove()
+
+    the_pendulum_rr = ax.quiver(pos[0], pos[1], pos[2], rr[0], rr[1], rr[2])
+
+    # velocity
+
+    if the_pendulum_vel is not None:
+        the_pendulum_vel.remove()
+
+    z = pos[2]
+    x = -(rr[2]*z/(rr[0]+rr[1]*(pos[1]/pos[0])))
+    y = (pos[1]/pos[0])*x
+
+    vv = np.array([x, y, z])
+
+    if rho < 0:
+        vv = vv * (-1)
+
+    len = math.sqrt(math.pow(vv[0],2)+math.pow(vv[1],2)+math.pow(vv[2],2))
+
+    vv = vv / len * vel * radius
+
+    the_pendulum_vel = ax.quiver(pos[0], pos[1], pos[2], vv[0], vv[1], vv[2])
 
     # acceleration
 
@@ -151,17 +152,17 @@ if __name__ == '__main__':
     global the_pendulum
     global the_pendulum_mass
     global the_pendulum_line
-    #global the_pendulum_rr
-    #global the_pendulum_vel
+    global the_pendulum_rr
+    global the_pendulum_vel
     #global the_pendulum_acc
 
     the_pendulum_mass, = ax.plot([], [], [], "o", markersize=5)
 
     the_pendulum_line, = ax.plot([], [], [], lw=0.5)
 
-    #the_pendulum_rr = None
+    the_pendulum_rr = None
 
-    #the_pendulum_vel = None
+    the_pendulum_vel = None
 
     #the_pendulum_acc = None
 
