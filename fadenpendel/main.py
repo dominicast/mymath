@@ -18,78 +18,108 @@ class DiffEq:
         return -(9.81/self._radius)*math.sin(pos)
 
 
+class AnimationFrame:
+
+    def __init__(self, integ_ctx, plot_ctx):
+        self._integ_ctx = integ_ctx
+        self._plot_ctx = plot_ctx
+
+        self._rho = None
+        self._rhovel = None
+        self._pos = None
+        self._rr = None
+        self._vv = None
+
+    def perform(self):
+        self.integrate()
+        self.calculate()
+        self.plot()
+
+    def integrate(self):
+        rho, rhovel = self._integ_ctx.get_deq().execute(self._integ_ctx.get_dt(), self._integ_ctx.get_count())
+        self._rho = rho
+        self._rhovel = rhovel
+
+    def calculate(self):
+
+        mp_l = self._plot_ctx.get_mp()
+
+        # position of the pendulum
+        pos = self._plot_ctx.get_circle().calc(self._rho)
+        self._pos = pos
+
+        # reversed radius vector
+        rr = mp_l - pos
+        self._rr = rr
+
+        # velocity vector
+
+        z = pos[2]
+        x = -(rr[2] * z / (rr[0] + rr[1] * (pos[1] / pos[0])))
+        y = (pos[1] / pos[0]) * x
+
+        vv = np.array([x, y, z])
+
+        if self._rho < 0:
+            vv = vv * (-1)
+
+        len = math.sqrt(math.pow(vv[0], 2) + math.pow(vv[1], 2) + math.pow(vv[2], 2))
+
+        vv = vv / len * self._rhovel * radius
+
+        self._vv = vv
+
+    def plot(self):
+
+        ax_l = self._plot_ctx.get_ax()
+        mp_l = self._plot_ctx.get_mp()
+
+        pos = self._pos
+        vv = self._vv
+
+        # line plot
+
+        actor = self._plot_ctx.get_line()
+
+        if actor is None:
+            actor, = ax.plot([], [], [], lw=0.5)
+            self._plot_ctx.set_line(actor)
+
+        actor.set_data([mp_l[0], pos[0]], [mp_l[1], pos[1]])
+        actor.set_3d_properties([mp_l[2], pos[2]])
+
+        # mass plot
+
+        actor = self._plot_ctx.get_mass()
+
+        if actor is None:
+            actor, = ax.plot([], [], [], "o", markersize=5)
+            self._plot_ctx.set_mass(actor)
+
+        actor.set_data(pos[0], pos[1])
+        actor.set_3d_properties(pos[2])
+
+        # rr plot
+
+        # if self._plot_ctx.get_rr() is not None:
+        #    self._plot_ctx.get_rr().remove()
+
+        # actor = ax_l.quiver(pos[0], pos[1], pos[2], rr[0], rr[1], rr[2])
+
+        # self._plot_ctx.set_rr(actor)
+
+        # velocity
+
+        if self._plot_ctx.get_vel() is not None:
+            self._plot_ctx.get_vel().remove()
+
+        actor = ax_l.quiver(pos[0], pos[1], pos[2], vv[0], vv[1], vv[2])
+
+        self._plot_ctx.set_vel(actor)
+
+
 def animate(i, integ_ctx, plot_ctx):
-
-    rho,vel = integ_ctx.get_deq().execute(integ_ctx.get_dt(), integ_ctx.get_count())
-
-    # ---
-
-    pos = plot_ctx.get_circle().calc(rho)
-
-    mp_l = plot_ctx.get_mp()
-
-    rr = mp_l - pos
-
-    # velocity
-
-    z = pos[2]
-    x = -(rr[2]*z/(rr[0]+rr[1]*(pos[1]/pos[0])))
-    y = (pos[1]/pos[0])*x
-
-    vv = np.array([x, y, z])
-
-    if rho < 0:
-        vv = vv * (-1)
-
-    len = math.sqrt(math.pow(vv[0],2)+math.pow(vv[1],2)+math.pow(vv[2],2))
-
-    vv = vv / len * vel * radius
-
-    # ---
-
-    ax_l = plot_ctx.get_ax()
-
-    #global the_pendulum_acc
-
-    # line plot
-
-    actor = plot_ctx.get_line()
-
-    if actor is None:
-        actor, = ax.plot([], [], [], lw=0.5)
-        plot_ctx.set_line(actor)
-
-    actor.set_data([mp_l[0], pos[0]], [mp_l[1], pos[1]])
-    actor.set_3d_properties([mp_l[2], pos[2]])
-
-    # mass plot
-
-    actor = plot_ctx.get_mass()
-
-    if actor is None:
-        actor, = ax.plot([], [], [], "o", markersize=5)
-        plot_ctx.set_mass(actor)
-
-    actor.set_data(pos[0], pos[1])
-    actor.set_3d_properties(pos[2])
-
-    # rr plot
-
-    #if plot_ctx.get_rr() is not None:
-    #    plot_ctx.get_rr().remove()
-
-    #actor = ax_l.quiver(pos[0], pos[1], pos[2], rr[0], rr[1], rr[2])
-
-    #plot_ctx.set_rr(actor)
-
-    # velocity
-
-    if plot_ctx.get_vel() is not None:
-        plot_ctx.get_vel().remove()
-
-    actor = ax_l.quiver(pos[0], pos[1], pos[2], vv[0], vv[1], vv[2])
-
-    plot_ctx.set_vel(actor)
+    AnimationFrame(integ_ctx, plot_ctx).perform()
 
 
 if __name__ == '__main__':
