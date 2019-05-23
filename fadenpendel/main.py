@@ -61,6 +61,11 @@ class PlotCtx:
         self._mp = mp
         self._circle = circle
 
+        self._mass = None
+        self._line = None
+        self._rr = None
+        self._vel = None
+
     def get_ax(self):
         return self._ax
 
@@ -70,45 +75,44 @@ class PlotCtx:
     def get_circle(self):
         return self._circle
 
+    def get_mass(self):
+        return self._mass
+
+    def set_mass(self, mass):
+        self._mass = mass
+
+    def get_line(self):
+        return self._line
+
+    def set_line(self, line):
+        self._line = line
+
+    def get_rr(self):
+        return self._rr
+
+    def set_rr(self, rr):
+        self._rr = rr
+
+    def get_vel(self):
+        return self._vel
+
+    def set_vel(self, vel):
+        self._vel = vel
+
 
 def animate(i, integ_ctx, plot_ctx):
 
     rho,vel = integ_ctx.get_deq().execute(integ_ctx.get_dt(), integ_ctx.get_count())
 
-    pos = plot_ctx.get_circle().calc(rho)
-
     # ---
 
-    ax_l = plot_ctx.get_ax()
+    pos = plot_ctx.get_circle().calc(rho)
+
     mp_l = plot_ctx.get_mp()
-
-    global the_pendulum_mass
-    global the_pendulum_line
-    global the_pendulum_rr
-    global the_pendulum_vel
-    #global the_pendulum_acc
-
-    # line
-    the_pendulum_line.set_data([mp_l[0], pos[0]], [mp_l[1], pos[1]])
-    the_pendulum_line.set_3d_properties([mp_l[2], pos[2]])
-
-    # mass
-    the_pendulum_mass.set_data(pos[0], pos[1])
-    the_pendulum_mass.set_3d_properties(pos[2])
-
-    # rr
 
     rr = mp_l - pos
 
-    if the_pendulum_rr is not None:
-        the_pendulum_rr.remove()
-
-    the_pendulum_rr = ax_l.quiver(pos[0], pos[1], pos[2], rr[0], rr[1], rr[2])
-
     # velocity
-
-    if the_pendulum_vel is not None:
-        the_pendulum_vel.remove()
 
     z = pos[2]
     x = -(rr[2]*z/(rr[0]+rr[1]*(pos[1]/pos[0])))
@@ -123,20 +127,51 @@ def animate(i, integ_ctx, plot_ctx):
 
     vv = vv / len * vel * radius
 
-    the_pendulum_vel = ax_l.quiver(pos[0], pos[1], pos[2], vv[0], vv[1], vv[2])
+    # ---
 
-    # acceleration
+    ax_l = plot_ctx.get_ax()
 
-    #if the_pendulum_acc is not None:
-    #    the_pendulum_acc.remove()
+    #global the_pendulum_acc
 
-    #x = (r[1] * vv[2] - r[2] * vv[1])
-    #y = (r[2] * vv[0] - r[0] * vv[2])
-    #z = (r[0] * vv[1] - r[1] * vv[0])
+    # line plot
 
-    #acc = np.array([x, y, z])
+    actor = plot_ctx.get_line()
 
-    #the_pendulum_acc = ax_l.quiver(pos[0], pos[1], pos[2], acc[0], acc[1], acc[2])
+    if actor is None:
+        actor, = ax.plot([], [], [], lw=0.5)
+        plot_ctx.set_line(actor)
+
+    actor.set_data([mp_l[0], pos[0]], [mp_l[1], pos[1]])
+    actor.set_3d_properties([mp_l[2], pos[2]])
+
+    # mass plot
+
+    actor = plot_ctx.get_mass()
+
+    if actor is None:
+        actor, = ax.plot([], [], [], "o", markersize=5)
+        plot_ctx.set_mass(actor)
+
+    actor.set_data(pos[0], pos[1])
+    actor.set_3d_properties(pos[2])
+
+    # rr plot
+
+    #if plot_ctx.get_rr() is not None:
+    #    plot_ctx.get_rr().remove()
+
+    #actor = ax_l.quiver(pos[0], pos[1], pos[2], rr[0], rr[1], rr[2])
+
+    #plot_ctx.set_rr(actor)
+
+    # velocity
+
+    if plot_ctx.get_vel() is not None:
+        plot_ctx.get_vel().remove()
+
+    actor = ax_l.quiver(pos[0], pos[1], pos[2], vv[0], vv[1], vv[2])
+
+    plot_ctx.set_vel(actor)
 
 
 if __name__ == '__main__':
@@ -206,24 +241,6 @@ if __name__ == '__main__':
     # -- show
 
     plot_ctx = PlotCtx(ax, mp, circle)
-
-    global the_pendulum_mass
-    global the_pendulum_line
-    global the_pendulum_rr
-    global the_pendulum_vel
-    #global the_pendulum_acc
-
-    the_pendulum_mass, = ax.plot([], [], [], "o", markersize=5)
-
-    the_pendulum_line, = ax.plot([], [], [], lw=0.5)
-
-    the_pendulum_rr = None
-
-    the_pendulum_vel = None
-
-    #the_pendulum_acc = None
-
-    #set_pendulum_pos(sr, 0, rho_max)
 
     anim = animation.FuncAnimation(fig, animate, interval=integ_freq, fargs=(integ_ctx,plot_ctx,), blit=False)
 
