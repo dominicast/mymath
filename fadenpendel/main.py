@@ -102,6 +102,14 @@ if __name__ == '__main__':
 
     time_factor = 1
 
+    # -- situation
+
+    # mount point
+    mp = np.array([0, 0, radius+(radius/10)])
+
+    # circle
+    circle = Circle(radius, mp, phi)
+
     # -- integration
 
     deq = it.RungeKutta4th(DiffEq(radius), rho_max, 0)
@@ -117,14 +125,6 @@ if __name__ == '__main__':
 
     integ_ctx = IntegrationCtx(deq, integ_dt, integ_count)
 
-    # -- define initial situation
-
-    # mount point
-    mp = np.array([0, 0, radius+(radius/10)])
-
-    # representing the circle of the pendulum
-    circle = Circle(radius, mp, phi)
-
     # -- setup plot
 
     fig = plt.figure()
@@ -139,7 +139,9 @@ if __name__ == '__main__':
     ax.set_zlabel('z', fontsize=15)
     ax.set_zlim3d(0, radius+2*(radius/10))
 
-    # -- plot initial situation
+    plot_ctx = PlotCtx(ax, mp, circle)
+
+    # -- plot frame
 
     # vertical line
     ax.plot(np.array([0, mp[0]]), np.array([0, mp[1]]), np.array([mp[2]-radius, mp[2]]), c='k', lw=0.5)
@@ -156,9 +158,7 @@ if __name__ == '__main__':
         pp = pn
         rho_tmp -= math.radians(5)
 
-    # -- show
-
-    plot_ctx = PlotCtx(ax, mp, circle)
+    # -- run
 
     anim = animation.FuncAnimation(fig, animate, interval=integ_freq, fargs=(integ_ctx,plot_ctx,), blit=False)
 
