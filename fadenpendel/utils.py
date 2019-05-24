@@ -23,6 +23,9 @@ class Circle:
 
         return v
 
+    def get_radius(self):
+        return self._radius
+
 
 class IntegrationCtx:
 
@@ -50,8 +53,7 @@ class PlotCtx:
 
         self._mass = None
         self._line = None
-        self._rr = None
-        self._vel = None
+        self._artists = []
 
     def get_ax(self):
         return self._ax
@@ -74,14 +76,8 @@ class PlotCtx:
     def set_line(self, line):
         self._line = line
 
-    def get_rr(self):
-        return self._rr
+    def get_artists(self):
+        return self._artists
 
-    def set_rr(self, rr):
-        self._rr = rr
-
-    def get_vel(self):
-        return self._vel
-
-    def set_vel(self, vel):
-        self._vel = vel
+    def set_artists(self, artists):
+        self._artists = artists

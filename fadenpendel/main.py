@@ -27,12 +27,12 @@ class AnimationFrame:
         self._rho = None
         self._rhovel = None
         self._pos = None
-        self._rr = None
         self._vv = None
 
     def perform(self):
         self.integrate()
         self.calculate()
+        self.cleanup()
         self.plot()
 
     def integrate(self):
@@ -44,32 +44,64 @@ class AnimationFrame:
 
         mp_l = self._plot_ctx.get_mp()
 
+        radius_l = self._plot_ctx.get_circle().get_radius()
+
         # position of the pendulum
+
         pos = self._plot_ctx.get_circle().calc(self._rho)
         self._pos = pos
 
-        # reversed radius vector
-        rr = mp_l - pos
-        self._rr = rr
+        # radialer einheitsvektor e_r
 
-        # velocity vector
+        e_r = (mp_l - pos) / radius_l
+
+        # tangentialer einheitsvektor e_t
 
         z = pos[2]
-        x = -(rr[2] * z / (rr[0] + rr[1] * (pos[1] / pos[0])))
+        x = -(e_r[2] * z / (e_r[0] + e_r[1] * (pos[1] / pos[0])))
         y = (pos[1] / pos[0]) * x
 
-        vv = np.array([x, y, z])
+        e_t = np.array([x, y, z])
 
         if self._rho < 0:
-            vv = vv * (-1)
+            e_t = e_t * (-1)
 
-        len = math.sqrt(math.pow(vv[0], 2) + math.pow(vv[1], 2) + math.pow(vv[2], 2))
+        e_t = e_t / math.sqrt(math.pow(e_t[0], 2) + math.pow(e_t[1], 2) + math.pow(e_t[2], 2))
 
-        vv = vv / len * self._rhovel * radius
+        # velocity and velocity vector
 
-        self._vv = vv
+        vel = self._rhovel * radius_l
+
+        self._vel_v = e_t * vel
+
+        # Energies
+
+        # m * g * l * (1 - cos(rho))
+        E_pot = 1 * 9.81 * (radius_l - (radius_l * math.cos(self._rho)))
+
+        # (1/2) * m * v^2
+        E_kin = (1/2) * 1 * math.pow(vel, 2)
+
+        print(repr(E_pot)+' : '+repr(E_kin)+' : '+repr(E_pot+E_kin))
+
+    def cleanup(self):
+
+        artist = self._plot_ctx.get_line()
+        if artist is None:
+            artist, = ax.plot([], [], [], lw=0.5)
+            self._plot_ctx.set_line(artist)
+
+        artist = self._plot_ctx.get_mass()
+        if artist is None:
+            artist, = ax.plot([], [], [], "o", markersize=5)
+            self._plot_ctx.set_mass(artist)
+
+        for artist in self._plot_ctx.get_artists():
+            artist.remove()
 
     def plot(self):
+
+        artists = []
 
         ax_l = self._plot_ctx.get_ax()
         mp_l = self._plot_ctx.get_mp()
@@ -79,43 +111,23 @@ class AnimationFrame:
 
         # line plot
 
-        actor = self._plot_ctx.get_line()
-
-        if actor is None:
-            actor, = ax.plot([], [], [], lw=0.5)
-            self._plot_ctx.set_line(actor)
-
-        actor.set_data([mp_l[0], pos[0]], [mp_l[1], pos[1]])
-        actor.set_3d_properties([mp_l[2], pos[2]])
+        artist = self._plot_ctx.get_line()
+        artist.set_data([mp_l[0], pos[0]], [mp_l[1], pos[1]])
+        artist.set_3d_properties([mp_l[2], pos[2]])
 
         # mass plot
 
-        actor = self._plot_ctx.get_mass()
+        artist = self._plot_ctx.get_mass()
+        artist.set_data(pos[0], pos[1])
+        artist.set_3d_properties(pos[2])
 
-        if actor is None:
-            actor, = ax.plot([], [], [], "o", markersize=5)
-            self._plot_ctx.set_mass(actor)
+        # velocity vector
 
-        actor.set_data(pos[0], pos[1])
-        actor.set_3d_properties(pos[2])
+        artist = ax_l.quiver(pos[0], pos[1], pos[2], self._vel_v[0], self._vel_v[1], self._vel_v[2])
+        artists.append(artist)
 
-        # rr plot
-
-        # if self._plot_ctx.get_rr() is not None:
-        #    self._plot_ctx.get_rr().remove()
-
-        # actor = ax_l.quiver(pos[0], pos[1], pos[2], rr[0], rr[1], rr[2])
-
-        # self._plot_ctx.set_rr(actor)
-
-        # velocity
-
-        if self._plot_ctx.get_vel() is not None:
-            self._plot_ctx.get_vel().remove()
-
-        actor = ax_l.quiver(pos[0], pos[1], pos[2], vv[0], vv[1], vv[2])
-
-        self._plot_ctx.set_vel(actor)
+        # done
+        self._plot_ctx.set_artists(artists)
 
 
 def animate(i, integ_ctx, plot_ctx):
@@ -128,7 +140,7 @@ if __name__ == '__main__':
 
     rho_max = math.radians(40)
 
-    phi = math.radians(0)
+    phi = math.radians(45)
 
     time_factor = 1
 
