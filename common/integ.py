@@ -82,7 +82,7 @@ class EulerBase:
         self._ff_pos = pos
         self._ff_vel = vel
 
-        return pos, vel
+        return pos, vel, acc
 
 
 class Euler(EulerBase):
@@ -180,7 +180,7 @@ class Midpoint:
         self._ff_pos = pos
         self._ff_vel = vel
 
-        return pos, vel
+        return pos, vel, None
 
 
 # Jorge Rodriguez (21.07.2016)
@@ -279,7 +279,7 @@ class Verlet:
         self._ff_pos = pos
         self._ff_pos_p = pos_p
 
-        return pos, vel
+        return pos, vel, acc
 
 
 # This is the algorithmy used by:
@@ -390,7 +390,7 @@ class Beeman:
         self._ff_acc = acc
         self._ff_acc_p = acc_p
 
-        return pos, vel
+        return pos, vel, acc
 
 
 # Jorge Rodriguez (04.08.2016)
@@ -487,4 +487,4 @@ class RungeKutta4th:
         self._ff_pos = pos
         self._ff_vel = vel
 
-        return pos, vel
+        return pos, vel, dv

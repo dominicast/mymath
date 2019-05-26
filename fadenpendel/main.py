@@ -28,6 +28,7 @@ class AnimationFrame:
         self._rhovel = None
         self._pos = None
         self._vv = None
+        self._F_t = None
 
     def perform(self):
         self.integrate()
@@ -36,15 +37,19 @@ class AnimationFrame:
         self.plot()
 
     def integrate(self):
-        rho, rhovel = self._integ_ctx.get_deq().execute(self._integ_ctx.get_dt(), self._integ_ctx.get_count())
+        rho, rhovel, rhoacc = self._integ_ctx.get_deq().execute(self._integ_ctx.get_dt(), self._integ_ctx.get_count())
         self._rho = rho
         self._rhovel = rhovel
+        self._rhoacc = rhoacc
 
     def calculate(self):
 
         mp_l = self._plot_ctx.get_mp()
 
         radius_l = self._plot_ctx.get_circle().get_radius()
+
+        m_l = 1
+        g_l = 9.81
 
         # position of the pendulum
 
@@ -71,18 +76,40 @@ class AnimationFrame:
         # velocity and velocity vector
 
         vel = self._rhovel * radius_l
-
         self._vel_v = e_t * vel
+
+        # velocity and velocity vector
+
+        acc = self._rhoacc * radius_l
+        self._acc_v = e_t * acc
 
         # Energies
 
         # m * g * l * (1 - cos(rho))
-        E_pot = 1 * 9.81 * (radius_l - (radius_l * math.cos(self._rho)))
+        #E_pot = l_m * g_l * (radius_l - (radius_l * math.cos(self._rho)))
 
         # (1/2) * m * v^2
-        E_kin = (1/2) * 1 * math.pow(vel, 2)
+        #E_kin = (1/2) * g_l * math.pow(vel, 2)
 
-        print(repr(E_pot)+' : '+repr(E_kin)+' : '+repr(E_pot+E_kin))
+        #print(repr(E_pot)+' : '+repr(E_kin)+' : '+repr(E_pot+E_kin))
+
+        # Forces
+
+        # F_tan = m * g * sin(rho)
+        self._F_tan = - m_l * g_l * math.sin(self._rho) * e_t
+
+        # F_zen = ( m * v^2 ) / radius
+        self._F_zen = ( ( m_l * math.pow(vel, 2) ) / radius_l ) * e_r
+
+        self._F_tot = ( self._F_tan + self._F_zen )
+
+
+        aa1 = math.sqrt( math.pow(self._F_tot[0],2) + math.pow(self._F_tot[1],2) + math.pow(self._F_tot[2],2) )
+
+        aa2 = self._rhoacc * radius_l
+
+        print( repr(aa1) + ' : ' + repr(aa2) )
+
 
     def cleanup(self):
 
@@ -123,8 +150,31 @@ class AnimationFrame:
 
         # velocity vector
 
-        artist = ax_l.quiver(pos[0], pos[1], pos[2], self._vel_v[0], self._vel_v[1], self._vel_v[2])
+        #artist = ax_l.quiver(pos[0], pos[1], pos[2], self._vel_v[0], self._vel_v[1], self._vel_v[2])
+        #artists.append(artist)
+
+
+
+        # lalala
+
+        #artist = ax_l.quiver(pos[0], pos[1], pos[2], self._F_t[0], self._F_t[1], self._F_t[2])
+        #artists.append(artist)
+
+
+        #artist = ax_l.quiver(pos[0], pos[1], pos[2], self._F_z[0], self._F_z[1], self._F_z[2])
+        #artists.append(artist)
+
+
+        artist = ax_l.quiver(pos[0], pos[1], pos[2], self._F_zen[0], self._F_zen[1], self._F_zen[2])
         artists.append(artist)
+
+        artist = ax_l.quiver(pos[0], pos[1], pos[2], self._F_tan[0], self._F_tan[1], self._F_tan[2])
+        artists.append(artist)
+
+        artist = ax_l.quiver(pos[0], pos[1], pos[2], self._F_tot[0], self._F_tot[1], self._F_tot[2])
+        artists.append(artist)
+
+
 
         # done
         self._plot_ctx.set_artists(artists)
@@ -136,7 +186,7 @@ def animate(i, integ_ctx, plot_ctx):
 
 if __name__ == '__main__':
 
-    radius = 1
+    radius = 10
 
     rho_max = math.radians(40)
 
