@@ -98,7 +98,6 @@ class AnimationFrame:
         # F_tot = F_tan + F_zen
         self._F_tot = ( self._F_tan + self._F_zen )
 
-
     def cleanup(self):
 
         artist = self._plot_ctx.get_line()
@@ -108,7 +107,7 @@ class AnimationFrame:
 
         artist = self._plot_ctx.get_mass()
         if artist is None:
-            artist, = ax.plot([], [], [], "o", markersize=5)
+            artist, = ax.plot([], [], [], "o", markersize=5, color=(0,0,0))
             self._plot_ctx.set_mass(artist)
 
         for artist in self._plot_ctx.get_artists():
@@ -134,6 +133,13 @@ class AnimationFrame:
         artist = self._plot_ctx.get_mass()
         artist.set_data(pos[0], pos[1])
         artist.set_3d_properties(pos[2])
+
+        E_pot_norm = (self._E_pot/(self._E_pot+self._E_kin))
+        E_kin_norm = 1-E_pot_norm
+
+        artist.set_color(color=(E_pot_norm,0,E_kin_norm))
+
+        artist.set_zorder(20)
 
         # forces
 
