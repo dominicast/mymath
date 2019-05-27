@@ -26,9 +26,13 @@ class AnimationFrame:
 
         self._rho = None
         self._rhovel = None
+        self._rhoacc = None
         self._pos = None
-        self._vv = None
-        self._F_t = None
+        self._E_pot = None
+        self._E_kin = None
+        self._F_tan = None
+        self._F_zen = None
+        self._F_tot = None
 
     def perform(self):
         self.integrate()
@@ -45,22 +49,20 @@ class AnimationFrame:
     def calculate(self):
 
         mp_l = self._plot_ctx.get_mp()
-
         radius_l = self._plot_ctx.get_circle().get_radius()
-
         m_l = 1
         g_l = 9.81
 
-        # position of the pendulum
+        # - position of the pendulum
 
         pos = self._plot_ctx.get_circle().calc(self._rho)
         self._pos = pos
 
-        # radialer einheitsvektor e_r
+        # - radialer einheitsvektor e_r
 
         e_r = (mp_l - pos) / radius_l
 
-        # tangentialer einheitsvektor e_t
+        # - tangentialer einheitsvektor e_t
 
         z = pos[2]
         x = -(e_r[2] * z / (e_r[0] + e_r[1] * (pos[1] / pos[0])))
@@ -73,27 +75,19 @@ class AnimationFrame:
 
         e_t = e_t / math.sqrt(math.pow(e_t[0], 2) + math.pow(e_t[1], 2) + math.pow(e_t[2], 2))
 
-        # velocity and velocity vector
+        # - velocity
 
         vel = self._rhovel * radius_l
-        self._vel_v = e_t * vel
 
-        # velocity and velocity vector
+        # - Energies
 
-        acc = self._rhoacc * radius_l
-        self._acc_v = e_t * acc
+        # E_pot = m * g * l * (1 - cos(rho))
+        self._E_pot = m_l * g_l * (radius_l - (radius_l * math.cos(self._rho)))
 
-        # Energies
+        # E_kin = (1/2) * m * v^2
+        self._E_kin = (1/2) * g_l * math.pow(vel, 2)
 
-        # m * g * l * (1 - cos(rho))
-        #E_pot = l_m * g_l * (radius_l - (radius_l * math.cos(self._rho)))
-
-        # (1/2) * m * v^2
-        #E_kin = (1/2) * g_l * math.pow(vel, 2)
-
-        #print(repr(E_pot)+' : '+repr(E_kin)+' : '+repr(E_pot+E_kin))
-
-        # Forces
+        # - Forces
 
         # F_tan = m * g * sin(rho)
         self._F_tan = - m_l * g_l * math.sin(self._rho) * e_t
@@ -101,14 +95,8 @@ class AnimationFrame:
         # F_zen = ( m * v^2 ) / radius
         self._F_zen = ( ( m_l * math.pow(vel, 2) ) / radius_l ) * e_r
 
+        # F_tot = F_tan + F_zen
         self._F_tot = ( self._F_tan + self._F_zen )
-
-
-        aa1 = math.sqrt( math.pow(self._F_tot[0],2) + math.pow(self._F_tot[1],2) + math.pow(self._F_tot[2],2) )
-
-        aa2 = self._rhoacc * radius_l
-
-        print( repr(aa1) + ' : ' + repr(aa2) )
 
 
     def cleanup(self):
@@ -134,7 +122,6 @@ class AnimationFrame:
         mp_l = self._plot_ctx.get_mp()
 
         pos = self._pos
-        vv = self._vv
 
         # line plot
 
@@ -148,22 +135,7 @@ class AnimationFrame:
         artist.set_data(pos[0], pos[1])
         artist.set_3d_properties(pos[2])
 
-        # velocity vector
-
-        #artist = ax_l.quiver(pos[0], pos[1], pos[2], self._vel_v[0], self._vel_v[1], self._vel_v[2])
-        #artists.append(artist)
-
-
-
-        # lalala
-
-        #artist = ax_l.quiver(pos[0], pos[1], pos[2], self._F_t[0], self._F_t[1], self._F_t[2])
-        #artists.append(artist)
-
-
-        #artist = ax_l.quiver(pos[0], pos[1], pos[2], self._F_z[0], self._F_z[1], self._F_z[2])
-        #artists.append(artist)
-
+        # forces
 
         artist = ax_l.quiver(pos[0], pos[1], pos[2], self._F_zen[0], self._F_zen[1], self._F_zen[2])
         artists.append(artist)
@@ -173,8 +145,6 @@ class AnimationFrame:
 
         artist = ax_l.quiver(pos[0], pos[1], pos[2], self._F_tot[0], self._F_tot[1], self._F_tot[2])
         artists.append(artist)
-
-
 
         # done
         self._plot_ctx.set_artists(artists)
