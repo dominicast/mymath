@@ -28,21 +28,17 @@ class DiffEq:
 
     def f(self, pos, vel, t):
 
-        for artist in self._plot_ctx.get_artists():
-            artist.remove()
+        m_l = 1
+        g_l = 9.81
 
-        artists = []
+        # radius
 
-        ax_l = self._plot_ctx.get_ax()
-
-        # reverse radius vector
-
-        rr = (self._mp - pos)
-        rr_len = math.sqrt(math.pow(rr[0],2)+math.pow(rr[1],2)+math.pow(rr[2],2))
+        radius_v = (pos - self._mp)
+        radius = math.sqrt(math.pow(radius_v[0], 2) + math.pow(radius_v[1], 2) + math.pow(radius_v[2], 2))
 
         # radialer einheitsvektor e_r
 
-        e_r = (self._mp - pos) / rr_len
+        e_r = ( (-radius_v) / radius )
 
         # tangentialer einheitsvektor e_t
 
@@ -54,26 +50,30 @@ class DiffEq:
 
         e_t = e_t / math.sqrt(math.pow(e_t[0], 2) + math.pow(e_t[1], 2) + math.pow(e_t[2], 2))
 
-        # ---
-
-        m_l = 1
-        g_l = 9.81
-
         # F_tan = m * g * sin(rho)
 
-        rho = math.acos(e_t[0]*e_r[0] + e_t[1]*e_r[1] + e_t[2]*e_r[2])
+        e_rr = e_r * -1
+        rho = math.acos(0*e_rr[0] + 0*e_rr[1] + -1*e_rr[2])
+
         F_tan = - m_l * g_l * math.sin(rho) * e_t
 
         # F_zen = ( m * v^2 ) / radius
 
         vel_len = math.sqrt(math.pow(vel[0],2)+math.pow(vel[1],2)+math.pow(vel[2],2))
-        F_zen = ( ( m_l * math.pow(vel_len, 2) ) / rr_len ) * e_r
+        F_zen = ( ( m_l * math.pow(vel_len, 2) ) / radius ) * e_r
 
         # F_tot
 
         F_tot = ( F_tan + F_zen )
 
-        # plot
+        # ---
+
+        for artist in self._plot_ctx.get_artists():
+            artist.remove()
+
+        artists = []
+
+        ax_l = self._plot_ctx.get_ax()
 
         artist = ax_l.quiver(pos[0], pos[1], pos[2], F_zen[0], F_zen[1], F_zen[2])
         artists.append(artist)
