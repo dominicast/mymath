@@ -25,20 +25,3 @@ class Circle:
 
     def get_radius(self):
         return self._radius
-
-
-class IntegrationCtx:
-
-    def __init__(self, deq, dt, count):
-        self._deq = deq
-        self._dt = dt
-        self._count = count
-
-    def get_deq(self):
-        return self._deq
-
-    def get_dt(self):
-        return self._dt
-
-    def get_count(self):
-        return self._count

@@ -7,22 +7,45 @@ import numpy as np
 import math
 
 
-class ForceImpl:
+class PendulumForceInteg:
 
-    def __init__(self, mp, sp, m, g):
+    def __init__(self, mp, m, g, dt, frame_dt_count):
         self._mp = mp
-        self._sp = sp
+        self._m = m
+        self._g = g
+        self._deq = None
+        self._dt = dt
+        self._frame_dt_count = frame_dt_count
+
+    def init_deq(self, sp, sv):
+        self._deq = it.RungeKutta4th(DiffEq(self._mp, self._m, self._g), sp, sv)
+
+    def calculate_frame(self):
+
+        mp = self._mp
+        m = self._m
+        g = self._g
+
+        pos, vel, _ = self._deq.execute(self._dt, self._frame_dt_count)
+
+        E_pot, E_kin, F_tot, F_zen, F_tan, _, _ = PendulumMath(pos, vel, mp, m, g).calculate_ext()
+
+        return FrameData(pos, mp, F_zen, F_tan, F_tot, E_pot, E_kin)
+
+
+class DiffEq:
+
+    def __init__(self, mp, m, g):
+        self._mp = mp
         self._m = m
         self._g = g
 
-    def create_deq(self):
-        return it.RungeKutta4th(DiffEq(self._mp, self._m, self._g), self._sp, np.array([0, 0, 0]))
-
-    def create_frame(self, integ_ctx):
-        return AnimationFrame(integ_ctx, self._mp, self._m, self._g)
+    def f(self, pos, vel, t):
+        F_tot, _, _, _, _ = PendulumMath(pos, vel, self._mp, self._m, self._g).calculate()
+        return F_tot
 
 
-class ForceMath:
+class PendulumMath:
 
     def __init__(self, pos, vel, mp, m, g):
         self._pos = pos
@@ -112,36 +135,3 @@ class ForceMath:
         E_kin = (1/2) * g * math.pow(vel, 2)
 
         return E_pot, E_kin, F_tot, F_zen, F_tan, rho, radius
-
-
-class DiffEq:
-
-    def __init__(self, mp, m, g):
-        self._mp = mp
-        self._m = m
-        self._g = g
-
-    def f(self, pos, vel, t):
-        F_tot, _, _, _, _ = ForceMath(pos, vel, self._mp, self._m, self._g).calculate()
-        return F_tot
-
-
-class AnimationFrame:
-
-    def __init__(self, integ_ctx, mp, m, g):
-        self._integ_ctx = integ_ctx
-        self._mp = mp
-        self._m = m
-        self._g = g
-
-    def perform(self):
-
-        mp = self._mp
-        m = self._m
-        g = self._g
-
-        pos, vel, _ = self._integ_ctx.get_deq().execute(self._integ_ctx.get_dt(), self._integ_ctx.get_count())
-
-        E_pot, E_kin, F_tot, F_zen, F_tan, _, _ = ForceMath(pos, vel, mp, m, g).calculate_ext()
-
-        return FrameData(pos, mp, F_zen, F_tan, F_tot, E_pot, E_kin)

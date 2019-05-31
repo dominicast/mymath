@@ -2,7 +2,7 @@
 from utils import *
 from plotter import *
 from angle import AngleImpl
-from force import ForceImpl
+from force import PendulumForceInteg
 from config import *
 
 import matplotlib.pyplot as plt
@@ -11,9 +11,8 @@ from matplotlib import animation
 import numpy as np
 
 
-def animate(i, integ_ctx, plotter, impl):
-    frame = impl.create_frame(integ_ctx)
-    data = frame.perform()
+def animate(i, pendulum, plotter):
+    data = pendulum.calculate_frame()
     plotter.plot_frame(data)
 
 
@@ -25,6 +24,9 @@ if __name__ == '__main__':
     rho_max = config.get_rho_max()
     time_factor = config.get_time_factor()
 
+    m = config.get_m()
+    g = config.get_g()
+
     # -- situation
 
     # mount point
@@ -32,9 +34,6 @@ if __name__ == '__main__':
 
     # circle
     circle = Circle(radius, mp, rho_max)
-
-    # start point
-    sp = circle.calc(rho_max)
 
     # -- setup plot
 
@@ -45,18 +44,7 @@ if __name__ == '__main__':
     plotter.setup(radius)
     plotter.plot_situation(circle, rho_max)
 
-    # -- implementation
-
-    if config.get_impl() == Impl.ANGLE:
-        impl = AngleImpl(radius, rho_max)
-    elif config.get_impl() == Impl.FORCE:
-        impl = ForceImpl(mp, sp, 1, 9.81)
-    else:
-        raise Exception('Unknown implementation')
-
     # -- integration
-
-    deq = impl.create_deq()
 
     integ_dt = config.get_integ_dt()
     integ_count = config.get_integ_count()
@@ -67,10 +55,18 @@ if __name__ == '__main__':
 
     integ_count = round(integ_count * time_factor)
 
-    integ_ctx = IntegrationCtx(deq, integ_dt, integ_count)
+    # -- pendulum
+
+    if config.get_impl() == Impl.ANGLE_INTEG:
+        impl = AngleImpl(radius, rho_max)
+    elif config.get_impl() == Impl.FORCE_INTEG:
+        pendulum = PendulumForceInteg(mp, m, g, integ_dt, integ_count)
+        pendulum.init_deq(circle.calc(rho_max), np.array([0, 0, 0]))
+    else:
+        raise Exception('Unknown implementation')
 
     # -- run
 
-    anim = animation.FuncAnimation(fig, animate, interval=integ_freq, fargs=(integ_ctx,plotter,impl,), blit=False)
+    anim = animation.FuncAnimation(fig, animate, interval=integ_freq, fargs=(pendulum,plotter,), blit=False)
 
     plt.show()
