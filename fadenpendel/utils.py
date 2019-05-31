@@ -81,3 +81,36 @@ class PlotCtx:
 
     def set_artists(self, artists):
         self._artists = artists
+
+
+class FrameData:
+
+    def __init__(self, pos, mp, F_zen, F_tan, F_tot, E_pot, E_kin):
+        self._pos = pos
+        self._mp = mp
+        self._F_zen = F_zen
+        self._F_tan = F_tan
+        self._F_tot = F_tot
+        self._E_pot = E_pot
+        self._E_kin = E_kin
+
+    def get_pos(self):
+        return self._pos
+
+    def get_mp(self):
+        return self._mp
+
+    def get_F_zen(self):
+        return self._F_zen
+
+    def get_F_tan(self):
+        return self._F_tan
+
+    def get_F_tot(self):
+        return self._F_tot
+
+    def get_E_pot(self):
+        return self._E_pot
+
+    def get_E_kin(self):
+        return self._E_kin

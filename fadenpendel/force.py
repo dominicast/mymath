@@ -1,145 +1,147 @@
 
 import integ as it
 
+from utils import FrameData
+
 import numpy as np
 import math
 
 
 class ForceImpl:
 
-    def __init__(self, mp, sp, plot_ctx):
+    def __init__(self, mp, sp, m, g):
         self._mp = mp
         self._sp = sp
-        self._plot_ctx = plot_ctx
+        self._m = m
+        self._g = g
 
     def create_deq(self):
-        return it.RungeKutta4th(DiffEq(self._mp, self._plot_ctx), self._sp, np.array([0, 0, 0]))
+        return it.RungeKutta4th(DiffEq(self._mp, self._m, self._g), self._sp, np.array([0, 0, 0]))
 
+    def create_frame(self, integ_ctx):
+        return AnimationFrame(integ_ctx, self._mp, self._m, self._g)
+
+
+class ForceMath:
+
+    def __init__(self, pos, vel, mp, m, g):
+        self._pos = pos
+        self._vel = vel
+        self._mp = mp
+        self._m = m
+        self._g = g
+
+    # calculate vector length of vec
     @staticmethod
-    def create_frame(integ_ctx, plot_ctx):
-        return AnimationFrame(integ_ctx, plot_ctx)
+    def vec_len(vec):
+        return math.sqrt(vec[0]**2 + vec[1]**2 + vec[2]**2)
+
+    # calculate unit vector of vec given it's length
+    @staticmethod
+    def unit_vec_len(vec, len):
+        return vec / len
+
+    # calculate unit vector of vec
+    def unit_vec(self, vec):
+        return vec / self.vec_len(vec)
+
+    # calcuate vector orthogonal to vec
+    # pointing from pos towards the z-axis
+    @staticmethod
+    def orth_vec_z(vec, pos):
+        z = pos[2]
+        x = -(vec[2] * z / (vec[0] + vec[1] * (pos[1] / pos[0])))
+        y = (pos[1] / pos[0]) * x
+        return np.array([x, y, z])
+
+    # calculate the angle between vec and the z-axis
+    @staticmethod
+    def z_angle(vec):
+        return math.acos(0 * vec[0] + 0 * vec[1] + -1 * vec[2])
+
+    def calculate(self):
+
+        m = self._m
+        g = self._g
+
+        mp = self._mp
+
+        pos = self._pos
+        vel = self.vec_len(self._vel)
+
+        # radius
+        radius = self.vec_len(pos-mp)
+
+        # radial unit vector r1
+        r1 = self.unit_vec_len(mp-pos, radius)
+
+        # tangential unit vecotr t1
+        t1 = self.unit_vec(self.orth_vec_z(r1, pos))
+
+        # displacement
+        rho = self.z_angle(-r1)
+
+        # tangential force
+        # F_tan = m * g * sin(rho)
+        F_tan = - m * g * math.sin(rho) * t1
+
+        # radial force
+        # F_zen = ( m * v^2 ) / radius
+        F_zen = ((m * vel**2)/radius) * r1
+
+        # F_tot
+        F_tot = (F_tan+F_zen)
+
+        return F_tot, F_zen, F_tan, rho, radius
+
+    def calculate_ext(self):
+
+        m = self._m
+        g = self._g
+
+        vel = self.vec_len(self._vel)
+
+        F_tot, F_zen, F_tan, rho, radius = self.calculate()
+
+        # potential energy
+        # E_pot = m * g * l * (1 - cos(rho))
+        E_pot = m * g * (radius - (radius * math.cos(rho)))
+
+        #kinetic energy
+        # E_kin = (1/2) * m * v^2
+        E_kin = (1/2) * g * math.pow(vel, 2)
+
+        return E_pot, E_kin, F_tot, F_zen, F_tan, rho, radius
 
 
 class DiffEq:
 
-    def __init__(self, mp, plot_ctx):
+    def __init__(self, mp, m, g):
         self._mp = mp
-        self._plot_ctx = plot_ctx
+        self._m = m
+        self._g = g
 
     def f(self, pos, vel, t):
-
-        m_l = 1
-        g_l = 9.81
-
-        # radius
-
-        radius_v = (pos - self._mp)
-        radius = math.sqrt(math.pow(radius_v[0], 2) + math.pow(radius_v[1], 2) + math.pow(radius_v[2], 2))
-
-        # radialer einheitsvektor e_r
-
-        e_r = ( (-radius_v) / radius )
-
-        # tangentialer einheitsvektor e_t
-
-        z = pos[2]
-        x = -(e_r[2] * z / (e_r[0] + e_r[1] * (pos[1] / pos[0])))
-        y = (pos[1] / pos[0]) * x
-
-        e_t = np.array([x, y, z])
-
-        e_t = e_t / math.sqrt(math.pow(e_t[0], 2) + math.pow(e_t[1], 2) + math.pow(e_t[2], 2))
-
-        # F_tan = m * g * sin(rho)
-
-        e_rr = e_r * -1
-        rho = math.acos(0*e_rr[0] + 0*e_rr[1] + -1*e_rr[2])
-
-        F_tan = - m_l * g_l * math.sin(rho) * e_t
-
-        # F_zen = ( m * v^2 ) / radius
-
-        vel_len = math.sqrt(math.pow(vel[0],2)+math.pow(vel[1],2)+math.pow(vel[2],2))
-        F_zen = ( ( m_l * math.pow(vel_len, 2) ) / radius ) * e_r
-
-        # F_tot
-
-        F_tot = ( F_tan + F_zen )
-
-        # ---
-
-        for artist in self._plot_ctx.get_artists():
-            artist.remove()
-
-        artists = []
-
-        ax_l = self._plot_ctx.get_ax()
-
-        artist = ax_l.quiver(pos[0], pos[1], pos[2], F_zen[0], F_zen[1], F_zen[2])
-        artists.append(artist)
-
-        artist = ax_l.quiver(pos[0], pos[1], pos[2], F_tan[0], F_tan[1], F_tan[2])
-        artists.append(artist)
-
-        artist = ax_l.quiver(pos[0], pos[1], pos[2], F_tot[0], F_tot[1], F_tot[2])
-        artists.append(artist)
-
-        self._plot_ctx.set_artists(artists)
-
+        F_tot, _, _, _, _ = ForceMath(pos, vel, self._mp, self._m, self._g).calculate()
         return F_tot
 
 
 class AnimationFrame:
 
-    def __init__(self, integ_ctx, plot_ctx):
+    def __init__(self, integ_ctx, mp, m, g):
         self._integ_ctx = integ_ctx
-        self._plot_ctx = plot_ctx
-
-        self._rho = None
-        self._rhovel = None
-        self._pos = None
-        self._vv = None
-        self._F_t = None
+        self._mp = mp
+        self._m = m
+        self._g = g
 
     def perform(self):
-        self.integrate()
-        self.cleanup()
-        self.plot()
 
-    def integrate(self):
-        pos, vel, acc = self._integ_ctx.get_deq().execute(self._integ_ctx.get_dt(), self._integ_ctx.get_count())
-        self._pos = pos
-        self._vel = vel
-        self._acc = acc
+        mp = self._mp
+        m = self._m
+        g = self._g
 
-    def cleanup(self):
+        pos, vel, _ = self._integ_ctx.get_deq().execute(self._integ_ctx.get_dt(), self._integ_ctx.get_count())
 
-        ax_l = self._plot_ctx.get_ax()
+        E_pot, E_kin, F_tot, F_zen, F_tan, _, _ = ForceMath(pos, vel, mp, m, g).calculate_ext()
 
-        artist = self._plot_ctx.get_line()
-        if artist is None:
-            artist, = ax_l.plot([], [], [], lw=0.5)
-            self._plot_ctx.set_line(artist)
-
-        artist = self._plot_ctx.get_mass()
-        if artist is None:
-            artist, = ax_l.plot([], [], [], "o", markersize=5)
-            self._plot_ctx.set_mass(artist)
-
-    def plot(self):
-
-        mp_l = self._plot_ctx.get_mp()
-
-        pos = self._pos
-
-        # line plot
-
-        artist = self._plot_ctx.get_line()
-        artist.set_data([mp_l[0], pos[0]], [mp_l[1], pos[1]])
-        artist.set_3d_properties([mp_l[2], pos[2]])
-
-        # mass plot
-
-        artist = self._plot_ctx.get_mass()
-        artist.set_data(pos[0], pos[1])
-        artist.set_3d_properties(pos[2])
+        return FrameData(pos, mp, F_zen, F_tan, F_tot, E_pot, E_kin)
