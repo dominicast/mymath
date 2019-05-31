@@ -1,7 +1,7 @@
 
 import integ as it
 
-from utils import FrameData
+from plotter import FrameData
 
 import numpy as np
 import math
