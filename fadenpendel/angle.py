@@ -2,8 +2,9 @@
 import integ as it
 
 from plotter import FrameData
+from utils import MathUtils
+from utils import PendulumMathUtils
 
-import numpy as np
 import math
 
 
@@ -26,58 +27,43 @@ class PendulumAngleInteg:
 
         rho, rhovel, _ = self._deq.execute(self._dt, self._frame_dt_count)
 
-        mp = self._mp
-        circle = self._circle
-        radius = circle.get_radius()
         m = self._m
         g = self._g
 
+        mp = self._mp
 
+        pos = self._circle.calc(rho)
+        radius = self._circle.get_radius()
+        vel = rhovel * radius
 
+        # radial unit vector r1
+        r1 = MathUtils.unit_vec_len(mp-pos, radius)
 
-        # - position of the pendulum
-
-        pos = circle.calc(rho)
-
-        # - radialer einheitsvektor e_r
-
-        e_r = (mp - pos) / radius
-
-        # - tangentialer einheitsvektor e_t
-
-        z = pos[2]
-        x = -(e_r[2] * z / (e_r[0] + e_r[1] * (pos[1] / pos[0])))
-        y = (pos[1] / pos[0]) * x
-
-        e_t = np.array([x, y, z])
+        # tangential unit vecotr t1
+        t1 = MathUtils.unit_vec(MathUtils.orth_vec_z(r1, pos))
 
         if rho < 0:
-            e_t = e_t * (-1)
-
-        e_t = e_t / math.sqrt(math.pow(e_t[0], 2) + math.pow(e_t[1], 2) + math.pow(e_t[2], 2))
-
-        # - velocity
-
-        vel =rhovel * radius
-
-        # - Energies
-
-        # E_pot = m * g * l * (1 - cos(rho))
-        E_pot = m * g * (radius - (radius * math.cos(rho)))
-
-        # E_kin = (1/2) * m * v^2
-        E_kin = (1/2) * g * math.pow(vel, 2)
+            t1 = t1 * (-1)
 
         # - Forces
 
-        # F_tan = m * g * sin(rho)
-        F_tan = - m * g * math.sin(rho) * e_t
+        # tangential force vector
+        F_tan = PendulumMathUtils.tangential_force(m, g, rho) * t1
 
-        # F_zen = ( m * v^2 ) / radius
-        F_zen = ( ( m * math.pow(vel, 2) ) / radius ) * e_r
+        # radial force vector
+        F_zen = PendulumMathUtils.radial_force(m, vel, radius) * r1
 
-        # F_tot = F_tan + F_zen
+        # total force vector
         F_tot = ( F_tan + F_zen )
+
+        # - Energies
+
+        # potential energy
+        E_pot = PendulumMathUtils.potential_energy(m, g, rho, radius)
+
+        # kinetic energy
+        E_kin = PendulumMathUtils.kinetic_energy(g, vel)
+
 
 
 
