@@ -22,11 +22,11 @@ class PendulumForceInteg:
 
     def calculate_frame(self):
 
+        pos, vel, _ = self._deq.execute(self._dt, self._frame_dt_count)
+
         mp = self._mp
         m = self._m
         g = self._g
-
-        pos, vel, _ = self._deq.execute(self._dt, self._frame_dt_count)
 
         E_pot, E_kin, F_tot, F_zen, F_tan, _, _ = PendulumMath(pos, vel, mp, m, g).calculate_ext()
 

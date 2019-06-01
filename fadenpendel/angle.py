@@ -1,76 +1,47 @@
 
 import integ as it
 
+from plotter import FrameData
+
 import numpy as np
 import math
 
 
-class AngleImpl:
+class PendulumAngleInteg:
 
-    def __init__(self, radius, rho_max):
-        self._radius = radius
-        self._rho_max = rho_max
+    def __init__(self, mp, circle, m, g, dt, frame_dt_count):
+        self._mp = mp
+        self._circle = circle
+        self._m = m
+        self._g = g
+        self._deq = None
+        self._dt = dt
+        self._frame_dt_count = frame_dt_count
 
-    def create_deq(self):
-        return it.RungeKutta4th(DiffEq(self._radius), self._rho_max, 0)
+    def init_deq(self, rho_max):
+        radius = self._circle.get_radius()
+        self._deq = it.RungeKutta4th(DiffEq(radius), rho_max, 0)
 
-    @staticmethod
-    def create_frame(integ_ctx, plot_ctx):
-        return AnimationFrame(integ_ctx, plot_ctx)
+    def calculate_frame(self):
 
+        rho, rhovel, _ = self._deq.execute(self._dt, self._frame_dt_count)
 
-class DiffEq:
-
-    def __init__(self, radius):
-        self._radius = radius
-
-    def f(self, pos, vel, t):
-        return -(9.81/self._radius)*math.sin(pos)
+        mp = self._mp
+        circle = self._circle
+        radius = circle.get_radius()
+        m = self._m
+        g = self._g
 
 
-class AnimationFrame:
 
-    def __init__(self, integ_ctx, plot_ctx):
-        self._integ_ctx = integ_ctx
-        self._plot_ctx = plot_ctx
-
-        self._rho = None
-        self._rhovel = None
-        self._rhoacc = None
-        self._pos = None
-        self._E_pot = None
-        self._E_kin = None
-        self._F_tan = None
-        self._F_zen = None
-        self._F_tot = None
-
-    def perform(self):
-        self.integrate()
-        self.calculate()
-        self.cleanup()
-        self.plot()
-
-    def integrate(self):
-        rho, rhovel, rhoacc = self._integ_ctx.get_deq().execute(self._integ_ctx.get_dt(), self._integ_ctx.get_count())
-        self._rho = rho
-        self._rhovel = rhovel
-        self._rhoacc = rhoacc
-
-    def calculate(self):
-
-        mp_l = self._plot_ctx.get_mp()
-        radius_l = self._plot_ctx.get_circle().get_radius()
-        m_l = 1
-        g_l = 9.81
 
         # - position of the pendulum
 
-        pos = self._plot_ctx.get_circle().calc(self._rho)
-        self._pos = pos
+        pos = circle.calc(rho)
 
         # - radialer einheitsvektor e_r
 
-        e_r = (mp_l - pos) / radius_l
+        e_r = (mp - pos) / radius
 
         # - tangentialer einheitsvektor e_t
 
@@ -80,89 +51,43 @@ class AnimationFrame:
 
         e_t = np.array([x, y, z])
 
-        if self._rho < 0:
+        if rho < 0:
             e_t = e_t * (-1)
 
         e_t = e_t / math.sqrt(math.pow(e_t[0], 2) + math.pow(e_t[1], 2) + math.pow(e_t[2], 2))
 
         # - velocity
 
-        vel = self._rhovel * radius_l
+        vel =rhovel * radius
 
         # - Energies
 
         # E_pot = m * g * l * (1 - cos(rho))
-        self._E_pot = m_l * g_l * (radius_l - (radius_l * math.cos(self._rho)))
+        E_pot = m * g * (radius - (radius * math.cos(rho)))
 
         # E_kin = (1/2) * m * v^2
-        self._E_kin = (1/2) * g_l * math.pow(vel, 2)
+        E_kin = (1/2) * g * math.pow(vel, 2)
 
         # - Forces
 
         # F_tan = m * g * sin(rho)
-        self._F_tan = - m_l * g_l * math.sin(self._rho) * e_t
+        F_tan = - m * g * math.sin(rho) * e_t
 
         # F_zen = ( m * v^2 ) / radius
-        self._F_zen = ( ( m_l * math.pow(vel, 2) ) / radius_l ) * e_r
+        F_zen = ( ( m * math.pow(vel, 2) ) / radius ) * e_r
 
         # F_tot = F_tan + F_zen
-        self._F_tot = ( self._F_tan + self._F_zen )
+        F_tot = ( F_tan + F_zen )
 
-    def cleanup(self):
 
-        ax_l = self._plot_ctx.get_ax()
 
-        artist = self._plot_ctx.get_line()
-        if artist is None:
-            artist, = ax_l.plot([], [], [], lw=0.5)
-            self._plot_ctx.set_line(artist)
+        return FrameData(pos, mp, F_zen, F_tan, F_tot, E_pot, E_kin)
 
-        artist = self._plot_ctx.get_mass()
-        if artist is None:
-            artist, = ax_l.plot([], [], [], "o", markersize=5, color=(0,0,0))
-            self._plot_ctx.set_mass(artist)
 
-        for artist in self._plot_ctx.get_artists():
-            artist.remove()
+class DiffEq:
 
-    def plot(self):
+    def __init__(self, radius):
+        self._radius = radius
 
-        artists = []
-
-        ax_l = self._plot_ctx.get_ax()
-        mp_l = self._plot_ctx.get_mp()
-
-        pos = self._pos
-
-        # line plot
-
-        artist = self._plot_ctx.get_line()
-        artist.set_data([mp_l[0], pos[0]], [mp_l[1], pos[1]])
-        artist.set_3d_properties([mp_l[2], pos[2]])
-
-        # mass plot
-
-        artist = self._plot_ctx.get_mass()
-        artist.set_data(pos[0], pos[1])
-        artist.set_3d_properties(pos[2])
-
-        E_pot_norm = (self._E_pot/(self._E_pot+self._E_kin))
-        E_kin_norm = 1-E_pot_norm
-
-        artist.set_color(color=(E_pot_norm,0,E_kin_norm))
-
-        artist.set_zorder(20)
-
-        # forces
-
-        artist = ax_l.quiver(pos[0], pos[1], pos[2], self._F_zen[0], self._F_zen[1], self._F_zen[2])
-        artists.append(artist)
-
-        artist = ax_l.quiver(pos[0], pos[1], pos[2], self._F_tan[0], self._F_tan[1], self._F_tan[2])
-        artists.append(artist)
-
-        artist = ax_l.quiver(pos[0], pos[1], pos[2], self._F_tot[0], self._F_tot[1], self._F_tot[2])
-        artists.append(artist)
-
-        # done
-        self._plot_ctx.set_artists(artists)
+    def f(self, pos, vel, t):
+        return -(9.81/self._radius)*math.sin(pos)

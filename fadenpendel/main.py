@@ -1,7 +1,7 @@
 
 from utils import *
 from plotter import *
-from angle import AngleImpl
+from angle import PendulumAngleInteg
 from force import PendulumForceInteg
 from config import *
 
@@ -58,7 +58,8 @@ if __name__ == '__main__':
     # -- pendulum
 
     if config.get_impl() == Impl.ANGLE_INTEG:
-        impl = AngleImpl(radius, rho_max)
+        pendulum = PendulumAngleInteg(mp, circle, m, g, integ_dt, integ_count)
+        pendulum.init_deq(rho_max)
     elif config.get_impl() == Impl.FORCE_INTEG:
         pendulum = PendulumForceInteg(mp, m, g, integ_dt, integ_count)
         pendulum.init_deq(circle.calc(rho_max), np.array([0, 0, 0]))
