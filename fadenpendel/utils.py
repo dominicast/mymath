@@ -53,6 +53,11 @@ class MathUtils:
         y = (pos[1] / pos[0]) * x
         return np.array([x, y, z])
 
+    # calculate the angle between vec and the z-axis
+    @staticmethod
+    def z_angle(vec):
+        return math.acos(0 * vec[0] + 0 * vec[1] + -1 * vec[2])
+
 
 class PendulumMathUtils:
 
@@ -75,3 +80,44 @@ class PendulumMathUtils:
     @staticmethod
     def kinetic_energy(g, vel):
         return (1/2) * g * vel**2
+
+    # calculate unit vectors t1 and r1
+    # r1: radial unit vector pointing from pos to the mount point
+    # t1: tangential unit vector orthogonal to r1 pointing from pos towards the z-axis
+    @staticmethod
+    def calculate_unit_vectors(mp, pos, radius):
+
+        # radial unit vector r1
+        r1 = MathUtils.unit_vec_len(mp-pos, radius)
+
+        # tangential unit vecotr t1
+        t1 = MathUtils.unit_vec(MathUtils.orth_vec_z(r1, pos))
+
+        return r1, t1
+
+    # calculate force vectors F_tan, F_zen, F_tot
+    @staticmethod
+    def calculate_force_vectors(rho, radius, vel, m, g, t1, r1):
+
+        # tangential force vector
+        F_tan = PendulumMathUtils.tangential_force(m, g, rho) * t1
+
+        # radial force vector
+        F_zen = PendulumMathUtils.radial_force(m, vel, radius) * r1
+
+        # F_tot
+        F_tot = (F_tan+F_zen)
+
+        return F_tot, F_tan, F_zen
+
+    # calculate energies E_pot and E_kin
+    @staticmethod
+    def calculate_energies(rho, radius, vel, m, g):
+
+        # potential energy
+        E_pot = PendulumMathUtils.potential_energy(m, g, rho, radius)
+
+        # kinetic energy
+        E_kin = PendulumMathUtils.kinetic_energy(g, vel)
+
+        return E_pot, E_kin

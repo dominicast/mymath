@@ -5,8 +5,6 @@ from plotter import FrameData
 from utils import MathUtils
 from utils import PendulumMathUtils
 
-import math
-
 
 class PendulumForceInteg:
 
@@ -55,11 +53,6 @@ class PendulumMath:
         self._m = m
         self._g = g
 
-    # calculate the angle between vec and the z-axis
-    @staticmethod
-    def z_angle(vec):
-        return math.acos(0 * vec[0] + 0 * vec[1] + -1 * vec[2])
-
     def calculate(self):
 
         m = self._m
@@ -71,24 +64,16 @@ class PendulumMath:
         radius = MathUtils.vec_len(pos - mp)
         vel = MathUtils.vec_len(self._vel)
 
-        # radial unit vector r1
-        r1 = MathUtils.unit_vec_len(mp-pos, radius)
-
-        # tangential unit vecotr t1
-        t1 = MathUtils.unit_vec(MathUtils.orth_vec_z(r1, pos))
+        # unit vectors
+        r1, t1 = PendulumMathUtils.calculate_unit_vectors(mp, pos, radius)
 
         # displacement
-        rho = self.z_angle(-r1)
+        rho = MathUtils.z_angle(-r1)
 
-        # tangential force vector
-        F_tan = PendulumMathUtils.tangential_force(m, g, rho) * t1
+        # forces
+        F_tot, F_tan, F_zen = PendulumMathUtils.calculate_force_vectors(rho, radius, vel, m, g, t1, r1)
 
-        # radial force vector
-        F_zen = PendulumMathUtils.radial_force(m, vel, radius) * r1
-
-        # F_tot
-        F_tot = (F_tan+F_zen)
-
+        # return
         return F_tot, F_zen, F_tan, rho, radius
 
     def calculate_ext(self):
@@ -100,10 +85,8 @@ class PendulumMath:
 
         F_tot, F_zen, F_tan, rho, radius = self.calculate()
 
-        # potential energy
-        E_pot = PendulumMathUtils.potential_energy(m, g, rho, radius)
+        # energies
+        E_pot, E_kin = PendulumMathUtils.calculate_energies(rho, radius, vel, m, g)
 
-        # kinetic energy
-        E_kin = PendulumMathUtils.kinetic_energy(g, vel)
-
+        # return
         return E_pot, E_kin, F_tot, F_zen, F_tan, rho, radius

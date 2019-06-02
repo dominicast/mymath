@@ -36,37 +36,19 @@ class PendulumAngleInteg:
         radius = self._circle.get_radius()
         vel = rhovel * radius
 
-        # radial unit vector r1
-        r1 = MathUtils.unit_vec_len(mp-pos, radius)
-
-        # tangential unit vecotr t1
-        t1 = MathUtils.unit_vec(MathUtils.orth_vec_z(r1, pos))
-
         if rho < 0:
-            t1 = t1 * (-1)
+            rho = -rho
 
-        # - Forces
+        # unit vectors
+        r1, t1 = PendulumMathUtils.calculate_unit_vectors(mp, pos, radius)
 
-        # tangential force vector
-        F_tan = PendulumMathUtils.tangential_force(m, g, rho) * t1
+        # forces
+        F_tot, F_tan, F_zen = PendulumMathUtils.calculate_force_vectors(rho, radius, vel, m, g, t1, r1)
 
-        # radial force vector
-        F_zen = PendulumMathUtils.radial_force(m, vel, radius) * r1
+        # energies
+        E_pot, E_kin = PendulumMathUtils.calculate_energies(rho, radius, vel, m, g)
 
-        # total force vector
-        F_tot = ( F_tan + F_zen )
-
-        # - Energies
-
-        # potential energy
-        E_pot = PendulumMathUtils.potential_energy(m, g, rho, radius)
-
-        # kinetic energy
-        E_kin = PendulumMathUtils.kinetic_energy(g, vel)
-
-
-
-
+        # return
         return FrameData(pos, mp, F_zen, F_tan, F_tot, E_pot, E_kin)
 
 
