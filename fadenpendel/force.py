@@ -41,7 +41,7 @@ class DiffEq:
 
     def f(self, pos, vel, t):
         F_tot, _, _, _, _ = PendulumMath(pos, vel, self._mp, self._m, self._g).calculate()
-        return F_tot
+        return F_tot/self._m
 
 
 class PendulumMath:
