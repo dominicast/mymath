@@ -29,7 +29,7 @@ class PendulumForceInteg:
 
         E_pot, E_kin, F_tot, F_zen, F_tan, _, _ = PendulumMath(pos, vel, mp, m, g).calculate_ext()
 
-        return FrameData(pos, mp, F_zen, F_tan, F_tot, E_pot, E_kin)
+        return FrameData(pos, mp, m, F_zen, F_tan, F_tot, E_pot, E_kin)
 
 
 class DiffEq:

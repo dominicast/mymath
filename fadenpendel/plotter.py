@@ -5,9 +5,10 @@ import numpy as np
 
 class FrameData:
 
-    def __init__(self, pos, mp, F_zen, F_tan, F_tot, E_pot, E_kin):
+    def __init__(self, pos, mp, m, F_zen, F_tan, F_tot, E_pot, E_kin):
         self._pos = pos
         self._mp = mp
+        self._m = m
         self._F_zen = F_zen
         self._F_tan = F_tan
         self._F_tot = F_tot
@@ -19,6 +20,9 @@ class FrameData:
 
     def get_mp(self):
         return self._mp
+
+    def get_m(self):
+        return self._m
 
     def get_F_zen(self):
         return self._F_zen
@@ -83,10 +87,10 @@ class Plotter:
             rho_tmp -= math.radians(5)
 
     def plot_frame(self, data):
-        self._cleanup()
+        self._cleanup(data)
         self._plot_frame(data)
 
-    def _cleanup(self):
+    def _cleanup(self, data):
 
         ax = self._ax
 
@@ -94,7 +98,7 @@ class Plotter:
             self._line, = ax.plot([], [], [], lw=0.5)
 
         if self._mass is None:
-            self._mass, = ax.plot([], [], [], "o", markersize=5, color=(0,0,0))
+            self._mass, = ax.plot([], [], [], "o", markersize=(5*data.get_m()), color=(0,0,0))
 
         for artist in self._artists:
             artist.remove()

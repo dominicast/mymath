@@ -2,7 +2,6 @@
 import integ as it
 
 from plotter import FrameData
-from utils import MathUtils
 from utils import PendulumMathUtils
 
 import math
@@ -49,7 +48,7 @@ class PendulumAngleInteg:
         E_pot, E_kin = PendulumMathUtils.calculate_energies(rho, radius, vel, m, g)
 
         # return
-        return FrameData(pos, mp, F_zen, F_tan, F_tot, E_pot, E_kin)
+        return FrameData(pos, mp, m, F_zen, F_tan, F_tot, E_pot, E_kin)
 
 
 class DiffEq:
