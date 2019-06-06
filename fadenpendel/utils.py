@@ -42,7 +42,10 @@ class MathUtils:
     # calculate unit vector of vec
     @staticmethod
     def unit_vec(vec):
-        return vec / MathUtils.vec_len(vec)
+        len = MathUtils.vec_len(vec)
+        if len == 0:
+            return vec
+        return vec / len
 
     # calcuate vector orthogonal to vec
     # pointing from pos towards the z-axis
@@ -53,28 +56,53 @@ class MathUtils:
         y = (pos[1] / pos[0]) * x
         return np.array([x, y, z])
 
-    # calculate the angle between vec and the z-axis
-    @staticmethod
-    def z_angle(vec):
-        return math.acos(0 * vec[0] + 0 * vec[1] + -1 * vec[2])
-
 
 class PendulumMathUtils:
+
+    @staticmethod
+    def _sign(n):
+        if n >= 0:
+            return 1
+        else:
+            return -1
+
+    @staticmethod
+    def _angle_sign(pos, mp):
+        dx = pos[0] - mp[0]
+        dy = pos[1] - mp[1]
+        if dx == 0 and dy == 0:
+            return 1
+        if dx == 0:
+            return PendulumMathUtils._sign(dy)
+        if dy == 0:
+            return PendulumMathUtils._sign(dx)
+        return PendulumMathUtils._sign(dx)
+
+    # calculate the angle between vec and the z-axis
+    @staticmethod
+    def z_angle(vec, pos, mp):
+        sign = PendulumMathUtils._angle_sign(pos, mp)
+        return math.acos(0 * vec[0] + 0 * vec[1] + -1 * vec[2]) * sign
 
     # F_tan = m * g * sin(rho)
     @staticmethod
     def tangential_force(m, g, rho):
-        return - m * g * math.sin(rho)
+        return - m * g * math.sin(abs(rho))
 
     # F_zen = ( m * v^2 ) / radius
     @staticmethod
     def radial_force(m, vel, radius):
         return (m * vel**2)/radius
 
+    # F_d = friction * v^2
+    @staticmethod
+    def friction_force(friction, vel):
+        return friction * vel**2
+
     # E_pot = m * g * l * (1 - cos(rho))
     @staticmethod
     def potential_energy(m, g, rho, radius):
-        return m * g * (radius - (radius * math.cos(rho)))
+        return m * g * (radius - (radius * math.cos(abs(rho))))
 
     # E_kin = (1/2) * m * v^2
     @staticmethod
@@ -85,7 +113,7 @@ class PendulumMathUtils:
     # r1: radial unit vector pointing from pos to the mount point
     # t1: tangential unit vector orthogonal to r1 pointing from pos towards the z-axis
     @staticmethod
-    def calculate_unit_vectors(mp, pos, radius):
+    def calculate_unit_vectors(mp, pos, radius, vel):
 
         # radial unit vector r1
         r1 = MathUtils.unit_vec_len(mp-pos, radius)
@@ -93,11 +121,14 @@ class PendulumMathUtils:
         # tangential unit vecotr t1
         t1 = MathUtils.unit_vec(MathUtils.orth_vec_z(r1, pos))
 
-        return r1, t1
+        # vilocity unit vecotr v1
+        v1 = MathUtils.unit_vec(vel)
+
+        return r1, t1, v1
 
     # calculate force vectors F_tan, F_zen, F_tot
     @staticmethod
-    def calculate_force_vectors(rho, radius, vel, m, g, t1, r1):
+    def calculate_force_vectors(rho, radius, vel, m, g, friction, t1, r1, v1):
 
         # tangential force vector
         F_tan = PendulumMathUtils.tangential_force(m, g, rho) * t1
@@ -105,10 +136,15 @@ class PendulumMathUtils:
         # radial force vector
         F_zen = PendulumMathUtils.radial_force(m, vel, radius) * r1
 
-        # F_tot
-        F_tot = (F_tan+F_zen)
+        # friction vector
+        F_d = PendulumMathUtils.friction_force(friction, vel) * (-v1)
+        #print(repr(MathUtils.vec_len(F_d)))
+        #print( repr(vel) + ' : ' + MathUtils.vec_len( F_d ) )
 
-        return F_tot, F_tan, F_zen
+        # F_tot
+        F_tot = (F_tan+F_zen+F_d)
+
+        return F_tot, F_tan, F_zen, F_d
 
     # calculate energies E_pot and E_kin
     @staticmethod

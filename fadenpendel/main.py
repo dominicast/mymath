@@ -33,7 +33,7 @@ if __name__ == '__main__':
     mp = np.array([0, 0, radius+(radius/10)])
 
     # circle
-    circle = Circle(radius, mp, rho_max)
+    circle = Circle(radius, mp, config.get_phi())
 
     # -- setup plot
 
@@ -57,11 +57,13 @@ if __name__ == '__main__':
 
     # -- pendulum
 
+    friction = config.get_friction()
+
     if config.get_impl() == Impl.ANGLE_INTEG:
-        pendulum = PendulumAngleInteg(mp, circle, m, g, integ_dt, integ_count)
+        pendulum = PendulumAngleInteg(mp, circle, m, g, friction, integ_dt, integ_count)
         pendulum.init_deq(rho_max)
     elif config.get_impl() == Impl.FORCE_INTEG:
-        pendulum = PendulumForceInteg(mp, m, g, integ_dt, integ_count)
+        pendulum = PendulumForceInteg(mp, m, g, friction, integ_dt, integ_count)
         pendulum.init_deq(circle.calc(rho_max), np.array([0, 0, 0]))
     else:
         raise Exception('Unknown implementation')

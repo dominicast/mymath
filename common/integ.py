@@ -58,7 +58,7 @@ class EulerBase:
             if self._notify(pos, vel, t, n):
                 break
 
-            acc = self._eq.f(pos=pos, vel=vel, t=t)
+            acc = self._eq.f(pos, vel, t)
 
             vel_n = vel + dt * acc
 
@@ -82,7 +82,7 @@ class EulerBase:
         self._ff_pos = pos
         self._ff_vel = vel
 
-        return pos, vel, acc
+        return pos, vel, acc, t
 
 
 class Euler(EulerBase):
@@ -159,8 +159,8 @@ class Midpoint:
             if self._notify(pos, vel, t, n):
                 break
 
-            vel_mp = vel + (dt/2) * self._eq.f(pos=pos, vel=vel, t=t)
-            vel_n = vel + dt * self._eq.f(pos=pos, vel=vel_mp, t=t+(dt/2))
+            vel_mp = vel + (dt/2) * self._eq.f(pos, vel, t)
+            vel_n = vel + dt * self._eq.f(pos, vel_mp, t+(dt/2))
 
             pos_n = pos + dt * vel_n
 
@@ -180,7 +180,7 @@ class Midpoint:
         self._ff_pos = pos
         self._ff_vel = vel
 
-        return pos, vel, None
+        return pos, vel, None, t
 
 
 # Jorge Rodriguez (21.07.2016)
@@ -232,7 +232,7 @@ class Verlet:
 
             pos = self._init_pos
             vel = self._init_vel
-            acc = self._eq.f(pos=pos, vel=vel, t=t)
+            acc = self._eq.f(pos, vel, t)
 
             pos_n = pos + vel * dt + (1 / 2) * acc * math.pow(dt, 2)
 
@@ -256,7 +256,7 @@ class Verlet:
         while True:
 
             vel = (pos - pos_p) * dt_rez
-            acc = self._eq.f(pos=pos, vel=vel, t=t)
+            acc = self._eq.f(pos, vel, t)
 
             if self._notify(pos, vel, t, n):
                 break
@@ -279,7 +279,7 @@ class Verlet:
         self._ff_pos = pos
         self._ff_pos_p = pos_p
 
-        return pos, vel, acc
+        return pos, vel, acc, t
 
 
 # This is the algorithmy used by:
@@ -376,7 +376,7 @@ class Beeman:
             if self._notify(pos, vel, t, n):
                 break
 
-            acc_n = self._eq.f(pos=pos, vel=vel, t=t)
+            acc_n = self._eq.f(pos, vel, t)
 
             vel = vel + dt * ( (1/3) * acc_n + (5/6) * acc - (1/6) * acc_p )
 
@@ -390,7 +390,7 @@ class Beeman:
         self._ff_acc = acc
         self._ff_acc_p = acc_p
 
-        return pos, vel, acc
+        return pos, vel, acc, t
 
 
 # Jorge Rodriguez (04.08.2016)
@@ -454,16 +454,16 @@ class RungeKutta4th:
                 break
 
             dx1 = dt * vel
-            dv1 = dt * self._eq.f(pos=pos, vel=vel, t=t)
+            dv1 = dt * self._eq.f(pos, vel, t)
 
             dx2 = dt * (vel+(dv1/2))
-            dv2 = dt * self._eq.f(pos=pos+(dx1/2), vel=vel+(dv1/2), t=t+(dt/2))
+            dv2 = dt * self._eq.f(pos+(dx1/2), vel+(dv1/2), t+(dt/2))
 
             dx3 = dt * (vel+(dv2/2))
-            dv3 = dt * self._eq.f(pos=pos+(dx2/2), vel=vel+(dv2/2), t=t+(dt/2))
+            dv3 = dt * self._eq.f(pos+(dx2/2), vel+(dv2/2), t+(dt/2))
 
             dx4 = dt * (vel+dv3)
-            dv4 = dt * self._eq.f(pos=pos+dx3, vel=vel+dv3, t=t+dt)
+            dv4 = dt * self._eq.f(pos+dx3, vel+dv3, t+dt)
 
             dx = ( dx1 + 2*dx2 + 2*dx3 + dx4 ) / 6
             dv = ( dv1 + 2*dv2 + 2*dv3 + dv4 ) / 6
@@ -487,4 +487,4 @@ class RungeKutta4th:
         self._ff_pos = pos
         self._ff_vel = vel
 
-        return pos, vel, dv
+        return pos, vel, dv, t

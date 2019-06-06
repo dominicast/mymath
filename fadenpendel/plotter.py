@@ -5,12 +5,13 @@ import numpy as np
 
 class FrameData:
 
-    def __init__(self, pos, mp, m, F_zen, F_tan, F_tot, E_pot, E_kin):
+    def __init__(self, pos, mp, m, F_zen, F_tan, F_d, F_tot, E_pot, E_kin):
         self._pos = pos
         self._mp = mp
         self._m = m
         self._F_zen = F_zen
         self._F_tan = F_tan
+        self._F_d = F_d
         self._F_tot = F_tot
         self._E_pot = E_pot
         self._E_kin = E_kin
@@ -29,6 +30,9 @@ class FrameData:
 
     def get_F_tan(self):
         return self._F_tan
+
+    def get_F_d(self):
+        return self._F_d
 
     def get_F_tot(self):
         return self._F_tot
@@ -117,6 +121,7 @@ class Plotter:
 
         F_zen = data.get_F_zen()
         F_tan = data.get_F_tan()
+        F_d = data.get_F_d()
         F_tot = data.get_F_tot()
 
         # line plot
@@ -148,6 +153,10 @@ class Plotter:
 
         if F_tan is not None:
             artist = ax.quiver(pos[0], pos[1], pos[2], F_tan[0], F_tan[1], F_tan[2])
+            artists.append(artist)
+
+        if F_d is not None:
+            artist = ax.quiver(pos[0], pos[1], pos[2], F_d[0], F_d[1], F_d[2], color='r')
             artists.append(artist)
 
         if F_tot is not None:
