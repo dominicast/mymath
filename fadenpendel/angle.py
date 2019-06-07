@@ -5,7 +5,6 @@ from plotter import FrameData
 from utils import PendulumMathUtils
 
 import math
-import numpy as np
 
 
 class PendulumAngleInteg:
