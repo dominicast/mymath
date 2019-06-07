@@ -95,7 +95,7 @@ class PendulumMath:
         pos = self._pos
         radius = MathUtils.vec_len(pos - mp)
 
-        #TODO: calculate a vecolity direction
+        # TODO: calculate a vecolity direction
         vel = MathUtils.vec_len(self._vel)
 
         # unit vectors
