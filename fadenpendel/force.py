@@ -80,9 +80,26 @@ class PendulumMath:
 
     # calculate the angle between vec and the z-axis
     @staticmethod
-    def z_angle(vec, pos, mp):
+    def _z_angle(vec, pos, mp):
         sign = PendulumMath._angle_sign(pos, mp)
         return math.acos(0 * vec[0] + 0 * vec[1] + -1 * vec[2]) * sign
+
+    # calculate the velocity value and sign
+    @staticmethod
+    def _velocity(vec):
+        len = MathUtils.vec_len(vec)
+        if vec[0] == 0 and vec[1] == 0:
+            return len
+        if vec[0] != 0:
+            if vec[0] >= 0:
+                return len
+            else:
+                return -len
+        else:
+            if vec[1] >= 0:
+                return len
+            else:
+                return -len
 
     def calculate(self):
 
@@ -94,15 +111,13 @@ class PendulumMath:
 
         pos = self._pos
         radius = MathUtils.vec_len(pos - mp)
-
-        # TODO: calculate a vecolity direction
-        vel = MathUtils.vec_len(self._vel)
+        vel = PendulumMath._velocity(self._vel)
 
         # unit vectors
         r1, t1, v1 = PendulumMathUtils.calculate_unit_vectors(mp, pos, radius, self._vel)
 
         # displacement
-        rho = PendulumMath.z_angle(-r1, pos, mp)
+        rho = PendulumMath._z_angle(-r1, pos, mp)
 
         # forces
         F_tot, F_tan, F_zen, F_d = PendulumMathUtils.calculate_force_vectors(rho, radius, vel, m, g, friction, t1, r1, v1)
