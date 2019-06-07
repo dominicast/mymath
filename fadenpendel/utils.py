@@ -59,31 +59,6 @@ class MathUtils:
 
 class PendulumMathUtils:
 
-    @staticmethod
-    def _sign(n):
-        if n >= 0:
-            return 1
-        else:
-            return -1
-
-    @staticmethod
-    def _angle_sign(pos, mp):
-        dx = pos[0] - mp[0]
-        dy = pos[1] - mp[1]
-        if dx == 0 and dy == 0:
-            return 1
-        if dx == 0:
-            return PendulumMathUtils._sign(dy)
-        if dy == 0:
-            return PendulumMathUtils._sign(dx)
-        return PendulumMathUtils._sign(dx)
-
-    # calculate the angle between vec and the z-axis
-    @staticmethod
-    def z_angle(vec, pos, mp):
-        sign = PendulumMathUtils._angle_sign(pos, mp)
-        return math.acos(0 * vec[0] + 0 * vec[1] + -1 * vec[2]) * sign
-
     # F_tan = m * g * sin(rho)
     @staticmethod
     def tangential_force(m, g, rho):
@@ -138,8 +113,6 @@ class PendulumMathUtils:
 
         # friction vector
         F_d = PendulumMathUtils.friction_force(friction, vel) * (-v1)
-        #print(repr(MathUtils.vec_len(F_d)))
-        #print( repr(vel) + ' : ' + MathUtils.vec_len( F_d ) )
 
         # F_tot
         F_tot = (F_tan+F_zen+F_d)

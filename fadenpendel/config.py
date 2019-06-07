@@ -26,8 +26,8 @@ class Config:
         self._integ_count = 10
         self._integ_freq = 100   # [ms]
 
-        self._impl = Impl.FORCE_INTEG
-        #self._impl = Impl.ANGLE_INTEG
+        #self._impl = Impl.FORCE_INTEG
+        self._impl = Impl.ANGLE_INTEG
 
     def get_radius(self):
         return self._radius

@@ -71,6 +71,6 @@ class DiffEq:
         else:
             vel_direction = -1
 
-        result = -(g / radius) * math.sin(pos) - (radius * vel_direction * friction * (vel**2))/m
+        result = -(g / radius) * math.sin(pos) - (radius * vel_direction * PendulumMathUtils.friction_force(friction, vel))/m
 
         return result

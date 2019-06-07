@@ -1,6 +1,8 @@
 
 import integ as it
 
+import math
+
 from plotter import FrameData
 from utils import MathUtils
 from utils import PendulumMathUtils
@@ -57,6 +59,31 @@ class PendulumMath:
         self._g = g
         self._friction = friction
 
+    @staticmethod
+    def _sign(n):
+        if n >= 0:
+            return 1
+        else:
+            return -1
+
+    @staticmethod
+    def _angle_sign(pos, mp):
+        dx = pos[0] - mp[0]
+        dy = pos[1] - mp[1]
+        if dx == 0 and dy == 0:
+            return 1
+        if dx == 0:
+            return PendulumMath._sign(dy)
+        if dy == 0:
+            return PendulumMath._sign(dx)
+        return PendulumMath._sign(dx)
+
+    # calculate the angle between vec and the z-axis
+    @staticmethod
+    def z_angle(vec, pos, mp):
+        sign = PendulumMath._angle_sign(pos, mp)
+        return math.acos(0 * vec[0] + 0 * vec[1] + -1 * vec[2]) * sign
+
     def calculate(self):
 
         m = self._m
@@ -73,7 +100,7 @@ class PendulumMath:
         r1, t1, v1 = PendulumMathUtils.calculate_unit_vectors(mp, pos, radius, self._vel)
 
         # displacement
-        rho = PendulumMathUtils.z_angle(-r1, pos, mp)
+        rho = PendulumMath.z_angle(-r1, pos, mp)
 
         # forces
         F_tot, F_tan, F_zen, F_d = PendulumMathUtils.calculate_force_vectors(rho, radius, vel, m, g, friction, t1, r1, v1)
