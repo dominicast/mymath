@@ -60,17 +60,21 @@ class DiffEq:
         self._m = m
         self._g = g
 
-    def f(self, pos, vel, t):
+    def f(self, rho, rhovel, t):
         m = self._m
         g = self._g
         radius = self._radius
         friction = self._friction
 
-        if vel >= 0:
+        G_t = - m * g * math.sin(rho)
+
+        if rhovel >= 0:
             vel_direction = 1
         else:
             vel_direction = -1
 
-        result = -(g / radius) * math.sin(pos) - (radius * vel_direction * PendulumMathUtils.friction_force(friction, vel))/m
+        vel = rhovel * radius
 
-        return result
+        D = - vel_direction * PendulumMathUtils.friction_force(friction, vel)
+
+        return (G_t+D)/(m*radius)
