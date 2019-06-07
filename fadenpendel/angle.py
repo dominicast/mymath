@@ -40,8 +40,11 @@ class PendulumAngleInteg:
         vel = rhovel * radius
 
         # unit vectors
-        # TODO: provide velocity vector
-        r1, t1, v1 = PendulumMathUtils.calculate_unit_vectors(mp, pos, radius, np.array([0,0,0]))
+        r1, t1, _ = PendulumMathUtils.calculate_unit_vectors(mp, pos, radius, None)
+        if rho * rhovel >= 0:
+            v1 = t1
+        else:
+            v1 = -t1
 
         # forces
         F_tot, F_tan, F_zen, F_d = PendulumMathUtils.calculate_force_vectors(rho, radius, vel, m, g, friction, t1, r1, v1)

@@ -97,7 +97,10 @@ class PendulumMathUtils:
         t1 = MathUtils.unit_vec(MathUtils.orth_vec_z(r1, pos))
 
         # vilocity unit vecotr v1
-        v1 = MathUtils.unit_vec(vel)
+        if vel is not None:
+            v1 = MathUtils.unit_vec(vel)
+        else:
+            v1 = None
 
         return r1, t1, v1
 
