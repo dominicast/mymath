@@ -79,7 +79,7 @@ class Plotter:
         ax.plot(np.array([0, mp[0]]), np.array([0, mp[1]]), np.array([mp[2] - radius, mp[2]]), c='k', lw=0.5)
 
         # mount point
-        ax.scatter(mp[0], mp[1], mp[2], c='r')
+        ax.scatter(mp[0], mp[1], mp[2], c='darkgoldenrod')
 
         # expected circle
         pp = circle.calc(rho_max)
@@ -148,19 +148,23 @@ class Plotter:
         # forces
 
         if F_zen is not None:
-            artist = ax.quiver(pos[0], pos[1], pos[2], F_zen[0], F_zen[1], F_zen[2])
+            artist = ax.quiver(pos[0], pos[1], pos[2], F_zen[0], F_zen[1], F_zen[2], alpha=0.7)
+            artist.set_zorder(18)
             artists.append(artist)
 
         if F_tan is not None:
-            artist = ax.quiver(pos[0], pos[1], pos[2], F_tan[0], F_tan[1], F_tan[2])
+            artist = ax.quiver(pos[0], pos[1], pos[2], F_tan[0], F_tan[1], F_tan[2], alpha=0.7)
+            artist.set_zorder(18)
             artists.append(artist)
 
         if F_d is not None:
-            artist = ax.quiver(pos[0], pos[1], pos[2], F_d[0], F_d[1], F_d[2], color='r')
+            artist = ax.quiver(pos[0], pos[1], pos[2], F_d[0], F_d[1], F_d[2], alpha=0.7)
+            artist.set_zorder(18)
             artists.append(artist)
 
         if F_tot is not None:
-            artist = ax.quiver(pos[0], pos[1], pos[2], F_tot[0], F_tot[1], F_tot[2])
+            artist = ax.quiver(pos[0], pos[1], pos[2], F_tot[0], F_tot[1], F_tot[2], color='darkgoldenrod', alpha=1)
+            artist.set_zorder(19)
             artists.append(artist)
 
         # done
