@@ -19,8 +19,8 @@ class Config:
         self._m = 1
         self._g = 9.81
 
-        #self._friction = 0
-        self._friction = 0.01
+        self._friction = 0
+        #self._friction = 0.01
 
         self._integ_dt = 0.01    # [s]
         self._integ_count = 10

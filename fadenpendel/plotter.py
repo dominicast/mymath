@@ -135,9 +135,18 @@ class Plotter:
         self._mass.set_3d_properties(pos[2])
 
         if E_pot is not None and E_kin is not None:
+
+            c_pot = np.array([0.725, 0.522, 0.27])
+            c_kin = np.array([0, 0, 0])
+
             E_pot_norm = (E_pot/(E_pot+E_kin))
             E_kin_norm = 1-E_pot_norm
-            c = (E_pot_norm,0,E_kin_norm)
+
+            c_r = E_pot_norm*c_pot[0] + E_kin_norm*c_kin[0]
+            c_g = E_pot_norm*c_pot[1] + E_kin_norm*c_kin[1]
+            c_b = E_pot_norm*c_pot[2] + E_kin_norm*c_kin[2]
+
+            c = (c_r, c_g, c_b)
         else:
             c = 'r'
 
