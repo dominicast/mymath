@@ -19,15 +19,15 @@ class Config:
         self._m = 1
         self._g = 9.81
 
-        self._friction = 0
-        #self._friction = 0.1
+        #self._friction = 0
+        self._friction = 0.1
 
         self._integ_dt = 0.01    # [s]
         self._integ_count = 10
         self._integ_freq = 100   # [ms]
 
-        #self._impl = Impl.FORCE_INTEG
-        self._impl = Impl.ANGLE_INTEG
+        self._impl = Impl.FORCE_INTEG
+        #self._impl = Impl.ANGLE_INTEG
 
     def get_radius(self):
         return self._radius
