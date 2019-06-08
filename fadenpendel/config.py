@@ -3,6 +3,7 @@ import math
 
 from enum import Enum
 
+
 class Impl(Enum):
     ANGLE_INTEG = 1
     FORCE_INTEG = 2
@@ -16,31 +17,27 @@ class Action(Enum):
 class Config:
 
     def __init__(self):
-        self._radius = 10
-        self._rho_max = math.radians(40)
-        self._phi = math.radians(40)
-        self._time_factor = 1
+        self._radius = None
+        self._rho_max = None
+        self._phi = None
+        self._time_factor = None
 
-        self._m = 1
-        self._g = 9.81
+        self._m = None
+        self._g = None
 
-        self._friction = 0
-        #self._friction = 0.01
+        self._friction = None
 
-        self._integ_dt = 0.01    # [s]
-        self._integ_count = 10
-        self._integ_freq = 100   # [ms]
+        self._integ_dt = None    # [s]
+        self._integ_count = None
+        self._integ_freq = None   # [ms]
 
-        self._impl = Impl.FORCE_INTEG
-        #self._impl = Impl.ANGLE_INTEG
+        self._impl = None
 
-        self._action = Action.HTML
-        #self._action = Action.SHOW
+        self._action = None
 
-        self._frames = 64
-        #self._frames = None
+        self._frames = None
 
-        self._name = 'no_friction'
+        self._name = None
 
     def get_radius(self):
         return self._radius
@@ -83,3 +80,41 @@ class Config:
 
     def get_name(self):
         return self._name
+
+
+class BaseConfig:
+
+    def _get_config(self, impl):
+        config = Config()
+
+        config._radius = 10
+        config._rho_max = math.radians(40)
+        config._phi = math.radians(40)
+        config._time_factor = 1
+
+        config._m = 1
+        config._g = 9.81
+
+        config._integ_dt = 0.01
+        config._integ_count = 10
+        config._integ_freq = 100
+
+        config._impl = impl
+
+        return config
+
+
+class NoFrictionConfig(BaseConfig):
+
+    def get_config(self, impl, action):
+        config = super()._get_config(impl)
+
+        config._friction = 0
+        config._name = 'no_friction'
+
+        config._action = action
+
+        if config.get_action() == Action.HTML:
+            config._frames = 64
+
+        return config

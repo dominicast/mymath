@@ -18,7 +18,7 @@ def animate(i, pendulum, plotter):
 
 if __name__ == '__main__':
 
-    config = Config()
+    config = NoFrictionConfig().get_config(Impl.FORCE_INTEG, Action.SHOW)
 
     radius = config.get_radius()
     rho_max = config.get_rho_max()
@@ -51,7 +51,7 @@ if __name__ == '__main__':
     integ_freq = config.get_integ_freq()
 
     if integ_dt * integ_count * 1000 != integ_freq:
-        print('Invalid time configuration')
+        raise Exception('Invalid time configuration')
 
     integ_count = round(integ_count * time_factor)
 
@@ -83,3 +83,6 @@ if __name__ == '__main__':
         writer = Writer(fps=15, metadata=dict(artist='Dominic Ast D!'), bitrate=1800)
 
         anim.save(config.get_name()+'.html', writer=writer)
+
+    else:
+        raise Exception('Unknown action')
