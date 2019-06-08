@@ -8,6 +8,11 @@ class Impl(Enum):
     FORCE_INTEG = 2
 
 
+class Action(Enum):
+    SHOW = 1
+    HTML = 2
+
+
 class Config:
 
     def __init__(self):
@@ -28,6 +33,14 @@ class Config:
 
         self._impl = Impl.FORCE_INTEG
         #self._impl = Impl.ANGLE_INTEG
+
+        self._action = Action.HTML
+        #self._action = Action.SHOW
+
+        self._frames = 64
+        #self._frames = None
+
+        self._name = 'no_friction'
 
     def get_radius(self):
         return self._radius
@@ -61,3 +74,12 @@ class Config:
 
     def get_impl(self):
         return self._impl
+
+    def get_action(self):
+        return self._action
+
+    def get_frames(self):
+        return self._frames
+
+    def get_name(self):
+        return self._name

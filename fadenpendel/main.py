@@ -70,6 +70,16 @@ if __name__ == '__main__':
 
     # -- run
 
-    anim = animation.FuncAnimation(fig, animate, interval=integ_freq, fargs=(pendulum,plotter,), blit=False)
+    anim = animation.FuncAnimation(fig, animate, interval=integ_freq, fargs=(pendulum,plotter,), blit=False, frames=config.get_frames())
 
-    plt.show()
+    if config.get_action() == Action.SHOW:
+        plt.show()
+
+    elif config.get_action() == Action.HTML:
+
+        print(animation.writers.list())
+
+        Writer = animation.writers['html']
+        writer = Writer(fps=15, metadata=dict(artist='Dominic Ast D!'), bitrate=1800)
+
+        anim.save(config.get_name()+'.html', writer=writer)
