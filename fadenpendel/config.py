@@ -118,3 +118,20 @@ class NoFrictionConfig(BaseConfig):
             config._frames = 64
 
         return config
+
+
+class FrictionConfig(BaseConfig):
+
+    def get_config(self, impl, action):
+        config = super()._get_config(impl)
+
+        config._rho_max = math.radians(80)
+        config._friction = 0.1
+        config._name = 'friction'
+
+        config._action = action
+
+        if config.get_action() == Action.HTML:
+            config._frames = 196
+
+        return config
