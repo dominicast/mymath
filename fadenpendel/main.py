@@ -16,6 +16,7 @@ def animate(i, pendulum, plotter):
     plotter.plot_frame(data)
 
 
+# by Dominic Ast D! dominic_ast@gmx.ch
 if __name__ == '__main__':
 
     config = NoFrictionConfig().get_config(Impl.FORCE_INTEG, Action.SHOW)
