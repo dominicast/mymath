@@ -1,5 +1,4 @@
 
-#from utils import *
 from plotter import *
 from pendulum import Pendulum
 from config import *
@@ -19,10 +18,6 @@ if __name__ == '__main__':
 
     config = TriangleConfig().get_config(Action.SHOW)
 
-    time_factor = config.get_time_factor()
-
-    # -- situation
-
     # -- setup plot
 
     fig, ax = plt.subplots()
@@ -32,17 +27,6 @@ if __name__ == '__main__':
     fig.tight_layout()
     plotter.plot_situation(config.get_magnets())
 
-    # -- integration
-
-    integ_dt = config.get_integ_dt()
-    integ_count = config.get_integ_count()
-    integ_freq = config.get_integ_freq()
-
-    if integ_dt * integ_count * 1000 != integ_freq:
-        raise Exception('Invalid time configuration')
-
-    integ_count = round(integ_count * time_factor)
-
     # -- pendulum
 
     magnets = config.get_magnets()
@@ -51,25 +35,31 @@ if __name__ == '__main__':
     friction = config.get_friction()
     m = config.get_m()
 
-    pendulum = Pendulum(magnets, mount_point, distance, friction, m, integ_dt, integ_count)
-    pendulum.init_deq(np.array([200, 600]), np.array([0, 0]))
+    abort_velocity = config.get_abort_velocity()
+    min_steps = config.get_min_steps()
+    max_steps = config.get_max_steps()
+
+    dt = config.get_dt()
+    speed = config.get_speed()
+
+    pendulum = Pendulum(magnets, mount_point, distance, friction, m, abort_velocity, min_steps, max_steps, dt, speed)
+    pendulum.init_deq(np.array([1, 1]), np.array([0, 0]))
 
     # -- run
 
-    anim = animation.FuncAnimation(fig, animate, interval=integ_freq, fargs=(pendulum,plotter,), blit=False, frames=config.get_frames())
+    anim = animation.FuncAnimation(fig, animate, interval=config.get_interval(), fargs=(pendulum,plotter,), blit=False, frames=config.get_frames())
 
     if config.get_action() == Action.SHOW:
         plt.show()
 
-    #elif config.get_action() == Action.HTML:
+    elif config.get_action() == Action.HTML:
 
-    #    print(animation.writers.list())
+        print(animation.writers.list())
 
-    #    Writer = animation.writers['html']
-    #    writer = Writer(fps=15, metadata=dict(artist='Dominic Ast D!'), bitrate=1800)
+        Writer = animation.writers['html']
+        writer = Writer(fps=15, metadata=dict(artist='Dominic Ast D!'), bitrate=1800)
 
-    #    anim.save(config.get_name()+'.html', writer=writer)
+        anim.save(config.get_name()+'.html', writer=writer)
 
-
-    #else:
-    #    raise Exception('Unknown action')
+    else:
+        raise Exception('Unknown action')

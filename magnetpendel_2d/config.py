@@ -23,6 +23,9 @@ class Source:
     def get_strength(self):
         return self._strength
 
+    def get_size(self):
+        return self._strength * 2
+
     def get_color(self):
         return self._color
 
@@ -49,11 +52,14 @@ class Config:
 
         self._m = None
 
-        self._time_factor = None
+        self._abort_velocity = None
+        self._min_steps = None
+        self._max_steps = None
 
-        self._integ_dt = None    # [s]
-        self._integ_count = None
-        self._integ_freq = None   # [ms]
+        self._dt = None    # [s]
+
+        self._interval = None    # [ms]
+        self._speed = None    # [1=realtime]
 
         self._action = None
 
@@ -76,23 +82,29 @@ class Config:
     def get_magnets(self):
         return self._magnets
 
-    def get_time_factor(self):
-        return self._time_factor
-
     def get_friction(self):
         return self._friction
 
     def get_m(self):
         return self._m
 
-    def get_integ_dt(self):
-        return self._integ_dt
+    def get_abort_velocity(self):
+        return self._abort_velocity
 
-    def get_integ_count(self):
-        return self._integ_count
+    def get_min_steps(self):
+        return self._min_steps
 
-    def get_integ_freq(self):
-        return self._integ_freq
+    def get_max_steps(self):
+        return self._max_steps
+
+    def get_dt(self):
+        return self._dt
+
+    def get_interval(self):
+        return self._interval
+
+    def get_speed(self):
+        return self._speed
 
     def get_action(self):
         return self._action
@@ -109,14 +121,17 @@ class BaseConfig:
     def _get_config(self):
         config = Config()
 
-        config._distance = 10
+        config._distance = 0.02
         config._m = 1
 
-        config._time_factor = 1
+        config._abort_velocity = 0.04
+        config._min_steps = 1000
+        config._max_steps = 500000
 
-        config._integ_dt = 0.01
-        config._integ_count = 10
-        config._integ_freq = 100
+        config._dt = 0.001
+
+        config._interval = 10
+        config._speed = 1
 
         return config
 
@@ -135,17 +150,17 @@ class TriangleConfig(BaseConfig):
 
         config._name = 'triangle'
 
-        config._width = 800
-        config._height = 800
+        config._width = 1
+        config._height = 1
 
-        config._friction = 0.0005
+        config._friction = 0.5
 
-        config._mount_point = MountPoint(BaseConfig._calc_positions(config.get_width(), config.get_height(), 0, 0), 0.000005, 'k')
+        config._mount_point = MountPoint(BaseConfig._calc_positions(config.get_width(), config.get_height(), 0, 0), 0.1, 'k')
 
         magnets = [
-            Magnet(BaseConfig._calc_positions(config.get_width(), config.get_height(), 170, 90), 10, 'r'),
-            Magnet(BaseConfig._calc_positions(config.get_width(), config.get_height(), 170, 210), 10, 'g'),
-            Magnet(BaseConfig._calc_positions(config.get_width(), config.get_height(), 170, 330), 10, 'b')
+            Magnet(BaseConfig._calc_positions(config.get_width(), config.get_height(), 0.2, 90), 0.1, 'r'),
+            Magnet(BaseConfig._calc_positions(config.get_width(), config.get_height(), 0.2, 210), 0.1, 'g'),
+            Magnet(BaseConfig._calc_positions(config.get_width(), config.get_height(), 0.2, 330), 0.1, 'b')
         ]
         config._magnets = magnets
 

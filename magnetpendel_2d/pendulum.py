@@ -5,20 +5,56 @@ import math
 import numpy as np
 import numpy.linalg as la
 
-from plotter import FrameData
+import time
+
+
+class FrameData:
+
+    def __init__(self, done, pos, found, source, dist):
+
+        self._done = done
+
+        self._pos = pos
+
+        self._found = found
+        self._source = source
+        self._dist = dist
+
+    def get_done(self):
+        return self._done
+
+    def get_pos(self):
+        return self._pos
+
+    def get_found(self):
+        return self._found
+
+    def get_source(self):
+        return self._source
+
+    def get_dist(self):
+        return self._dist
 
 
 class Pendulum:
 
-    def __init__(self, magnets, mount_point, distance, friction, m, dt, frame_dt_count):
+    def __init__(self, magnets, mount_point, distance, friction, m, abort_velocity, min_steps, max_steps, dt, speed):
         self._magnets = magnets
         self._mount_point = mount_point
         self._distance = distance
         self._friction = friction
         self._m = m
+
+        self._abort_velocity = abort_velocity
+        self._min_steps = min_steps
+        self._max_steps = max_steps
+
         self._deq = None
         self._dt = dt
-        self._frame_dt_count = frame_dt_count
+        self._speed = speed
+
+        self._timestamp = None
+        self._done = False
 
     def init_deq(self, sp, sv):
 
@@ -32,18 +68,66 @@ class Pendulum:
 
     def calculate_frame(self):
 
-        pos, vel, _, t = self._deq.execute(self._dt, self._frame_dt_count)
+        if self._done:
+            return None
 
-        return FrameData(pos)
+        ts = time.time()
 
-        #mp = self._mp
-        #m = self._m
-        #g = self._g
-        #friction = self._friction
+        if self._timestamp is None:
+            self._timestamp = ts
+            return None
 
-        #E_pot, E_kin, F_tot, F_zen, F_tan, F_d, _, _ = PendulumMath(pos, vel, mp, m, g, friction).calculate_ext()
+        frame_dt = (ts - self._timestamp) * self._speed
+        self._timestamp = ts
 
-        #return FrameData(pos, mp, m, F_zen, F_tan, F_d, F_tot, E_pot, E_kin)
+        dt_count = round(frame_dt / self._dt)
+
+        # ---
+
+        pos, vel, _, t = self._deq.execute(self._dt, dt_count)
+
+        # ---
+
+        n = round(t/self._dt)
+        sources = self._magnets + [ self._mount_point ]
+        norm_vel = la.norm(vel)
+
+        found = False
+        closest_source = None
+        closest_source_dist = None
+
+        # check for stop condition
+
+        if n < self._min_steps:
+            return FrameData(self._done, pos, found, closest_source, closest_source_dist)
+
+        if norm_vel <= self._abort_velocity:
+            for src in sources:
+                r = pos - src.get_pos()
+                if la.norm(r) < src.get_size():
+                    found = True
+                    break
+
+        if not found and n < self._max_steps:
+            return FrameData(self._done, pos, found, closest_source, closest_source_dist)
+
+        # find the closest source
+
+        for src in sources:
+
+            r = pos - src.get_pos()
+
+            dist = math.sqrt(r[0]**2 + r[1]**2 + self._distance**2)
+
+            if (closest_source_dist is None) or (dist < closest_source_dist):
+                closest_source = src
+                closest_source_dist = dist
+
+        # done
+
+        self._done = True
+
+        return FrameData(self._done, pos, found, closest_source, closest_source_dist)
 
 
 class DiffEq:
@@ -83,95 +167,3 @@ class DiffEq:
         acceleration = total_force / m
 
         return acceleration
-
-
-class Observer:
-
-    def __init__(self, cfg):
-        self._cfg = cfg
-
-        self._done = False
-        self._found = False
-        self._closest_src = None
-        self._closest_src_dist = 0
-        self._n = 0
-        self._len = 0
-
-    def _step_done(self, pos, n):
-        pass
-
-    def _process_done(self, pos, n, found):
-        pass
-
-    def notify(self, pos, vel, t, n):
-
-        if self._done:
-            return True
-
-        if self._step_done(pos, n):
-            return True
-
-        # update _len
-
-        norm_vel = la.norm(vel)
-
-        self._len += norm_vel
-
-        # check for stop condition
-
-        if n < self._cfg.m_nMinSteps:
-            return
-
-        found = False
-        if norm_vel <= self._cfg.m_fAbortVel:
-            for src in self._cfg.sources:
-                r = pos - src.get_pos()
-                if la.norm(r) < src.get_size():
-                    found = True
-                    break
-
-        if not found and n < self._cfg.m_nMaxSteps:
-            return
-
-        # stop condition satisfied
-        # calculate some values
-
-        self._n = n
-        self._found = found
-
-        closest_dist = None
-
-        for src in self._cfg.sources:
-
-            r = pos - src.get_pos()
-
-            dist = math.sqrt(math.pow(r[0], 2) + math.pow(r[1], 2) + math.pow(self._cfg.m_fHeight, 2))
-
-            if (closest_dist is None) or (dist < closest_dist):
-                closest_dist = dist
-                self._closest_src = src
-                self._closest_src_dist = dist
-
-        self._done = True
-
-        self._process_done(pos, n, found)
-
-        return True
-
-    def get_done(self):
-        return self._done
-
-    def get_found(self):
-        return self._found
-
-    def get_n(self):
-        return self._n
-
-    def get_len(self):
-        return self._len
-
-    def get_closest_src(self):
-        return self._closest_src
-
-    def get_closest_src_dist(self):
-        return self._closest_src_dist
