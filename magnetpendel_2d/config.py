@@ -134,9 +134,9 @@ class BaseConfig:
         return config
 
     @staticmethod
-    def _calc_positions(width, height, radius, angle):
-        x = width / 2 + radius * math.cos(angle * (math.pi / 180))
-        y = height / 2 + radius * math.sin(angle * (math.pi / 180))
+    def _calc_positions(radius, angle):
+        x = radius * math.cos(angle * (math.pi / 180))
+        y = radius * math.sin(angle * (math.pi / 180))
         pos = np.array([x, y])
         return pos
 
@@ -153,12 +153,12 @@ class TriangleConfig(BaseConfig):
 
         config._friction = 0.5
 
-        config._mount_point = MountPoint(BaseConfig._calc_positions(config.get_width(), config.get_height(), 0, 0), 0.1, 'k')
+        config._mount_point = MountPoint(np.array([0, 0]), 0.1, 'k')
 
         magnets = [
-            Magnet(BaseConfig._calc_positions(config.get_width(), config.get_height(), 0.2, 90), 0.05, 'r'),
-            Magnet(BaseConfig._calc_positions(config.get_width(), config.get_height(), 0.2, 210), 0.05, 'g'),
-            Magnet(BaseConfig._calc_positions(config.get_width(), config.get_height(), 0.2, 330), 0.05, 'b')
+            Magnet(BaseConfig._calc_positions(0.3, 90), 0.05, 'r'),
+            Magnet(BaseConfig._calc_positions(0.3, 210), 0.05, 'g'),
+            Magnet(BaseConfig._calc_positions(0.3, 330), 0.05, 'b')
         ]
         config._magnets = magnets
 

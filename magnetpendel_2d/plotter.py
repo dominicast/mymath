@@ -16,10 +16,10 @@ class Plotter:
         ax.set_title('Magnetpendel Path')
 
         ax.set_xlabel('x', fontsize=15)
-        ax.set_xlim(0, width)
+        ax.set_xlim(-width, width)
 
         ax.set_ylabel('y', fontsize=15)
-        ax.set_ylim(0, height)
+        ax.set_ylim(-height, height)
 
         ax.grid(True)
 

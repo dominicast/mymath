@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     config = TriangleConfig().get_config(Action.SHOW)
 
-    start_pos = np.array([-0.2, 0])
+    start_pos = np.array([1, -0.2])
     start_vel = np.array([0, 0])
 
     # -- setup plot
