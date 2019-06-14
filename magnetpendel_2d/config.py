@@ -60,10 +60,8 @@ class Config:
 
         self._interval = None    # [ms]
         self._speed = None    # [1=realtime]
-
-        self._action = None
-
         self._frames = None
+        self._action = None
 
         self._name = None
 
@@ -106,11 +104,11 @@ class Config:
     def get_speed(self):
         return self._speed
 
-    def get_action(self):
-        return self._action
-
     def get_frames(self):
         return self._frames
+
+    def get_action(self):
+        return self._action
 
     def get_name(self):
         return self._name
@@ -158,9 +156,9 @@ class TriangleConfig(BaseConfig):
         config._mount_point = MountPoint(BaseConfig._calc_positions(config.get_width(), config.get_height(), 0, 0), 0.1, 'k')
 
         magnets = [
-            Magnet(BaseConfig._calc_positions(config.get_width(), config.get_height(), 0.2, 90), 0.1, 'r'),
-            Magnet(BaseConfig._calc_positions(config.get_width(), config.get_height(), 0.2, 210), 0.1, 'g'),
-            Magnet(BaseConfig._calc_positions(config.get_width(), config.get_height(), 0.2, 330), 0.1, 'b')
+            Magnet(BaseConfig._calc_positions(config.get_width(), config.get_height(), 0.2, 90), 0.05, 'r'),
+            Magnet(BaseConfig._calc_positions(config.get_width(), config.get_height(), 0.2, 210), 0.05, 'g'),
+            Magnet(BaseConfig._calc_positions(config.get_width(), config.get_height(), 0.2, 330), 0.05, 'b')
         ]
         config._magnets = magnets
 

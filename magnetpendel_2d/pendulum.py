@@ -1,11 +1,10 @@
 
 import integ as it
 
+import time
 import math
 import numpy as np
 import numpy.linalg as la
-
-import time
 
 
 class FrameData:
@@ -72,11 +71,9 @@ class Pendulum:
             return None
 
         ts = time.time()
-
         if self._timestamp is None:
             self._timestamp = ts
             return None
-
         frame_dt = (ts - self._timestamp) * self._speed
         self._timestamp = ts
 

@@ -18,6 +18,9 @@ if __name__ == '__main__':
 
     config = TriangleConfig().get_config(Action.SHOW)
 
+    start_pos = np.array([-0.2, 0])
+    start_vel = np.array([0, 0])
+
     # -- setup plot
 
     fig, ax = plt.subplots()
@@ -43,7 +46,7 @@ if __name__ == '__main__':
     speed = config.get_speed()
 
     pendulum = Pendulum(magnets, mount_point, distance, friction, m, abort_velocity, min_steps, max_steps, dt, speed)
-    pendulum.init_deq(np.array([1, 1]), np.array([0, 0]))
+    pendulum.init_deq(start_pos, start_vel)
 
     # -- run
 
