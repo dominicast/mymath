@@ -1,7 +1,7 @@
 
 import integ as it
 
-from plotter import FrameData
+from utils import FrameData
 from utils import PendulumMathUtils
 
 import math
