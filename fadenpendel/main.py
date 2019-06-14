@@ -19,11 +19,10 @@ def animate(i, pendulum, plotter):
 # by Dominic Ast D! dominic_ast@gmx.ch
 if __name__ == '__main__':
 
-    config = NoFrictionConfig().get_config(Impl.FORCE_INTEG, Action.SHOW)
+    config = NoFrictionConfig().get_config(Impl.ANGLE_INTEG, Action.SHOW)
 
     radius = config.get_radius()
     rho_max = config.get_rho_max()
-    time_factor = config.get_time_factor()
 
     m = config.get_m()
     g = config.get_g()
@@ -45,33 +44,24 @@ if __name__ == '__main__':
     plotter.setup(radius)
     plotter.plot_situation(circle, rho_max)
 
-    # -- integration
-
-    integ_dt = config.get_integ_dt()
-    integ_count = config.get_integ_count()
-    integ_freq = config.get_integ_freq()
-
-    if integ_dt * integ_count * 1000 != integ_freq:
-        raise Exception('Invalid time configuration')
-
-    integ_count = round(integ_count * time_factor)
-
     # -- pendulum
 
     friction = config.get_friction()
+    dt = config.get_dt()
+    speed = config.get_speed()
 
     if config.get_impl() == Impl.ANGLE_INTEG:
-        pendulum = PendulumAngleInteg(mp, circle, m, g, friction, integ_dt, integ_count)
+        pendulum = PendulumAngleInteg(mp, circle, m, g, friction, dt, speed)
         pendulum.init_deq(rho_max)
     elif config.get_impl() == Impl.FORCE_INTEG:
-        pendulum = PendulumForceInteg(mp, m, g, friction, integ_dt, integ_count)
+        pendulum = PendulumForceInteg(mp, m, g, friction, dt, speed)
         pendulum.init_deq(circle.calc(rho_max), np.array([0, 0, 0]))
     else:
         raise Exception('Unknown implementation')
 
     # -- run
 
-    anim = animation.FuncAnimation(fig, animate, interval=integ_freq, fargs=(pendulum,plotter,), blit=False, frames=config.get_frames())
+    anim = animation.FuncAnimation(fig, animate, interval=config.get_interval(), fargs=(pendulum,plotter,), blit=False, frames=config.get_frames())
 
     if config.get_action() == Action.SHOW:
         plt.show()

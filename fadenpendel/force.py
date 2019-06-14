@@ -1,6 +1,7 @@
 
 import integ as it
 
+import time
 import math
 
 from utils import FrameData
@@ -10,21 +11,35 @@ from utils import PendulumMathUtils
 
 class PendulumForceInteg:
 
-    def __init__(self, mp, m, g, friction, dt, frame_dt_count):
+    def __init__(self, mp, m, g, friction, dt, speed):
         self._mp = mp
         self._m = m
         self._g = g
         self._friction = friction
         self._deq = None
         self._dt = dt
-        self._frame_dt_count = frame_dt_count
+        self._speed = speed
+        self._timestamp = None
 
     def init_deq(self, sp, sv):
         self._deq = it.RungeKutta4th(DiffEq(self._mp, self._m, self._g, self._friction), sp, sv)
 
     def calculate_frame(self):
 
-        pos, vel, _, t = self._deq.execute(self._dt, self._frame_dt_count)
+        ts = time.time()
+        if self._timestamp is None:
+            self._timestamp = ts
+            return None
+        frame_dt = (ts - self._timestamp) * self._speed
+        self._timestamp = ts
+
+        dt_count = round(frame_dt / self._dt)
+
+        # ---
+
+        pos, vel, _, t = self._deq.execute(self._dt, dt_count)
+
+        # ---
 
         mp = self._mp
         m = self._m

@@ -27,15 +27,12 @@ class Config:
 
         self._friction = None
 
-        self._integ_dt = None    # [s]
-        self._integ_count = None
-        self._integ_freq = None   # [ms]
+        self._dt = None    # [s]
 
-        self._impl = None
-
-        self._action = None
-
+        self._interval = None    # [ms]
+        self._speed = None    # [1=realtime]
         self._frames = None
+        self._action = None
 
         self._name = None
 
@@ -48,9 +45,6 @@ class Config:
     def get_phi(self):
         return self._phi
 
-    def get_time_factor(self):
-        return self._time_factor
-
     def get_m(self):
         return self._m
 
@@ -60,23 +54,23 @@ class Config:
     def get_friction(self):
         return self._friction
 
-    def get_integ_dt(self):
-        return self._integ_dt
-
-    def get_integ_count(self):
-        return self._integ_count
-
-    def get_integ_freq(self):
-        return self._integ_freq
-
     def get_impl(self):
         return self._impl
 
-    def get_action(self):
-        return self._action
+    def get_dt(self):
+        return self._dt
+
+    def get_interval(self):
+        return self._interval
+
+    def get_speed(self):
+        return self._speed
 
     def get_frames(self):
         return self._frames
+
+    def get_action(self):
+        return self._action
 
     def get_name(self):
         return self._name
@@ -95,11 +89,12 @@ class BaseConfig:
         config._m = 1
         config._g = 9.81
 
-        config._integ_dt = 0.01
-        config._integ_count = 10
-        config._integ_freq = 100
-
         config._impl = impl
+
+        config._dt = 0.01
+
+        config._interval = 100
+        config._speed = 1
 
         return config
 

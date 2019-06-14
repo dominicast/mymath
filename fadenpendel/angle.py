@@ -1,15 +1,16 @@
 
 import integ as it
 
+import time
+import math
+
 from utils import FrameData
 from utils import PendulumMathUtils
-
-import math
 
 
 class PendulumAngleInteg:
 
-    def __init__(self, mp, circle, m, g, friction, dt, frame_dt_count):
+    def __init__(self, mp, circle, m, g, friction, dt, speed):
         self._mp = mp
         self._circle = circle
         self._m = m
@@ -17,7 +18,8 @@ class PendulumAngleInteg:
         self._friction = friction
         self._deq = None
         self._dt = dt
-        self._frame_dt_count = frame_dt_count
+        self._speed = speed
+        self._timestamp = None
 
     def init_deq(self, rho_max):
         radius = self._circle.get_radius()
@@ -26,7 +28,20 @@ class PendulumAngleInteg:
 
     def calculate_frame(self):
 
-        rho, rhovel, _, t = self._deq.execute(self._dt, self._frame_dt_count)
+        ts = time.time()
+        if self._timestamp is None:
+            self._timestamp = ts
+            return None
+        frame_dt = (ts - self._timestamp) * self._speed
+        self._timestamp = ts
+
+        dt_count = round(frame_dt / self._dt)
+
+        # ---
+
+        rho, rhovel, _, t = self._deq.execute(self._dt, dt_count)
+
+        # ---
 
         m = self._m
         g = self._g

@@ -50,6 +50,8 @@ class Plotter:
             rho_tmp -= math.radians(5)
 
     def plot_frame(self, data):
+        if data is None:
+            return
         self._cleanup(data)
         self._plot_frame(data)
 
