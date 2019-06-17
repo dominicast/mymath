@@ -1,7 +1,6 @@
 
 import integ as it
 
-import time
 import math
 import numpy as np
 import numpy.linalg as la
@@ -37,7 +36,7 @@ class FrameData:
 
 class Pendulum:
 
-    def __init__(self, magnets, mount_point, distance, friction, m, abort_velocity, min_steps, max_steps, dt, speed):
+    def __init__(self, magnets, mount_point, distance, friction, m, abort_velocity, min_steps, max_steps, dt):
         self._magnets = magnets
         self._mount_point = mount_point
         self._distance = distance
@@ -50,9 +49,7 @@ class Pendulum:
 
         self._deq = None
         self._dt = dt
-        self._speed = speed
 
-        self._timestamp = None
         self._done = False
 
     def init_deq(self, sp, sv):
@@ -65,19 +62,10 @@ class Pendulum:
 
         self._deq = it.RungeKutta4th(DiffEq(magnets, mount_point, distance, friction, m), sp, sv)
 
-    def calculate_frame(self):
+    def calculate_frame(self, dt_count):
 
         if self._done:
             return None
-
-        ts = time.time()
-        if self._timestamp is None:
-            self._timestamp = ts
-            return None
-        frame_dt = (ts - self._timestamp) * self._speed
-        self._timestamp = ts
-
-        dt_count = round(frame_dt / self._dt)
 
         # ---
 

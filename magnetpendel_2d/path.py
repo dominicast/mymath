@@ -1,11 +1,28 @@
 
-from plotter import *
-from pendulum import Pendulum
+from path_plotter import *
+from path_pendulum import PathPendulum
 from config import *
 
 import matplotlib.pyplot as plt
 from matplotlib import animation
-import numpy as np
+
+
+def create_pendulum(cfg):
+
+    magnets = cfg.get_magnets()
+    mount_point = cfg.get_mount_point()
+    distance = cfg.get_distance()
+    friction = cfg.get_friction()
+    m = cfg.get_m()
+
+    abort_velocity = cfg.get_abort_velocity()
+    min_steps = cfg.get_min_steps()
+    max_steps = cfg.get_max_steps()
+
+    dt = cfg.get_dt()
+    speed = cfg.get_speed()
+
+    return PathPendulum(magnets, mount_point, distance, friction, m, abort_velocity, min_steps, max_steps, dt, speed)
 
 
 def animate(i, pendulum, plotter):
@@ -18,8 +35,8 @@ if __name__ == '__main__':
 
     config = TriangleConfig().get_config(Action.SHOW)
 
-    start_pos = np.array([1, -0.2])
-    start_vel = np.array([0, 0])
+    start_pos = config.get_start_pos()
+    start_vel = config.get_start_vel()
 
     # -- setup plot
 
@@ -32,21 +49,9 @@ if __name__ == '__main__':
 
     # -- pendulum
 
-    magnets = config.get_magnets()
-    mount_point = config.get_mount_point()
-    distance = config.get_distance()
-    friction = config.get_friction()
-    m = config.get_m()
-
-    abort_velocity = config.get_abort_velocity()
-    min_steps = config.get_min_steps()
-    max_steps = config.get_max_steps()
-
-    dt = config.get_dt()
-    speed = config.get_speed()
-
-    pendulum = Pendulum(magnets, mount_point, distance, friction, m, abort_velocity, min_steps, max_steps, dt, speed)
+    pendulum = create_pendulum(config)
     pendulum.init_deq(start_pos, start_vel)
+    pendulum.start()
 
     # -- run
 

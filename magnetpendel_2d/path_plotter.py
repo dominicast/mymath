@@ -13,7 +13,7 @@ class Plotter:
 
         ax = self._ax
 
-        ax.set_title('Magnetpendel Path')
+        ax.set_title('Magnetpendel 2D Path')
 
         ax.set_xlabel('x', fontsize=15)
         ax.set_xlim(-width, width)
@@ -29,12 +29,6 @@ class Plotter:
 
         for magnet in magnets:
             ax.scatter(magnet.get_pos()[0], magnet.get_pos()[1], c=magnet.get_color(), s=magnet.get_size() * 50)
-
-        # for init_value in init_values:
-        #     p = init_value.get_pos()
-        #     v = init_value.get_vel()
-        #     ax.scatter(p[0], p[1], c=init_value.get_color(), s=30)
-        #     ax.arrow(p[0], p[1], v[0], v[1], fc='r', ec='r', width=0.01, head_width=1, head_length=1)
 
     def plot_frame(self, data):
         if data is None:

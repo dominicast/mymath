@@ -42,6 +42,8 @@ class Config:
 
     def __init__(self):
 
+        self._name = None
+
         self._width = None
         self._height = None
         self._distance = None
@@ -58,12 +60,24 @@ class Config:
 
         self._dt = None    # [s]
 
+        # path config
+
+        self._start_pos = None
+        self._start_vel = None
         self._interval = None    # [ms]
         self._speed = None    # [1=realtime]
         self._frames = None
         self._action = None
 
-        self._name = None
+        # pattern config
+
+        self._worker_count = None
+        self._point_size = None
+        self._point_delta = None
+        self._dt_chunk_size = None
+
+    def get_name(self):
+        return self._name
 
     def get_width(self):
         return self._width
@@ -98,6 +112,12 @@ class Config:
     def get_dt(self):
         return self._dt
 
+    def get_start_pos(self):
+        return self._start_pos
+
+    def get_start_vel(self):
+        return self._start_vel
+
     def get_interval(self):
         return self._interval
 
@@ -110,14 +130,25 @@ class Config:
     def get_action(self):
         return self._action
 
-    def get_name(self):
-        return self._name
+    def get_worker_count(self):
+        return self._worker_count
+
+    def get_point_size(self):
+        return self._point_size
+
+    def get_point_delta(self):
+        return self._point_delta
+
+    def get_dt_chunk_size(self):
+        return self._dt_chunk_size
 
 
 class BaseConfig:
 
     def _get_config(self):
         config = Config()
+
+        # general config
 
         config._distance = 0.02
         config._m = 1
@@ -128,8 +159,18 @@ class BaseConfig:
 
         config._dt = 0.001
 
+        # path config
+
         config._interval = 10
         config._speed = 1
+
+        # pattern config
+
+        config._worker_count = 4
+        config._point_size = 15
+        config._dt_chunk_size = 10
+
+        # return
 
         return config
 
@@ -145,6 +186,8 @@ class TriangleConfig(BaseConfig):
 
     def get_config(self, action):
         config = super()._get_config()
+
+        # general config
 
         config._name = 'triangle'
 
@@ -162,9 +205,20 @@ class TriangleConfig(BaseConfig):
         ]
         config._magnets = magnets
 
+        # path config
+
+        config._start_pos = np.array([1, -0.2])
+        config._start_vel = np.array([0, 0])
+
         config._action = action
 
         if config.get_action() == Action.HTML:
             config._frames = 64
+
+        # pattern config
+
+        config._point_delta = 0.05
+
+        # return
 
         return config
