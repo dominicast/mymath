@@ -103,7 +103,7 @@ def animate(i, plotter):
 # by Dominic Ast D! dominic_ast@gmx.ch
 if __name__ == '__main__':
 
-    config = TriangleConfig().get_config(Action.SHOW)
+    config = BigTriangleConfig().get_config(Action.SHOW)
 
     # -- setup plot
 

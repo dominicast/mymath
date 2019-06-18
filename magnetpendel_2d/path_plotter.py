@@ -54,4 +54,4 @@ class Plotter:
 
         if data.get_done() and data.get_found():
             pos = data.get_source().get_pos()
-            ax.scatter(pos[0], pos[1], c=data.get_source().get_color(), s=140, marker="x", zorder=100)
+            ax.scatter(pos[0], pos[1], c='y', s=140, marker="x", zorder=101)

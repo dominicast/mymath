@@ -12,9 +12,10 @@ class Action(Enum):
 
 class Source:
 
-    def __init__(self, pos, strength, color):
+    def __init__(self, pos, strength, size, color):
         self._pos = pos
         self._strength = strength
+        self._size = size
         self._color = color
 
     def get_pos(self):
@@ -24,7 +25,7 @@ class Source:
         return self._strength
 
     def get_size(self):
-        return self._strength * 2
+        return self._size
 
     def get_color(self):
         return self._color
@@ -196,12 +197,12 @@ class TriangleConfig(BaseConfig):
 
         config._friction = 0.5
 
-        config._mount_point = MountPoint(np.array([0, 0]), 0.1, 'k')
+        config._mount_point = MountPoint(np.array([0, 0]), 0.1, 0.2, 'k')
 
         magnets = [
-            Magnet(BaseConfig._calc_positions(0.3, 90), 0.05, 'r'),
-            Magnet(BaseConfig._calc_positions(0.3, 210), 0.05, 'g'),
-            Magnet(BaseConfig._calc_positions(0.3, 330), 0.05, 'b')
+            Magnet(BaseConfig._calc_positions(0.3, 90), 0.05, 0.1, 'r'),
+            Magnet(BaseConfig._calc_positions(0.3, 210), 0.05, 0.1, 'g'),
+            Magnet(BaseConfig._calc_positions(0.3, 330), 0.05, 0.1, 'b')
         ]
         config._magnets = magnets
 
@@ -218,6 +219,64 @@ class TriangleConfig(BaseConfig):
         # pattern config
 
         config._point_delta = 0.05
+
+        # return
+
+        return config
+
+
+class BigTriangleConfig(BaseConfig):
+
+    def get_config(self, action):
+        config = super()._get_config()
+
+        # general config
+
+        config._name = 'big-triangle'
+
+        config._width = 400
+        config._height = 400
+
+        config._distance = 10
+        config._m = 1
+
+        config._abort_velocity = 0.04
+        config._min_steps = 1000
+        config._max_steps = 500000
+
+        config._dt = 1
+
+        config._friction = 0.0005
+
+        config._mount_point = MountPoint(np.array([0, 0]), 0.000005, 1, 'k')
+
+        magnets = [
+            Magnet(BaseConfig._calc_positions(170, 90), 10, 10, 'r'),
+            Magnet(BaseConfig._calc_positions(170, 210), 10, 10, 'g'),
+            Magnet(BaseConfig._calc_positions(170, 330), 10, 10, 'b')
+        ]
+        config._magnets = magnets
+
+        # path config
+
+        config._interval = 20
+        config._speed = 400
+
+        config._start_pos = np.array([400, 400])
+        config._start_vel = np.array([0, 0])
+
+        config._action = action
+
+        if config.get_action() == Action.HTML:
+            config._frames = 64
+
+        # pattern config
+
+        config._worker_count = 4
+        config._point_size = 15
+        config._dt_chunk_size = 10
+
+        config._point_delta = 40
 
         # return
 
