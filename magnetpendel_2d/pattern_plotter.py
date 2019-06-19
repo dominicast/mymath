@@ -1,7 +1,4 @@
 
-import numpy as np
-
-
 class Plotter:
 
     def __init__(self, ax, point_size):

@@ -33,7 +33,7 @@ def animate(i, pendulum, plotter):
 # by Dominic Ast D! dominic_ast@gmx.ch
 if __name__ == '__main__':
 
-    config = BigTriangleConfig().get_config(Action.SHOW)
+    config = TriangleConfig().get_config(Action.SHOW)
 
     start_pos = config.get_start_pos()
     start_vel = config.get_start_vel()

@@ -28,7 +28,7 @@ class Plotter:
         ax = self._ax
 
         for magnet in magnets:
-            ax.scatter(magnet.get_pos()[0], magnet.get_pos()[1], c=magnet.get_color(), s=magnet.get_size() * 50)
+            ax.scatter(magnet.get_pos()[0], magnet.get_pos()[1], c=magnet.get_color(), s=magnet.get_size()*2000)
 
     def plot_frame(self, data):
         if data is None:
@@ -54,4 +54,5 @@ class Plotter:
 
         if data.get_done() and data.get_found():
             pos = data.get_source().get_pos()
-            ax.scatter(pos[0], pos[1], c='y', s=140, marker="x", zorder=101)
+            src = data.get_source()
+            ax.scatter(pos[0], pos[1], c=src.get_color(), s=250, marker="x", zorder=101)
