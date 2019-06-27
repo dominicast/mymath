@@ -20,7 +20,6 @@ class Config:
         self._radius = None
         self._rho_max = None
         self._phi = None
-        self._time_factor = None
 
         self._m = None
         self._g = None
@@ -84,7 +83,6 @@ class BaseConfig:
         config._radius = 10
         config._rho_max = math.radians(40)
         config._phi = math.radians(40)
-        config._time_factor = 1
 
         config._m = 1
         config._g = 9.81
