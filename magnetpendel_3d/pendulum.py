@@ -5,7 +5,7 @@ import time
 import numpy as np
 import math
 
-from utils import FrameData
+from plotter import FrameData
 
 
 class Pendulum:

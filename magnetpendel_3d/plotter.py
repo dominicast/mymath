@@ -2,6 +2,23 @@
 import numpy as np
 
 
+class FrameData:
+
+    def __init__(self, pos, mp, m):
+        self._pos = pos
+        self._mp = mp
+        self._m = m
+
+    def get_pos(self):
+        return self._pos
+
+    def get_mp(self):
+        return self._mp
+
+    def get_m(self):
+        return self._m
+
+
 class Plotter:
 
     def __init__(self, ax, mp):

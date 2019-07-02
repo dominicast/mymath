@@ -1,7 +1,8 @@
 
 from plotter import *
 from pendulum import Pendulum
-from config import *
+from dl import *
+from triangle import *
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import juggle_axes
@@ -15,8 +16,8 @@ def animate(i, pendulum, plotter):
 
 if __name__ == '__main__':
 
-    config = DlConfig().get_config(Action.SHOW)
-    #config = TriangleConfig().get_config(Action.SHOW)
+    #config = DlConfig().get_config(Action.SHOW)
+    config = TriangleConfig().get_config(Action.SHOW)
 
     math_utils = config.get_math_utils()
 
