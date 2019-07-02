@@ -1,6 +1,6 @@
 
 from plotter import *
-from force import Pendulum
+from pendulum import Pendulum
 from config import *
 
 import matplotlib.pyplot as plt
