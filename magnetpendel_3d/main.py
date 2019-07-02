@@ -15,7 +15,8 @@ def animate(i, pendulum, plotter):
 
 if __name__ == '__main__':
 
-    config = TriangleConfig().get_config(Action.SHOW)
+    config = DlConfig().get_config(Action.SHOW)
+    #config = TriangleConfig().get_config(Action.SHOW)
 
     math_utils = config.get_math_utils()
 

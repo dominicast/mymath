@@ -148,4 +148,4 @@ class DiffEq:
 
         # -- return
 
-        return f_v
+        return f_v / self._m

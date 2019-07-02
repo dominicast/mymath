@@ -163,12 +163,12 @@ class BaseConfig:
         return config
 
 
-class DominickLeiner(BaseConfig):
+class DlConfig(BaseConfig):
 
     def get_config(self, action):
         config = super()._get_config()
 
-        config._name = 'dominik'
+        config._name = 'leiner'
 
         config._width = 0.3
         config._height = 0.3
@@ -178,6 +178,7 @@ class DominickLeiner(BaseConfig):
 
         config._start_pos = self._room_position_xy(config._mount_point.get_pos(), 0.25, 0.1, 0.1)
         config._start_vel = np.array([0, 0, 0])
+        config._m = 0.5
 
         magnets = [
             Magnet(self._floor_position(0.1, 0), 0.02, 0.025, 'r'),
@@ -186,20 +187,17 @@ class DominickLeiner(BaseConfig):
         ]
         config._magnets = magnets
 
-        config._friction = 0.01
+        config._friction = 0.001
 
         config._action = action
 
         if config.get_action() == Action.HTML:
             config._frames = 64
 
-
-
         config._dt = 0.001
 
         config._interval = 100
         config._speed = 1
-
 
         return config
 
