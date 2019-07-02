@@ -31,6 +31,6 @@ class TriangleConfig(BaseConfig):
         config._action = action
 
         if config.get_action() == Action.HTML:
-            config._frames = 64
+            config._frames = 256
 
         return config
