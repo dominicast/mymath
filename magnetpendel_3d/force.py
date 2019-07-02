@@ -54,7 +54,6 @@ class Pendulum:
         m = self._m
 
         return FrameData(pos, mp, m)
-        #return FrameData(pos, mp, m, F_zen, F_tan, F_d, F_tot, E_pot, E_kin)
 
 
 class DiffEq:
@@ -147,5 +146,6 @@ class DiffEq:
 
         f_v = f_v + fc_v
 
+        # -- return
+
         return f_v
-        #return np.array([0, 0, 0])

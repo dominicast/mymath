@@ -1,5 +1,4 @@
 
-from utils import *
 from plotter import *
 from force import Pendulum
 from config import *
@@ -7,7 +6,6 @@ from config import *
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import juggle_axes
 from matplotlib import animation
-import numpy as np
 
 
 def animate(i, pendulum, plotter):
@@ -18,24 +16,16 @@ def animate(i, pendulum, plotter):
 # by Dominic Ast D! dominic_ast@gmx.ch
 if __name__ == '__main__':
 
-    config = DominickLeiner().get_config(Action.SHOW)
-    math_utils = MathUtils()
-    #math_utils = MathUtilsDl()
+    config = TriangleConfig().get_config(Action.SHOW)
 
-    #config = DominickLeiner().get_config(Action.SHOW)
-    #math_utils = MathUtilsSc()
-
-    # -- situation
-
-    # mount point
-    mp = config.get_mount_point().get_pos()
+    math_utils = config.get_math_utils()
 
     # -- setup plot
 
     fig = plt.figure()
     ax = fig.gca(projection='3d')
 
-    plotter = Plotter(ax, mp)
+    plotter = Plotter(ax, config.get_mount_point().get_pos())
     plotter.setup(config.get_width(), config.get_height(), config.get_depth())
     plotter.plot_situation(config.get_mount_point(), config.get_magnets())
 

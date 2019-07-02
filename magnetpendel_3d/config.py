@@ -1,8 +1,6 @@
 
-import math
-import numpy as np
-
 from enum import Enum
+from utils import *
 
 
 class Action(Enum):
@@ -65,6 +63,8 @@ class Config:
         self._frames = None
         self._action = None
 
+        self._math_utils = None
+
         self._name = None
 
     def get_width(self):
@@ -112,6 +112,9 @@ class Config:
     def get_action(self):
         return self._action
 
+    def get_math_utils(self):
+        return self._math_utils
+
     def get_name(self):
         return self._name
 
@@ -155,6 +158,8 @@ class BaseConfig:
         config._interval = 100
         config._speed = 1
 
+        config._math_utils = MathUtilsVec()
+
         return config
 
 
@@ -188,6 +193,14 @@ class DominickLeiner(BaseConfig):
         if config.get_action() == Action.HTML:
             config._frames = 64
 
+
+
+        config._dt = 0.001
+
+        config._interval = 100
+        config._speed = 1
+
+
         return config
 
 
@@ -202,19 +215,20 @@ class TriangleConfig(BaseConfig):
         config._height = 1
         config._depth = 1
 
-        config._mount_point = MountPoint(np.array([0, 0, 1]), 0.8, 0.0025, 'k')
+        config._mount_point = MountPoint(np.array([0, 0, 1]), 0.01, 0.0025, 'k')
 
-        config._start_pos = self._room_position_tp(config._mount_point.get_pos(), 0.9, math.radians(40), math.radians(40))
+        config._start_pos = self._room_position_tp(config._mount_point.get_pos(), 0.9, 0.5, 0.2)
+        #config._start_pos = self._room_position_tp(config._mount_point.get_pos(), 0.9, math.radians(40), math.radians(40))
         config._start_vel = np.array([0, 0, 0])
 
         magnets = [
-            Magnet(self._floor_position(0.425, 90), 0.025, 0.025, 'r'),
-            Magnet(self._floor_position(0.425, 210), 0.025, 0.025, 'g'),
-            Magnet(self._floor_position(0.425, 330), 0.025, 0.025, 'b')
+            Magnet(self._floor_position(0.425, 90), 1, 0.04, 'r'),
+            Magnet(self._floor_position(0.425, 210), 1, 0.04, 'g'),
+            Magnet(self._floor_position(0.425, 330), 1, 0.04, 'b')
         ]
         config._magnets = magnets
 
-        config._friction = 0.001
+        config._friction = 0.1
 
         config._action = action
 
