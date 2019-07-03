@@ -55,6 +55,7 @@ class Config:
         self._g = None
 
         self._friction = None
+        self._disturbance = None
 
         self._dt = None    # [s]
 
@@ -90,6 +91,9 @@ class Config:
 
     def get_friction(self):
         return self._friction
+
+    def get_disturbance(self):
+        return self._disturbance
 
     def get_m(self):
         return self._m

@@ -10,10 +10,11 @@ from plotter import FrameData
 
 class Pendulum:
 
-    def __init__(self, magnets, mount_point, friction, m, g, dt, speed, math_utils):
+    def __init__(self, magnets, mount_point, friction, disturbance, m, g, dt, speed, math_utils):
         self._magnets = magnets
         self._mount_point = mount_point
         self._friction = friction
+        self._disturbance = disturbance
         self._m = m
         self._g = g
         self._deq = None
@@ -27,11 +28,12 @@ class Pendulum:
         magnets = self._magnets
         mount_point = self._mount_point
         friction = self._friction
+        disturbance = self._disturbance
         m = self._m
         g = self._g
         math_utils = self._math_utils
 
-        self._deq = it.RungeKutta4th(DiffEq(magnets, mount_point, friction, m, g, math_utils), sp, sv)
+        self._deq = it.RungeKutta4th(DiffEq(magnets, mount_point, friction, disturbance, m, g, math_utils), sp, sv)
 
     def calculate_frame(self):
 
@@ -58,10 +60,11 @@ class Pendulum:
 
 class DiffEq:
 
-    def __init__(self, magnets, mount_point, friction, m, g, math_utils):
+    def __init__(self, magnets, mount_point, friction, disturbance, m, g, math_utils):
         self._magnets = magnets
         self._mount_point = mount_point
         self._friction = friction
+        self._disturbance = disturbance
         self._m = m
         self._g = g
         self._math_utils = math_utils
@@ -89,6 +92,16 @@ class DiffEq:
             fm_v_n = math_utils.unit_vec_ps(dv) * fm
             mv_v.append(fm_v_n)
 
+        # disturbance
+
+        fd_v = None
+
+        if self._disturbance is not None:
+            fd_v = self._disturbance.calc(pos, vel, t)
+
+        if fd_v is None:
+            fd_v = np.array([0, 0, 0])
+
         # friction
 
         square_vel = vel[0]**2 + vel[1]**2 + vel[2]**2
@@ -100,7 +113,7 @@ class DiffEq:
 
         # total force
 
-        fw_v = fg_v + ff_v
+        fw_v = fg_v + ff_v + fd_v
         for f in mv_v:
             fw_v += f
 

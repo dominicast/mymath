@@ -28,6 +28,8 @@ class DlConfig(BaseConfig):
 
         config._friction = 0.001
 
+        #config._disturbance = DisturbanceDl()
+
         config._action = action
 
         if config.get_action() == Action.HTML:
@@ -41,6 +43,15 @@ class DlConfig(BaseConfig):
         # config._math_utils = MathUtilsDl()
 
         return config
+
+
+class DisturbanceDl:
+
+    @staticmethod
+    def calc(pos, vel, t):
+        if t < 3 or t > 5:
+            return None
+        return np.array([-0.01, 0, 0])
 
 
 class MathUtilsDl:

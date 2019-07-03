@@ -38,13 +38,14 @@ if __name__ == '__main__':
 
     magnets = config.get_magnets()
     friction = config.get_friction()
+    disturbance = config.get_disturbance()
     m = config.get_m()
     g = config.get_g()
 
     dt = config.get_dt()
     speed = config.get_speed()
 
-    pendulum = Pendulum(magnets, mount_point, friction, m, g, dt, speed, math_utils)
+    pendulum = Pendulum(magnets, mount_point, friction, disturbance, m, g, dt, speed, math_utils)
     pendulum.init_deq(start_pos, start_vel)
 
     # -- run
