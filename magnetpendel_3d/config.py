@@ -147,8 +147,13 @@ class BaseConfig:
 
     @staticmethod
     def _room_position_xy(mp, radius, x, y):
-        z = mp[2] - math.sqrt(radius**2 - (x-mp[0])**2 * (y-mp[1])**2)
-        return np.array([x, y, z])
+        phi = math.atan2(y, x)
+        theta = math.asin(x/(radius*math.cos(phi)))
+        z = radius * math.cos(theta)
+        v = np.array([x, y, z])
+        v[2] = -v[2]
+        v = mp + v
+        return v
 
     @staticmethod
     def _get_config():

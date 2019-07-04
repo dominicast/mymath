@@ -15,7 +15,7 @@ class TriangleConfig(BaseConfig):
 
         config._mount_point = MountPoint(np.array([0, 0, 1]), 0.01, 0.0025, 'k')
 
-        config._start_pos = self._room_position_tp(config._mount_point.get_pos(), 0.9, 0.5, 0.2)
+        config._start_pos = self._room_position_xy(config._mount_point.get_pos(), 0.9, 0.6, 0.6)
         #config._start_pos = self._room_position_tp(config._mount_point.get_pos(), 0.9, math.radians(40), math.radians(40))
         config._start_vel = np.array([0, 0, 0])
 
