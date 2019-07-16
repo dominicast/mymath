@@ -7,12 +7,10 @@ import numpy as np
 # https://www.youtube.com/watch?v=kxWBXd7ujx0
 class EulerBase:
 
-    def __init__(self, eq, init_pos, init_vel, observer=None):
+    def __init__(self, eq, init_pos, init_vel):
         self._eq = eq
         self._init_pos = init_pos
         self._init_vel = init_vel
-
-        self._observer = observer
 
         self._ff_n = None
         self._ff_t = None
@@ -30,14 +28,6 @@ class EulerBase:
             return False
         return True
 
-    def _notify(self, pos, vel, t, n):
-        if self._observer is None:
-            return False
-        if self._observer.notify(pos, vel, t, n):
-            return True
-        else:
-            return False
-
     def execute(self, dt, count):
 
         if not self._continuing():
@@ -54,9 +44,6 @@ class EulerBase:
         n_max = None if count is None else n + count
 
         while True:
-
-            if self._notify(pos, vel, t, n):
-                break
 
             acc = self._eq.f(pos, vel, t)
 
@@ -108,12 +95,10 @@ class SIEuler(EulerBase):
 # https://www.youtube.com/watch?v=2hjoqAaH5kc
 class Midpoint:
 
-    def __init__(self, eq, init_pos, init_vel, observer=None):
+    def __init__(self, eq, init_pos, init_vel):
         self._eq = eq
         self._init_pos = init_pos
         self._init_vel = init_vel
-
-        self._observer = observer
 
         self._ff_n = None
         self._ff_t = None
@@ -131,14 +116,6 @@ class Midpoint:
             return False
         return True
 
-    def _notify(self, pos, vel, t, n):
-        if self._observer is None:
-            return False
-        if self._observer.notify(pos, vel, t, n):
-            return True
-        else:
-            return False
-
     def execute(self, dt, count):
 
         if not self._continuing():
@@ -155,9 +132,6 @@ class Midpoint:
         n_max = None if count is None else n + count
 
         while True:
-
-            if self._notify(pos, vel, t, n):
-                break
 
             vel_mp = vel + (dt/2) * self._eq.f(pos, vel, t)
             vel_n = vel + dt * self._eq.f(pos, vel_mp, t+(dt/2))
@@ -188,12 +162,10 @@ class Midpoint:
 # https://www.youtube.com/watch?v=AZ8IGOHsjBk
 class Verlet:
 
-    def __init__(self, eq, init_pos, init_vel, observer=None):
+    def __init__(self, eq, init_pos, init_vel):
         self._eq = eq
         self._init_pos = init_pos
         self._init_vel = init_vel
-
-        self._observer = observer
 
         self._ff_n = None
         self._ff_t = None
@@ -210,14 +182,6 @@ class Verlet:
         if self._ff_pos_p is None:
             return False
         return True
-
-    def _notify(self, pos, vel, t, n):
-        if self._observer is None:
-            return False
-        if self._observer.notify(pos, vel, t, n):
-            return True
-        else:
-            return False
 
     def execute(self, dt, count):
 
@@ -258,9 +222,6 @@ class Verlet:
             vel = (pos - pos_p) * dt_rez
             acc = self._eq.f(pos, vel, t)
 
-            if self._notify(pos, vel, t, n):
-                break
-
             pos_n = 2 * pos - pos_p + acc * math.pow(dt, 2)
 
             # --
@@ -296,12 +257,10 @@ class Verlet:
 # https://en.wikipedia.org/wiki/Beeman%27s_algorithm#Equation
 class Beeman:
 
-    def __init__(self, eq, init_pos, init_vel, observer=None):
+    def __init__(self, eq, init_pos, init_vel):
         self._eq = eq
         self._init_pos = init_pos
         self._init_vel = init_vel
-
-        self._observer = observer
 
         self._ff_n = None
         self._ff_t = None
@@ -324,14 +283,6 @@ class Beeman:
         if self._ff_acc_p is None:
             return False
         return True
-
-    def _notify(self, pos, vel, t, n):
-        if self._observer is None:
-            return False
-        if self._observer.notify(pos, vel, t, n):
-            return True
-        else:
-            return False
 
     def execute(self, dt, count):
 
@@ -373,9 +324,6 @@ class Beeman:
 
             pos = pos + vel * dt + math.pow( dt, 2 ) * ( (2/3) * acc - (1/6) * acc_p )
 
-            if self._notify(pos, vel, t, n):
-                break
-
             acc_n = self._eq.f(pos, vel, t)
 
             vel = vel + dt * ( (1/3) * acc_n + (5/6) * acc - (1/6) * acc_p )
@@ -402,12 +350,10 @@ class Beeman:
 # https://www.youtube.com/watch?v=smfX0Jt_f0I
 class RungeKutta4th:
 
-    def __init__(self, eq, init_pos, init_vel, observer=None):
+    def __init__(self, eq, init_pos, init_vel):
         self._eq = eq
         self._init_pos = init_pos
         self._init_vel = init_vel
-
-        self._observer = observer
 
         self._ff_n = None
         self._ff_t = None
@@ -425,14 +371,6 @@ class RungeKutta4th:
             return False
         return True
 
-    def _notify(self, pos, vel, t, n):
-        if self._observer is None:
-            return False
-        if self._observer.notify(pos, vel, t, n):
-            return True
-        else:
-            return False
-
     def execute(self, dt, count):
 
         if not self._continuing():
@@ -449,9 +387,6 @@ class RungeKutta4th:
         n_max = None if count is None else n + count
 
         while True:
-
-            if self._notify(pos, vel, t, n):
-                break
 
             dx1 = dt * vel
             dv1 = dt * self._eq.f(pos, vel, t)
