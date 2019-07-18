@@ -1,39 +1,11 @@
 
-import integ as it
-
 from mayavi import mlab
 
 import numpy as np
-import math
 import time
 
-
-class DiffEq:
-
-    def __init__(self, G, m_u, m_v):
-        self._G = G
-        self._m_u = m_u
-        self._m_v = m_v
-
-    def f(self, pos, vel, t):
-
-        G = self._G
-
-        m_u = self._m_u
-        m_v = self._m_v
-
-        u = pos[0]
-        v = pos[1]
-
-        r = u - v
-        r_len = math.sqrt(r[0]**2+r[1]**2+r[2]**2)
-
-        factor = -G * ((m_u*m_v)/(r_len**3))
-
-        F_v = factor * r
-        F_u = factor * -r
-
-        return np.array([F_v, F_u])
+from solver1 import Solver1
+from solver2 import Solver2
 
 
 class Body:
@@ -64,8 +36,17 @@ class Body:
         return self._mlab_source
 
 
+def create_solver(tag, u, v, G, dt):
+    if tag == 's1':
+        return Solver1(u, v, G, dt)
+    elif tag == 's2':
+        return Solver2(u, v, G, dt)
+    else:
+        raise Exception('No solver for '+repr(tag))
+
+
 @mlab.animate(ui=False, delay=100)
-def anim(u, v, scene, speed, dt):
+def anim(u, v, solver, scene, speed):
 
     ts_save = time.time()
 
@@ -79,11 +60,9 @@ def anim(u, v, scene, speed, dt):
 
         ts_save = ts
 
-        dt_count = round(frame_dt / dt)
-
         # ---
 
-        pos, vel, _, t = deq.execute(dt, dt_count)
+        pos = solver.execute(frame_dt)
 
         # ---
 
@@ -103,33 +82,30 @@ if __name__ == '__main__':
     v = Body(m=1, sp=np.array([[0., 0., 0.]]), sv=np.array([[0., 1., 0.]]), color=(0., 0., 1.))
 
     G = 1
-    speed = 1
+    speed = 3
     dt = 0.001
 
     # ---
 
-    sp = np.concatenate((u.get_sp(), v.get_sp()), axis=0)
-    sv = np.concatenate((u.get_sv(), v.get_sv()), axis=0)
-
-    deq = it.RungeKutta4th(DiffEq(G, u.get_m(), v.get_m()), sp, sv)
+    solver = create_solver('s2', u, v, G, dt)
 
     # ---
 
     fig = mlab.figure()
     #fig.scene.anti_aliasing_frames = 0
 
-    sp_u = sp[0]
-    pts = mlab.points3d(sp_u[0], sp_u[1], sp_u[2], color=u.get_color())
+    sp_u = u.get_sp()[0]
+    pts = mlab.points3d(sp_u[0], sp_u[1], sp_u[2], color=u.get_color(), scale_factor=u.get_m())
     u.set_mlab_source(pts.mlab_source)
 
-    sp_v = sp[1]
-    pts = mlab.points3d(sp_v[0], sp_v[1], sp_v[2], color=v.get_color())
+    sp_v = v.get_sp()[0]
+    pts = mlab.points3d(sp_v[0], sp_v[1], sp_v[2], color=v.get_color(), scale_factor=v.get_m())
     v.set_mlab_source(pts.mlab_source)
 
     mlab.view(0, 90, 80)
 
-    mlab.axes(color=(.7, .7, .7), extent=[-10, 10, -10, 10, 0, 10], xlabel='x', ylabel='y', zlabel='z')
+    #mlab.axes(color=(.7, .7, .7), extent=[-10, 10, -10, 10, 0, 10], xlabel='x', ylabel='y', zlabel='z')
 
-    a = anim(u, v, fig.scene, speed, dt)
+    a = anim(u, v, solver, fig.scene, speed)
 
     mlab.show()
