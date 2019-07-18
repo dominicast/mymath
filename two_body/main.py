@@ -6,6 +6,7 @@ import time
 
 from solver1 import Solver1
 from solver2 import Solver2
+from solver3 import Solver3
 
 
 class Body:
@@ -41,6 +42,8 @@ def create_solver(tag, u, v, G, dt):
         return Solver1(u, v, G, dt)
     elif tag == 's2':
         return Solver2(u, v, G, dt)
+    elif tag == 's3':
+        return Solver3(u, v, G, dt)
     else:
         raise Exception('No solver for '+repr(tag))
 
@@ -87,7 +90,7 @@ if __name__ == '__main__':
 
     # ---
 
-    solver = create_solver('s2', u, v, G, dt)
+    solver = create_solver('s1', u, v, G, dt)
 
     # ---
 
