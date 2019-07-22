@@ -51,11 +51,10 @@ class Solver2:
 
         sp = np.array([sp_u, sv_u, sp_v, sv_v])
 
-        self._deq = it.RungeKutta4th(DiffEq(G, u.get_m(), v.get_m()), sp)
-        self._dt = dt
+        self._deq = it.SciPy(DiffEq(G, u.get_m(), v.get_m()), sp)
+        #self._deq = it.RungeKutta4th(DiffEq(G, u.get_m(), v.get_m()), sp, dt)
 
     def execute(self, t_delta):
-        dt_count = round(t_delta / self._dt)
-        pos, _, _ = self._deq.execute(self._dt, dt_count)
+        pos, _, _ = self._deq.execute_td(t_delta)
         result = np.array([pos[0], pos[2]])
         return result
