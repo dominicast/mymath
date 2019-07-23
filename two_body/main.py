@@ -43,7 +43,7 @@ def create_solver(tag, u, v, G, dt):
     elif tag == 's2':
         return Solver2(u, v, G, dt)
     elif tag == 's3':
-        return Solver3(u, v, G, dt)
+        return Solver3(u, v, G)
     else:
         raise Exception('No solver for '+repr(tag))
 
@@ -65,7 +65,7 @@ def anim(u, v, solver, scene, speed):
 
         # ---
 
-        pos = solver.execute(frame_dt)
+        pos = solver.process(frame_dt)
 
         # ---
 

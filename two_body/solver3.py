@@ -7,7 +7,7 @@ import numpy as np
 
 class Solver3:
 
-    def __init__(self, u, v, G, dt):
+    def __init__(self, u, v, G):
 
         self._sp_u = u.get_sp()[0]
         self._sv_u = u.get_sv()[0]
@@ -44,7 +44,7 @@ class Solver3:
 
         return np.array([u_pos_d[0], u_pos_d[1], u_pos_d[2], u_vel_d[0], u_vel_d[1], u_vel_d[2], v_pos_d[0], v_pos_d[1], v_pos_d[2], v_vel_d[0], v_vel_d[1], v_vel_d[2]])
 
-    def execute(self, t_delta):
+    def process(self, t_delta):
 
         sp_u = self._sp_u
         sv_u = self._sv_u

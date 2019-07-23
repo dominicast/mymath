@@ -1,5 +1,68 @@
 import math
 import numpy as np
+from integ1o import SciPy as SciPy1O
+
+
+class SciPy:
+
+    def __init__(self, eq, init_pos, init_vel, method='RK45'):
+        self._eq = eq
+        self._init_pos = init_pos
+        self._init_vel = init_vel
+        shape = init_pos.shape
+        self._n_dim = shape[1]
+        self._m_dim = shape[0]
+        self._method = method
+        self._solver = None
+
+    def _serialize(self, p, v):
+        res = np.zeros((2 * self._m_dim , self._n_dim))
+        idx = 0
+        for i in range(self._m_dim):
+            for j in range(2):
+                if j == 0:
+                    res[idx] = p[i]
+                else:
+                    res[idx] = v[i]
+                idx += 1
+        return res
+
+    def _vectorize(self, y):
+        idx = 0
+        pos = np.zeros((self._m_dim, self._n_dim))
+        vel = np.zeros((self._m_dim, self._n_dim))
+        for i in range(self._m_dim):
+            pos[i] = y[idx]
+            idx += 1
+            vel[i] = y[idx]
+            idx += 1
+        return pos, vel
+
+    def _f(self, t, y):
+        pos, vel = self._vectorize(y)
+        pos = self._eq.f(pos, vel, t)
+        pos = self._serialize(vel, pos)
+        return pos
+
+    def process_td(self, t_delta):
+        if self._solver is None:
+            sp = self._serialize(self._init_pos, self._init_vel)
+            self._solver = SciPy1O(SciPyDeq(self), sp, method=self._method)
+        sol, _, t = self._solver.process_td(t_delta)
+        pos, vel = self._vectorize(sol)
+        return pos, vel, None, t
+
+    def process_dt(self, dt, count):
+        raise Exception('Not available')
+
+
+class SciPyDeq:
+
+    def __init__(self, solver):
+        self._solver = solver
+
+    def f(self, pos, t):
+        return self._solver._f(t, pos)
 
 
 # Jorge Rodriguez (14.07.2016)
@@ -7,10 +70,11 @@ import numpy as np
 # https://www.youtube.com/watch?v=kxWBXd7ujx0
 class EulerBase:
 
-    def __init__(self, eq, init_pos, init_vel):
+    def __init__(self, eq, init_pos, init_vel, dt):
         self._eq = eq
         self._init_pos = init_pos
         self._init_vel = init_vel
+        self._dt = dt
 
         self._ff_n = None
         self._ff_t = None
@@ -28,7 +92,14 @@ class EulerBase:
             return False
         return True
 
-    def execute(self, dt, count):
+    def process_td(self, t_delta):
+        dt_count = round(t_delta / self._dt)
+        return self._process(self._dt, dt_count)
+
+    def process_dt(self, count):
+        return self._process(self._dt, count)
+
+    def _process(self, dt, count):
 
         if not self._continuing():
             n = 0
@@ -95,10 +166,11 @@ class SIEuler(EulerBase):
 # https://www.youtube.com/watch?v=2hjoqAaH5kc
 class Midpoint:
 
-    def __init__(self, eq, init_pos, init_vel):
+    def __init__(self, eq, init_pos, init_vel, dt):
         self._eq = eq
         self._init_pos = init_pos
         self._init_vel = init_vel
+        self._dt = dt
 
         self._ff_n = None
         self._ff_t = None
@@ -116,7 +188,14 @@ class Midpoint:
             return False
         return True
 
-    def execute(self, dt, count):
+    def process_td(self, t_delta):
+        dt_count = round(t_delta / self._dt)
+        return self._process(self._dt, dt_count)
+
+    def process_dt(self, count):
+        return self._process(self._dt, count)
+
+    def _process(self, dt, count):
 
         if not self._continuing():
             n = 0
@@ -162,10 +241,11 @@ class Midpoint:
 # https://www.youtube.com/watch?v=AZ8IGOHsjBk
 class Verlet:
 
-    def __init__(self, eq, init_pos, init_vel):
+    def __init__(self, eq, init_pos, init_vel, dt):
         self._eq = eq
         self._init_pos = init_pos
         self._init_vel = init_vel
+        self._dt = dt
 
         self._ff_n = None
         self._ff_t = None
@@ -183,7 +263,14 @@ class Verlet:
             return False
         return True
 
-    def execute(self, dt, count):
+    def process_td(self, t_delta):
+        dt_count = round(t_delta / self._dt)
+        return self._process(self._dt, dt_count)
+
+    def process_dt(self, count):
+        return self._process(self._dt, count)
+
+    def _process(self, dt, count):
 
         dt_rez=(1/dt)
 
@@ -257,10 +344,11 @@ class Verlet:
 # https://en.wikipedia.org/wiki/Beeman%27s_algorithm#Equation
 class Beeman:
 
-    def __init__(self, eq, init_pos, init_vel):
+    def __init__(self, eq, init_pos, init_vel, dt):
         self._eq = eq
         self._init_pos = init_pos
         self._init_vel = init_vel
+        self._dt = dt
 
         self._ff_n = None
         self._ff_t = None
@@ -284,7 +372,14 @@ class Beeman:
             return False
         return True
 
-    def execute(self, dt, count):
+    def process_td(self, t_delta):
+        dt_count = round(t_delta / self._dt)
+        return self._process(self._dt, dt_count)
+
+    def process_dt(self, count):
+        return self._process(self._dt, count)
+
+    def _process(self, dt, count):
 
         if not self._continuing():
 
@@ -350,10 +445,11 @@ class Beeman:
 # https://www.youtube.com/watch?v=smfX0Jt_f0I
 class RungeKutta4th:
 
-    def __init__(self, eq, init_pos, init_vel):
+    def __init__(self, eq, init_pos, init_vel, dt):
         self._eq = eq
         self._init_pos = init_pos
         self._init_vel = init_vel
+        self._dt = dt
 
         self._ff_n = None
         self._ff_t = None
@@ -371,7 +467,14 @@ class RungeKutta4th:
             return False
         return True
 
-    def execute(self, dt, count):
+    def process_td(self, t_delta):
+        dt_count = round(t_delta / self._dt)
+        return self._process(self._dt, dt_count)
+
+    def process_dt(self, count):
+        return self._process(self._dt, count)
+
+    def _process(self, dt, count):
 
         if not self._continuing():
             n = 0

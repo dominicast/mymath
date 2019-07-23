@@ -54,7 +54,7 @@ class Solver2:
         #self._deq = it.SciPy(DiffEq(G, u.get_m(), v.get_m()), sp)
         self._deq = it.RungeKutta4th(DiffEq(G, u.get_m(), v.get_m()), sp, dt)
 
-    def execute(self, t_delta):
-        pos, _, _ = self._deq.execute_td(t_delta)
+    def process(self, t_delta):
+        pos, _, _ = self._deq.process_td(t_delta)
         result = np.array([pos[0], pos[2]])
         return result

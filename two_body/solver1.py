@@ -43,6 +43,6 @@ class Solver1:
         #self._deq = it.RungeKutta4th(DiffEq(G, u.get_m(), v.get_m()), sp, sv, dt)
         self._deq = it.SciPy(DiffEq(G, u.get_m(), v.get_m()), sp, sv)
 
-    def execute(self, t_delta):
-        pos, _, _, _ = self._deq.execute_td(t_delta)
+    def process(self, t_delta):
+        pos, _, _, _ = self._deq.process_td(t_delta)
         return pos

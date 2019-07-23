@@ -24,7 +24,7 @@ class SciPy:
 
     def _vectorize(self, y):
         idx = 0
-        res = np.zeros((4, 3))
+        res = np.zeros((self._m_dim, self._n_dim))
         for i in range(self._m_dim):
             for j in range(self._n_dim):
                 res[i, j] = y[idx]
@@ -37,7 +37,7 @@ class SciPy:
         pos = self._serialize(pos)
         return pos
 
-    def execute_td(self, t_delta):
+    def process_td(self, t_delta):
         sp = self._serialize(self._pos_save)
         sol = solve_ivp(self._f, [0, t_delta], sp, t_eval=[t_delta], method=self._method, vectorized=True)
         pos = self._vectorize(sol.y)
@@ -45,8 +45,8 @@ class SciPy:
         t = sol.t[0]
         return pos, None, t
 
-    def execute(self, dt, count):
-        raise Exception('No available')
+    def process_dt(self, count):
+        raise Exception('Not available')
 
 
 class RungeKutta4th:
@@ -69,11 +69,14 @@ class RungeKutta4th:
             return False
         return True
 
-    def execute_td(self, t_delta):
+    def process_td(self, t_delta):
         dt_count = round(t_delta / self._dt)
-        return self.execute(self._dt, dt_count)
+        return self._process(self._dt, dt_count)
 
-    def execute(self, dt, count):
+    def process_dt(self, count):
+        return self._process(self._dt, count)
+
+    def _process(self, dt, count):
 
         if not self._continuing():
             n = 0
