@@ -40,10 +40,9 @@ class Solver1:
         sp = np.concatenate((u.get_sp(), v.get_sp()), axis=0)
         sv = np.concatenate((u.get_sv(), v.get_sv()), axis=0)
 
-        self._deq = it.RungeKutta4th(DiffEq(G, u.get_m(), v.get_m()), sp, sv)
-        self._dt = dt
+        #self._deq = it.RungeKutta4th(DiffEq(G, u.get_m(), v.get_m()), sp, sv, dt)
+        self._deq = it.SciPy(DiffEq(G, u.get_m(), v.get_m()), sp, sv)
 
     def execute(self, t_delta):
-        dt_count = round(t_delta / self._dt)
-        pos, _, _, _ = self._deq.execute(self._dt, dt_count)
+        pos, _, _, _ = self._deq.execute_td(t_delta)
         return pos

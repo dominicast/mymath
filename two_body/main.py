@@ -90,7 +90,7 @@ if __name__ == '__main__':
 
     # ---
 
-    solver = create_solver('s2', u, v, G, dt)
+    solver = create_solver('s1', u, v, G, dt)
 
     # ---
 
