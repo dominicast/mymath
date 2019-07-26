@@ -46,12 +46,10 @@ def create_pendulum(cfg):
     m = cfg.get_m()
 
     abort_velocity = cfg.get_abort_velocity()
-    min_steps = cfg.get_min_steps()
-    max_steps = cfg.get_max_steps()
+    t_min = cfg.get_t_min()
+    t_max = cfg.get_t_max()
 
-    dt = cfg.get_dt()
-
-    return Pendulum(magnets, mount_point, distance, friction, m, abort_velocity, min_steps, max_steps, dt)
+    return Pendulum(magnets, mount_point, distance, friction, m, abort_velocity, t_min, t_max)
 
 
 def worker(w_idx, w_cnt, w_points, w_cfg, q, e):
@@ -76,7 +74,7 @@ def worker(w_idx, w_cnt, w_points, w_cfg, q, e):
         start_vel = np.array([0, 0])
 
         pendulum = create_pendulum(w_cfg)
-        pendulum.init_deq(start_pos, start_vel)
+        pendulum.init_deq(start_pos, start_vel, w_cfg.get_dt())
 
         while True:
             data = pendulum.calculate_frame(chunk_size)

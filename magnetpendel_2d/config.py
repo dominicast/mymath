@@ -56,8 +56,8 @@ class Config:
         self._m = None
 
         self._abort_velocity = None
-        self._min_steps = None
-        self._max_steps = None
+        self._t_min = None
+        self._t_max = None
 
         self._dt = None    # [s]
 
@@ -104,11 +104,11 @@ class Config:
     def get_abort_velocity(self):
         return self._abort_velocity
 
-    def get_min_steps(self):
-        return self._min_steps
+    def get_t_min(self):
+        return self._t_min
 
-    def get_max_steps(self):
-        return self._max_steps
+    def get_t_max(self):
+        return self._t_max
 
     def get_dt(self):
         return self._dt
@@ -155,10 +155,10 @@ class BaseConfig:
         config._m = 1
 
         config._abort_velocity = 0.04
-        config._min_steps = 1000
-        config._max_steps = 500000
 
         config._dt = 0.0025
+        config._t_min = 1000 * config._dt
+        config._t_max = 500000 * config._dt
 
         # path config
 

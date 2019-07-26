@@ -36,7 +36,7 @@ class FrameData:
 
 class Pendulum:
 
-    def __init__(self, magnets, mount_point, distance, friction, m, abort_velocity, min_steps, max_steps, dt):
+    def __init__(self, magnets, mount_point, distance, friction, m, abort_velocity, t_min, t_max):
         self._magnets = magnets
         self._mount_point = mount_point
         self._distance = distance
@@ -44,15 +44,14 @@ class Pendulum:
         self._m = m
 
         self._abort_velocity = abort_velocity
-        self._min_steps = min_steps
-        self._max_steps = max_steps
+        self._t_min = t_min
+        self._t_max = t_max
 
         self._deq = None
-        self._dt = dt
 
         self._done = False
 
-    def init_deq(self, sp, sv):
+    def init_deq(self, sp, sv, dt):
 
         magnets = self._magnets
         mount_point = self._mount_point
@@ -60,20 +59,20 @@ class Pendulum:
         friction = self._friction
         m = self._m
 
-        self._deq = it.RungeKutta4th(DiffEq(magnets, mount_point, distance, friction, m), sp, sv)
+        self._deq = it.SciPy(DiffEq(magnets, mount_point, distance, friction, m), sp, sv)
+        #self._deq = it.RungeKutta4th(DiffEq(magnets, mount_point, distance, friction, m), sp, sv, dt)
 
-    def calculate_frame(self, dt_count):
+    def calculate_frame(self, frame_dt):
 
         if self._done:
             return None
 
         # ---
 
-        pos, vel, _, t = self._deq.execute(self._dt, dt_count)
+        pos, vel, _, t = self._deq.process_td(frame_dt)
 
         # ---
 
-        n = round(t/self._dt)
         sources = self._magnets + [ self._mount_point ]
         norm_vel = la.norm(vel)
 
@@ -83,7 +82,7 @@ class Pendulum:
 
         # check for stop condition
 
-        if n < self._min_steps:
+        if t < self._t_min:
             return FrameData(self._done, pos, found, closest_source, closest_source_dist)
 
         if norm_vel <= self._abort_velocity:
@@ -93,7 +92,7 @@ class Pendulum:
                     found = True
                     break
 
-        if not found and n < self._max_steps:
+        if not found and t < self._t_max:
             return FrameData(self._done, pos, found, closest_source, closest_source_dist)
 
         # find the closest source

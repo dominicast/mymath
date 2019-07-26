@@ -6,8 +6,8 @@ import time
 
 class PathPendulum(Pendulum):
 
-    def __init__(self, magnets, mount_point, distance, friction, m, abort_velocity, min_steps, max_steps, dt, speed):
-        super().__init__(magnets, mount_point, distance, friction, m, abort_velocity, min_steps, max_steps, dt)
+    def __init__(self, magnets, mount_point, distance, friction, m, abort_velocity, t_min, t_max, speed):
+        super().__init__(magnets, mount_point, distance, friction, m, abort_velocity, t_min, t_max)
         self._speed = speed
         self._timestamp = None
 
@@ -26,6 +26,4 @@ class PathPendulum(Pendulum):
 
         self._timestamp = ts
 
-        dt_count = round(frame_dt / self._dt)
-
-        return super().calculate_frame(dt_count)
+        return super().calculate_frame(frame_dt)
