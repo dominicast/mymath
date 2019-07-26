@@ -10,21 +10,21 @@ from utils import PendulumMathUtils
 
 class PendulumAngleInteg:
 
-    def __init__(self, mp, circle, m, g, friction, dt, speed):
+    def __init__(self, mp, circle, m, g, friction, speed):
         self._mp = mp
         self._circle = circle
         self._m = m
         self._g = g
         self._friction = friction
         self._deq = None
-        self._dt = dt
         self._speed = speed
         self._timestamp = None
 
-    def init_deq(self, rho_max):
+    def init_deq(self, rho_max, dt):
         radius = self._circle.get_radius()
         friction = self._friction
-        self._deq = it.RungeKutta4th(DiffEq(radius, friction, self._m, self._g), rho_max, 0)
+        #self._deq = it.RungeKutta4th(DiffEq(radius, friction, self._m, self._g), rho_max, 0, dt)
+        self._deq = it.SciPy(DiffEq(radius, friction, self._m, self._g), rho_max, 0)
 
     def calculate_frame(self):
 
@@ -35,11 +35,9 @@ class PendulumAngleInteg:
         frame_dt = (ts - self._timestamp) * self._speed
         self._timestamp = ts
 
-        dt_count = round(frame_dt / self._dt)
-
         # ---
 
-        rho, rhovel, _, t = self._deq.execute(self._dt, dt_count)
+        rho, rhovel, _, t = self._deq.process_td(frame_dt)
 
         # ---
 

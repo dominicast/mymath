@@ -19,7 +19,7 @@ def animate(i, pendulum, plotter):
 # by Dominic Ast D! dominic_ast@gmx.ch
 if __name__ == '__main__':
 
-    config = NoFrictionConfig().get_config(Impl.ANGLE_INTEG, Action.SHOW)
+    config = NoFrictionConfig().get_config(Impl.FORCE_INTEG, Action.SHOW)
 
     radius = config.get_radius()
     rho_max = config.get_rho_max()
@@ -51,11 +51,11 @@ if __name__ == '__main__':
     speed = config.get_speed()
 
     if config.get_impl() == Impl.ANGLE_INTEG:
-        pendulum = PendulumAngleInteg(mp, circle, m, g, friction, dt, speed)
-        pendulum.init_deq(rho_max)
+        pendulum = PendulumAngleInteg(mp, circle, m, g, friction, speed)
+        pendulum.init_deq(rho_max, dt)
     elif config.get_impl() == Impl.FORCE_INTEG:
-        pendulum = PendulumForceInteg(mp, m, g, friction, dt, speed)
-        pendulum.init_deq(circle.calc(rho_max), np.array([0, 0, 0]))
+        pendulum = PendulumForceInteg(mp, m, g, friction, speed)
+        pendulum.init_deq(circle.calc(rho_max), np.array([0, 0, 0]), dt)
     else:
         raise Exception('Unknown implementation')
 

@@ -11,18 +11,18 @@ from utils import PendulumMathUtils
 
 class PendulumForceInteg:
 
-    def __init__(self, mp, m, g, friction, dt, speed):
+    def __init__(self, mp, m, g, friction, speed):
         self._mp = mp
         self._m = m
         self._g = g
         self._friction = friction
         self._deq = None
-        self._dt = dt
         self._speed = speed
         self._timestamp = None
 
-    def init_deq(self, sp, sv):
-        self._deq = it.RungeKutta4th(DiffEq(self._mp, self._m, self._g, self._friction), sp, sv)
+    def init_deq(self, sp, sv, dt):
+        #self._deq = it.RungeKutta4th(DiffEq(self._mp, self._m, self._g, self._friction), sp, sv, dt)
+        self._deq = it.SciPy(DiffEq(self._mp, self._m, self._g, self._friction), sp, sv)
 
     def calculate_frame(self):
 
@@ -33,11 +33,9 @@ class PendulumForceInteg:
         frame_dt = (ts - self._timestamp) * self._speed
         self._timestamp = ts
 
-        dt_count = round(frame_dt / self._dt)
-
         # ---
 
-        pos, vel, _, t = self._deq.execute(self._dt, dt_count)
+        pos, vel, _, t = self._deq.process_td(frame_dt)
 
         # ---
 

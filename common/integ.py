@@ -3,17 +3,138 @@ import numpy as np
 from integ1o import SciPy as SciPy1O
 
 
+class SciPyAdapterSkalar:
+
+    @staticmethod
+    def get_dims(pos):
+        m_dim = 1
+        n_dim = 1
+        return m_dim, n_dim
+
+    @staticmethod
+    def serialize_get(value, idx):
+        return value
+
+    @staticmethod
+    def vectorize_get(value):
+        return value[0][0]
+
+
+class SciPyAdapterVector:
+
+    @staticmethod
+    def get_dims(pos):
+        shape = pos.shape
+        m_dim = 1
+        n_dim = shape[0]
+        return m_dim, n_dim
+
+    @staticmethod
+    def serialize_get(value, idx):
+        return value
+
+    @staticmethod
+    def vectorize_get(value):
+        return value[0]
+
+
+class SciPyAdapterMatrix:
+
+    @staticmethod
+    def get_dims(pos):
+        shape = pos.shape
+        m_dim = shape[0]
+        n_dim = shape[1]
+        return m_dim, n_dim
+
+    @staticmethod
+    def serialize_get(value, idx):
+        return value[idx]
+
+    @staticmethod
+    def vectorize_get(value):
+        return value
+
+
+class SciPyAdapterFactory:
+
+    @staticmethod
+    def create(value):
+        if type(value) is float:
+            return SciPyAdapterSkalar()
+        elif type(value) is np.ndarray:
+            if len(value.shape) == 1:
+                return SciPyAdapterVector()
+            elif len(value.shape) > 1:
+                return SciPyAdapterMatrix()
+            else:
+                raise Exception('unknown shape ' + repr(value.shape))
+        else:
+            raise Exception('unknown type '+repr(type(value)))
+
+
+class SciPyLogger:
+
+    def __init__(self, log_level):
+        self._log_level = log_level
+        self._ident_level = 0
+
+    def inc_level(self):
+        self._ident_level += 1
+
+    def dec_level(self):
+        self._ident_level -= 1
+
+    def log(self, tag, *values, level=None):
+        if level is None:
+            level = self._ident_level
+        if level > self._log_level:
+            return
+
+        ident = ' '*self._ident_level*3
+
+        # header
+        ending = '-'*(30-len(tag))
+        str = ident+'- '+tag+' '+ending
+        print(str)
+
+        # body
+        for value in values:
+            print(ident+repr(value[0])+': '+repr(value[1]).replace('\n', '|'))
+
+        # footer
+        print(ident+'-'*33)
+
+
 class SciPy:
 
-    def __init__(self, eq, init_pos, init_vel, method='RK45'):
+    def __init__(self, eq, init_pos, init_vel, method='RK45', adapter=None, logger=None):
+        if adapter is not None:
+            self._adapter = adapter
+        else:
+            self._adapter = SciPyAdapterFactory.create(init_pos)
+        self._logger = logger
         self._eq = eq
         self._init_pos = init_pos
         self._init_vel = init_vel
-        shape = init_pos.shape
-        self._n_dim = shape[1]
-        self._m_dim = shape[0]
+        self._log('o2_init', ('init_pos', self._init_pos), ('init_vel', self._init_vel))
+        m_dim, n_dim = self._adapter.get_dims(init_pos)
+        self._m_dim = m_dim
+        self._n_dim = n_dim
         self._method = method
         self._solver = None
+
+    def _log(self, tag, *values, level=None):
+        if self._logger is not None:
+            self._logger.log(tag, *values, level=level)
+
+    def _inc_log_level(self):
+        if self._logger is not None:
+            self._logger.inc_level()
+
+    def _dec_log_level(self):
+        if self._logger is not None:
+            self._logger.dec_level()
 
     def _serialize(self, p, v):
         res = np.zeros((2 * self._m_dim , self._n_dim))
@@ -21,9 +142,9 @@ class SciPy:
         for i in range(self._m_dim):
             for j in range(2):
                 if j == 0:
-                    res[idx] = p[i]
+                    res[idx] = self._adapter.serialize_get(p, i)
                 else:
-                    res[idx] = v[i]
+                    res[idx] = self._adapter.serialize_get(v, i)
                 idx += 1
         return res
 
@@ -36,20 +157,51 @@ class SciPy:
             idx += 1
             vel[i] = y[idx]
             idx += 1
+        pos = self._adapter.vectorize_get(pos)
+        vel = self._adapter.vectorize_get(vel)
         return pos, vel
 
     def _f(self, t, y):
+
+        self._inc_log_level()
+
+        self._log('o2_f_1', ('y', y))
+
         pos, vel = self._vectorize(y)
+
+        self._log('o2_f_2', ('pos', pos), ('vel', vel))
+
         pos = self._eq.f(pos, vel, t)
+
+        self._log('o2_f_3', ('pos', pos), ('vel', vel))
+
         pos = self._serialize(vel, pos)
+
+        self._log('o2_f_3', ('pos', pos), ('vel', vel), ('t', t))
+
+        self._dec_log_level()
+
         return pos
 
     def process_td(self, t_delta):
+
         if self._solver is None:
             sp = self._serialize(self._init_pos, self._init_vel)
-            self._solver = SciPy1O(SciPyDeq(self), sp, method=self._method)
+            self._log('o2_process_0', ('sp', sp))
+            self._solver = SciPy1O(SciPyDeq(self), sp, method=self._method, logger=self._logger)
+
+        self._inc_log_level()
+
         sol, _, t = self._solver.process_td(t_delta)
+
+        self._log('o2_process_1', ('sol', sol))
+
         pos, vel = self._vectorize(sol)
+
+        self._log('o2_process_2', ('pos', pos), ('vel', vel), ('t', t))
+
+        self._dec_log_level()
+
         return pos, vel, None, t
 
     def process_dt(self, dt, count):
