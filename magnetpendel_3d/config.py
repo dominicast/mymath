@@ -165,7 +165,7 @@ class BaseConfig:
         config._dt = 0.01
 
         config._interval = 100
-        config._speed = 1
+        config._speed = 0.6
 
         config._math_utils = MathUtilsVec()
 

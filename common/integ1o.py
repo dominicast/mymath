@@ -5,14 +5,14 @@ from scipy.integrate import solve_ivp
 
 class SciPy:
 
-    def __init__(self, eq, init_pos, method='RK45', logger=None):
+    def __init__(self, eq, init_pos, logger=None, **options):
         self._logger = logger
         self._eq = eq
         self._log('o1_init', ('init_pos', init_pos))
         shape = init_pos.shape
         self._n_dim = shape[1]
         self._m_dim = shape[0]
-        self._method = method
+        self._options = options
         self._pos_save = init_pos
         self._t_save = 0
 
@@ -78,7 +78,9 @@ class SciPy:
 
         t0 = self._t_save
         tn = t0 + t_delta
-        sol = solve_ivp(self._f, [t0, tn], sp, t_eval=[tn], method=self._method, vectorized=True)
+
+        sol = solve_ivp(self._f, [t0, tn], sp, t_eval=[tn], vectorized=True, **self._options)
+        #sol = solve_ivp(self._f, [t0, tn], sp, t_eval=[tn], method=self._method, vectorized=True)
 
         self._log('o1_process_2', ('sol.y', sol.y))
 

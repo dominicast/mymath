@@ -54,6 +54,7 @@ class Plotter:
         artist, = ax.plot([], [], [], "o", markersize=5, color=mount_point.get_color())
         artist.set_data(pos[0], pos[1])
         artist.set_3d_properties(pos[2])
+        artist.set_zorder(99)
 
         for magnet in magnets:
             pos = magnet.get_pos()

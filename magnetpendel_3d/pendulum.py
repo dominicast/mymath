@@ -10,7 +10,7 @@ from plotter import FrameData
 
 class Pendulum:
 
-    def __init__(self, magnets, mount_point, friction, disturbance, m, g, dt, speed, math_utils):
+    def __init__(self, magnets, mount_point, friction, disturbance, m, g, speed, math_utils):
         self._magnets = magnets
         self._mount_point = mount_point
         self._friction = friction
@@ -18,12 +18,11 @@ class Pendulum:
         self._m = m
         self._g = g
         self._deq = None
-        self._dt = dt
         self._speed = speed
         self._timestamp = None
         self._math_utils = math_utils
 
-    def init_deq(self, sp, sv):
+    def init_deq(self, sp, sv, dt):
 
         magnets = self._magnets
         mount_point = self._mount_point
@@ -33,7 +32,8 @@ class Pendulum:
         g = self._g
         math_utils = self._math_utils
 
-        self._deq = it.RungeKutta4th(DiffEq(magnets, mount_point, friction, disturbance, m, g, math_utils), sp, sv)
+        #self._deq = it.RungeKutta4th(DiffEq(magnets, mount_point, friction, disturbance, m, g, math_utils), sp, sv, dt)
+        self._deq = it.SciPy(DiffEq(magnets, mount_point, friction, disturbance, m, g, math_utils), sp, sv, max_step=0.001)
 
     def calculate_frame(self):
 
@@ -44,11 +44,9 @@ class Pendulum:
         frame_dt = (ts - self._timestamp) * self._speed
         self._timestamp = ts
 
-        dt_count = round(frame_dt / self._dt)
-
         # ---
 
-        pos, vel, _, t = self._deq.execute(self._dt, dt_count)
+        pos, vel, _, t = self._deq.process_td(frame_dt)
 
         # ---
 

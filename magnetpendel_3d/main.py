@@ -45,8 +45,8 @@ if __name__ == '__main__':
     dt = config.get_dt()
     speed = config.get_speed()
 
-    pendulum = Pendulum(magnets, mount_point, friction, disturbance, m, g, dt, speed, math_utils)
-    pendulum.init_deq(start_pos, start_vel)
+    pendulum = Pendulum(magnets, mount_point, friction, disturbance, m, g, speed, math_utils)
+    pendulum.init_deq(start_pos, start_vel, dt)
 
     # -- run
 

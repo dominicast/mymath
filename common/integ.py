@@ -108,7 +108,7 @@ class SciPyLogger:
 
 class SciPy:
 
-    def __init__(self, eq, init_pos, init_vel, method='RK45', adapter=None, logger=None):
+    def __init__(self, eq, init_pos, init_vel, adapter=None, logger=None, **options):
         if adapter is not None:
             self._adapter = adapter
         else:
@@ -121,7 +121,7 @@ class SciPy:
         m_dim, n_dim = self._adapter.get_dims(init_pos)
         self._m_dim = m_dim
         self._n_dim = n_dim
-        self._method = method
+        self._options = options
         self._solver = None
 
     def _log(self, tag, *values, level=None):
@@ -188,7 +188,7 @@ class SciPy:
         if self._solver is None:
             sp = self._serialize(self._init_pos, self._init_vel)
             self._log('o2_process_0', ('sp', sp))
-            self._solver = SciPy1O(SciPyDeq(self), sp, method=self._method, logger=self._logger)
+            self._solver = SciPy1O(SciPyDeq(self), sp, logger=self._logger, **self._options)
 
         self._inc_log_level()
 
