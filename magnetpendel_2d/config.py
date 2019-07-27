@@ -162,7 +162,7 @@ class BaseConfig:
 
         # path config
 
-        config._interval = 20
+        config._interval = 50
         config._speed = 1
 
         # pattern config
