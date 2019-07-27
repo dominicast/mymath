@@ -14,6 +14,7 @@ class SciPy:
         self._m_dim = shape[0]
         self._method = method
         self._pos_save = init_pos
+        self._t_save = 0
 
     def _log(self, tag, *values, level=None):
         if self._logger is not None:
@@ -75,17 +76,19 @@ class SciPy:
 
         self._log('o1_process_1', ('sp', sp))
 
-        sol = solve_ivp(self._f, [0, t_delta], sp, t_eval=[t_delta], method=self._method, vectorized=True)
+        t0 = self._t_save
+        tn = t0 + t_delta
+        sol = solve_ivp(self._f, [t0, tn], sp, t_eval=[tn], method=self._method, vectorized=True)
 
         self._log('o1_process_2', ('sol.y', sol.y))
 
         pos = self._vectorize(sol.y)
+        t = sol.t[0]
 
         self._log('o1_process_3', ('pos', pos))
 
         self._pos_save = pos
-
-        t = sol.t[0]
+        self._t_save = t
 
         self._dec_log_level()
 
