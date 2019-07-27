@@ -22,7 +22,7 @@ class PendulumForceInteg:
 
     def init_deq(self, sp, sv, dt):
         #self._deq = it.RungeKutta4th(DiffEq(self._mp, self._m, self._g, self._friction), sp, sv, dt)
-        self._deq = it.SciPy(DiffEq(self._mp, self._m, self._g, self._friction), sp, sv)
+        self._deq = it.SciPy(DiffEq(self._mp, self._m, self._g, self._friction), sp, sv, max_step=dt)
 
     def calculate_frame(self):
 

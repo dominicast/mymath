@@ -19,7 +19,7 @@ def animate(i, pendulum, plotter):
 # by Dominic Ast D! dominic_ast@gmx.ch
 if __name__ == '__main__':
 
-    config = NoFrictionConfig().get_config(Impl.FORCE_INTEG, Action.SHOW)
+    config = NoFrictionConfig().get_config(Impl.ANGLE_INTEG, Action.SHOW)
 
     radius = config.get_radius()
     rho_max = config.get_rho_max()

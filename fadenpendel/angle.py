@@ -24,7 +24,7 @@ class PendulumAngleInteg:
         radius = self._circle.get_radius()
         friction = self._friction
         #self._deq = it.RungeKutta4th(DiffEq(radius, friction, self._m, self._g), rho_max, 0, dt)
-        self._deq = it.SciPy(DiffEq(radius, friction, self._m, self._g), rho_max, 0)
+        self._deq = it.SciPy(DiffEq(radius, friction, self._m, self._g), rho_max, 0, max_step=dt)
 
     def calculate_frame(self):
 
