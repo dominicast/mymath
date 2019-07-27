@@ -59,7 +59,7 @@ class Pendulum:
         friction = self._friction
         m = self._m
 
-        self._deq = it.SciPy(DiffEq(magnets, mount_point, distance, friction, m), sp, sv)
+        self._deq = it.SciPy(DiffEq(magnets, mount_point, distance, friction, m), sp, sv, max_step=dt)
         #self._deq = it.RungeKutta4th(DiffEq(magnets, mount_point, distance, friction, m), sp, sv, dt)
 
     def calculate_frame(self, frame_dt):
