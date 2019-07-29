@@ -4,6 +4,14 @@ from config import *
 
 class DlConfig(BaseConfig):
 
+    @staticmethod
+    def _room_position_xy_dl(mp, radius, x, y):
+        z = mp[2] - math.sqrt(radius**2-(x-mp[0])**2-(y-mp[1])**2)
+        v = np.array([x, y, z])
+        v[2] = -v[2]
+        v = mp + v
+        return v
+
     def get_config(self, action):
         config = super()._get_config()
 
@@ -15,7 +23,7 @@ class DlConfig(BaseConfig):
 
         config._mount_point = MountPoint(np.array([0, 0, 0.3]), 0.01, 0.0025, 'k')
 
-        config._start_pos = self._room_position_xy(config._mount_point.get_pos(), 0.25, 0.1, 0.1)
+        config._start_pos = self._room_position_xy_dl(config._mount_point.get_pos(), 0.25, 0.1, 0.1)
         config._start_vel = np.array([0, 0, 0])
         config._m = 0.5
 
