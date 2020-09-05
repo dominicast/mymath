@@ -13,10 +13,6 @@ import integ as it
 # vec(r): Vector from current position the the attracting body
 #
 # http://asciimath.org/
-#
-# Jorge Rodriguez (14.07.2016)
-# Math for Game Developers - Spaceship Orbits (Semi-Implicit Euler)
-# https://www.youtube.com/watch?v=kxWBXd7ujx0
 
 class Body:
 
@@ -32,18 +28,18 @@ class Body:
 
 class DiffEq:
 
-    def f( self, pos, vel, t, n ):
+    def f( self, pos, vel, t ):
         result = np.array([0,0])
 
         G = 0.1    # yes thats not the real value
-        rexp = 1   # 3 is correct but we us 1 for convenience
+        rexp = 1   # 1 for convenience - should be 3
 
         for b in bodies:
 
             r = b.get_pos() - pos
 
-            if n % 5 == 0 and trace:
-                ax.arrow(pos[0], pos[1], r[0], r[1], fc='y', ec='y', width=0.01, head_width=1, head_length=1, alpha=.05)
+            #if n % 5 == 0 and trace:
+            #    ax.arrow(pos[0], pos[1], r[0], r[1], fc='y', ec='y', width=0.01, head_width=1, head_length=1, alpha=.05)
 
             m = b.get_size()
             rn = la.norm(r)
@@ -51,14 +47,14 @@ class DiffEq:
 
             fact = G * ( m / rnq )
 
-            if trace:
-                print( repr(m)+' : '+repr( rn )+' : '+repr( rnq )+' : '+repr( fact ) )
+            #if trace:
+            #    print( repr(m)+' : '+repr( rn )+' : '+repr( rnq )+' : '+repr( fact ) )
 
             result = result + fact * r
 
-        if n % 5 == 0 and trace:
-            vv = 5 * result
-            ax.arrow(pos[0], pos[1], vv[0], vv[1], fc='b', ec='b', width=0.01, head_width=1, head_length=1, alpha=.05)
+        #if n % 5 == 0 and trace:
+        #    vv = 5 * result
+        #    ax.arrow(pos[0], pos[1], vv[0], vv[1], fc='b', ec='b', width=0.01, head_width=1, head_length=1, alpha=.05)
 
         return result
 
@@ -73,16 +69,12 @@ class DiffEq:
 #             result = result +  0.1 * r
 #         return result
 
-class Observer:
-
-    def notify(self, pos_n, vel_n, t_n):
-        ax.scatter(pos_n[0], pos_n[1], s=2)
 
 # -- setup parameters
 
 bodies = []
 bodies.append( Body(np.array([20, 60]), 20) )
-#bodies.append( Body(np.array([60, 60]), 10) )
+bodies.append( Body(np.array([60, 60]), 10) )
 
 init_pos = np.array([40,60])
 init_vel = np.array([0,-6.33])
@@ -117,8 +109,11 @@ ax.arrow(init_pos[0], init_pos[1], init_vel[0], init_vel[1], fc='r', ec='r', wid
 
 # -- simulate equation
 
-integ = it.SIEuler( DiffEq(), init_pos, init_vel )
-integ.execute( h, n, observer=Observer() )
+integ = it.RungeKutta4th( DiffEq(), init_pos, init_vel, h )
+
+for i in range(1000):
+    pos_n, vel, dv, t = integ.process_dt( 10 )
+    ax.scatter(pos_n[0], pos_n[1], s=2)
 
 # -- display plot
 
