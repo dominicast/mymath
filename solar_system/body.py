@@ -20,7 +20,7 @@ class Body:
     def get_sv(self):
         return self._sv
 
-    def get_inex(self):
+    def get_index(self):
         return self._index
 
     def set_index(self, index):

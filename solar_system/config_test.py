@@ -21,7 +21,7 @@ class BodiesFactory:
         radius = 1
         position = np.array([[10., 10., 10.]])
         velocity = np.array([[0., 1., 0.]])
-        #size = radius
+        # size = radius
         size = 1
         color = (0., 0., 1.)
         return VisibleBody(m=mass, r=radius, sp=position, sv=velocity, color=color, size=size)
