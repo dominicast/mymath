@@ -31,12 +31,11 @@ def anim(bodies, solver, scene, speed):
     while True:
 
         ts = time.time()
-
         frame_dt = (ts - ts_save) * speed
-
         ts_save = ts
-
         t = t + frame_dt
+
+        print("Day "+str(t/60/60/24))
 
         # ---
 
