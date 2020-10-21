@@ -1,13 +1,17 @@
 
 import numpy as np
 from body import *
+import math
 
 
 class PositionMapper:
 
-    @staticmethod
-    def map(value):
-        return value / 1000
+    def __init__(self, fact=1):
+        self._fact = fact
+
+    def map(self, value):
+        result = (value*self._fact)
+        return result
 
 
 class BodiesFactory:
@@ -23,6 +27,16 @@ class BodiesFactory:
         return value * 1.731 * pow(10, 6)
 
     @staticmethod
+    def calc_distance_scale(index, mean_distance):
+        if index == 0:
+            index = (1/100)
+        return index * 100 * (1 / mean_distance)
+
+    @staticmethod
+    def calc_size(radius):
+        return 14 * math.log(radius/pow(10, 6), math.e)
+
+    @staticmethod
     def create_sun():
         mass = 1.9885*pow(10, 30)
         radius = 6.957*pow(10, 8)
@@ -31,10 +45,11 @@ class BodiesFactory:
         # velocity
         velocity = np.array([[0., 0., 0.]])
         # view
-        size = (6.96342*pow(10, 8)/100)
-        color = (1., 0., 0.)
+        distance_scale = BodiesFactory.calc_distance_scale(0, pow(10, 9))
+        size = BodiesFactory.calc_size(radius)
+        color = (1., 0.847, 0.035)
         # body
-        return VisibleBody(m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper())
+        return VisibleBody("Sun", m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper(distance_scale))
 
     @staticmethod
     def create_mercury():
@@ -51,10 +66,12 @@ class BodiesFactory:
         vz = BodiesFactory.normalize_vel(1.551833430476102 * pow(10, -3))
         velocity = np.array([[vx, vy, vz]])
         # view
-        size = (6.96342*pow(10, 8)/100)
-        color = (0., 0., 1.)
+        mean_distance = BodiesFactory.normalize_pos(0.387)
+        distance_scale = BodiesFactory.calc_distance_scale(1, mean_distance)
+        size = BodiesFactory.calc_size(radius)
+        color = (0.675, 0.592, 0.416)
         # body
-        return VisibleBody(m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper())
+        return VisibleBody("Mercury", m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper(distance_scale))
 
     @staticmethod
     def create_venus():
@@ -71,10 +88,12 @@ class BodiesFactory:
         vz = BodiesFactory.normalize_vel(2.662965477224826 * pow(10, -4))
         velocity = np.array([[vx, vy, vz]])
         # view
-        size = (6.96342*pow(10, 8)/100)
-        color = (0., 0., 1.)
+        mean_distance = BodiesFactory.normalize_pos(0.723)
+        distance_scale = BodiesFactory.calc_distance_scale(2, mean_distance)
+        size = BodiesFactory.calc_size(radius)
+        color = (0.894, 0.773, 0.651)
         # body
-        return VisibleBody(m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper())
+        return VisibleBody("Venus", m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper(distance_scale))
 
     @staticmethod
     def create_earth():
@@ -91,10 +110,12 @@ class BodiesFactory:
         vz = BodiesFactory.normalize_vel(-1.383397601779740 * pow(10, -3))
         velocity = np.array([[vx, vy, vz]])
         # view
-        size = (6.96342*pow(10, 8)/100)
-        color = (0., 0., 1.)
+        mean_distance = BodiesFactory.normalize_pos(1)
+        distance_scale = BodiesFactory.calc_distance_scale(3, mean_distance)
+        size = BodiesFactory.calc_size(radius)
+        color = (0.239, 0.267, 0.62)
         # body
-        return VisibleBody(m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper())
+        return VisibleBody("Earth", m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper(distance_scale))
 
     @staticmethod
     def create_moon():
@@ -111,10 +132,12 @@ class BodiesFactory:
         vz = BodiesFactory.normalize_vel(-1.455473815404281 * pow(10, -3))
         velocity = np.array([[vx, vy, vz]])
         # view
-        size = (6.96342*pow(10, 8)/100)
-        color = (1., 0., 0.)
+        mean_distance = BodiesFactory.normalize_pos(1)
+        distance_scale = BodiesFactory.calc_distance_scale(3, mean_distance)
+        size = BodiesFactory.calc_size(radius)
+        color = (0.588, 0.58, 0.584)
         # body
-        return VisibleBody(m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper())
+        return VisibleBody("Moon", m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper(distance_scale))
 
     @staticmethod
     def create_mars():
@@ -131,10 +154,12 @@ class BodiesFactory:
         vz = BodiesFactory.normalize_vel(-1.047799161775436 * pow(10, -3))
         velocity = np.array([[vx, vy, vz]])
         # view
-        size = (6.96342*pow(10, 8)/100)
-        color = (0., 1., 0.)
+        mean_distance = BodiesFactory.normalize_pos(1.524)
+        distance_scale = BodiesFactory.calc_distance_scale(4, mean_distance)
+        size = BodiesFactory.calc_size(radius)
+        color = (0.941, 0.294, 0.114)
         # body
-        return VisibleBody(m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper())
+        return VisibleBody("Mars", m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper(distance_scale))
 
     @staticmethod
     def create_jupiter():
@@ -151,10 +176,12 @@ class BodiesFactory:
         vz = BodiesFactory.normalize_vel(-7.304406745079823 * pow(10, -4))
         velocity = np.array([[vx, vy, vz]])
         # view
-        size = (6.96342*pow(10, 8)/100)
-        color = (0., 1., 0.)
+        mean_distance = BodiesFactory.normalize_pos(5.203)
+        distance_scale = BodiesFactory.calc_distance_scale(5, mean_distance)
+        size = BodiesFactory.calc_size(radius)
+        color = (0.792, 0.51, 0.416)
         # body
-        return VisibleBody(m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper())
+        return VisibleBody("Jupiter", m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper(distance_scale))
 
     @staticmethod
     def create_saturn():
@@ -171,10 +198,12 @@ class BodiesFactory:
         vz = BodiesFactory.normalize_vel(4.882764918036705 * pow(10, -4))
         velocity = np.array([[vx, vy, vz]])
         # view
-        size = (6.96342*pow(10, 8)/100)
-        color = (0., 1., 0.)
+        mean_distance = BodiesFactory.normalize_pos(9.582)
+        distance_scale = BodiesFactory.calc_distance_scale(6, mean_distance)
+        size = BodiesFactory.calc_size(radius)
+        color = (0.706, 0.655, 0.388)
         # body
-        return VisibleBody(m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper())
+        return VisibleBody("Saturn", m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper(distance_scale))
 
     @staticmethod
     def create_uranus():
@@ -191,10 +220,12 @@ class BodiesFactory:
         vz = BodiesFactory.normalize_vel(-1.826727345802505 * pow(10, -4))
         velocity = np.array([[vx, vy, vz]])
         # view
-        size = (6.96342*pow(10, 8)/100)
-        color = (0., 1., 0.)
+        mean_distance = BodiesFactory.normalize_pos(19.20)
+        distance_scale = BodiesFactory.calc_distance_scale(7, mean_distance)
+        size = BodiesFactory.calc_size(radius)
+        color = (0.749, 0.902, 0.918)
         # body
-        return VisibleBody(m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper())
+        return VisibleBody("Uranus", m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper(distance_scale))
 
     @staticmethod
     def create_neptune():
@@ -211,10 +242,12 @@ class BodiesFactory:
         vz = BodiesFactory.normalize_vel(-1.197451013633338 * pow(10, -5))
         velocity = np.array([[vx, vy, vz]])
         # view
-        size = (6.96342*pow(10, 8)/100)
-        color = (0., 1., 0.)
+        mean_distance = BodiesFactory.normalize_pos(30.05)
+        distance_scale = BodiesFactory.calc_distance_scale(8, mean_distance)
+        size = BodiesFactory.calc_size(radius)
+        color = (0.259, 0.424, 0.996)
         # body
-        return VisibleBody(m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper())
+        return VisibleBody("Neptune", m=mass, r=radius, sp=position, sv=velocity, color=color, size=size, pos_mapper=PositionMapper(distance_scale))
 
     @staticmethod
     def create_bodies():
@@ -232,8 +265,9 @@ class BodiesFactory:
         uranus = BodiesFactory.create_uranus()
         neptune = BodiesFactory.create_neptune()
 
-        bodies = [sun, mercury, venus, earth, moon, mars]
-        # bodies = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune]
+        # bodies = [sun, mercury, venus, earth, mars]
+        # bodies = [sun, mercury, venus, earth, moon, mars]
+        bodies = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune]
 
         i = 0
         for body in bodies:
@@ -249,8 +283,8 @@ class Config:
         body_factory = BodiesFactory()
         self._bodies = body_factory.create_bodies()
         self._G = 6.6743*pow(10, -11)
-        #self._speed = 1000000
-        self._speed = 56560
+        self._speed = 1000000
+        # self._speed = 56560
         self._dt = 0.001
 
     def get_bodies(self):

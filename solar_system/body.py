@@ -1,12 +1,16 @@
 
 class Body:
 
-    def __init__(self, m, r, sp, sv):
+    def __init__(self, name, m, r, sp, sv):
+        self._name = name
         self._m = m
         self._r = r
         self._sp = sp
         self._sv = sv
         self._index = None
+
+    def get_name(self):
+        return self._name
 
     def get_m(self):
         return self._m
@@ -29,8 +33,8 @@ class Body:
 
 class VisibleBody(Body):
 
-    def __init__(self, m, r, sp, sv, color, size, pos_mapper=None):
-        Body.__init__(self, m, r, sp, sv)
+    def __init__(self, name, m, r, sp, sv, color, size, pos_mapper=None):
+        Body.__init__(self, name, m, r, sp, sv)
         self._color = color
         self._size = size
         self._pos_mapper = pos_mapper
