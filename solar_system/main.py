@@ -2,7 +2,6 @@
 from mayavi import mlab
 from config_solar_system import Config
 # from config_2_body import Config
-# from config_test import Config
 from solver import Solver
 import time
 import math
@@ -24,6 +23,7 @@ class Logger:
 def anim(bodies, solver, scene, speed):
 
     ts_save = time.time()
+    day_save = 0
 
     yield
 
@@ -36,7 +36,12 @@ def anim(bodies, solver, scene, speed):
         ts_save = ts
         t = t + frame_dt
 
-        #print("Day "+str(t/60/60/24))
+        day = int(t/60/60/24)
+        if day != day_save:
+            day_save = day
+            year = int(day / 365)
+            day -= 365 * year
+            print("Year {year}, Day {day}".format(year=year, day=day))
 
         # ---
 
@@ -64,14 +69,12 @@ if __name__ == '__main__':
     bodies = config.get_bodies()
 
     for body in bodies:
-        body_desc = body.get_name()+":"
         sp = body.get_sp()[0]
         x = body.get_x(sp[0])
         y = body.get_y(sp[1])
         z = body.get_z(sp[2])
-        body_desc += " distance=" + str(math.sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)))
-        body_desc += " size="+str(body.get_size())
-        print(body_desc)
+        distance = str(math.sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)))
+        print('{name}: distance={distance} size={size}'.format(name=body.get_name(), distance=distance, size=body.get_size()))
 
     G = config.get_G()
     speed = config.get_speed()
@@ -79,8 +82,7 @@ if __name__ == '__main__':
 
     solver = Solver(bodies, G, Logger())
 
-    # fig = mlab.figure(size=(1000,600))
-    fig = mlab.figure(bgcolor=(0., 0., 0.))
+    fig = mlab.figure(size=(1000,600), bgcolor=(0., 0., 0.))
     # fig.scene.anti_aliasing_frames = 0
 
     for body in bodies:
