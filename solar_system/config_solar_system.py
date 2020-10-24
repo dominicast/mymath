@@ -41,6 +41,9 @@ class Config:
         self._speed = 1000000
         # self._speed = 56560
         self._dt = 0.001
+        self._azimuth = 45
+        self._elevation = 66
+        self._distance = 2000
 
     def get_bodies(self):
         return self._bodies
@@ -53,3 +56,12 @@ class Config:
 
     def get_dt(self):
         return self._dt
+
+    def get_azimuth(self):
+        return self._azimuth
+
+    def get_elevation(self):
+        return self._elevation
+
+    def get_distance(self):
+        return self._distance

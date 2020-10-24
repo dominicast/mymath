@@ -95,10 +95,11 @@ if __name__ == '__main__':
         pts = mlab.points3d(x, y, z, color=color, scale_factor=size)
         body.set_object(pts.mlab_source)
 
-    # mlab.view(0, 0, 10)
-    mlab.view(0, 90, 80)
-
-    # mlab.axes(color=(.7, .7, .7), extent=[-10, 10, -10, 10, 0, 10], xlabel='x', ylabel='y', zlabel='z')
+    mlab.view(
+        azimuth=config.get_azimuth(),
+        elevation=config.get_elevation(),
+        distance=config.get_distance()
+    )
 
     a = anim(bodies, solver, fig.scene, speed)
 
