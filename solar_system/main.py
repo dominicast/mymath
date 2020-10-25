@@ -49,6 +49,10 @@ def anim(bodies, solver, scene, speed):
 
         # ---
 
+        view = mlab.view()
+        if view is not None:
+            view_distance = view[2]
+
         scene.disable_render = True
 
         for body in bodies:
@@ -57,6 +61,9 @@ def anim(bodies, solver, scene, speed):
             y = body.get_y(pos[index, 1])
             z = body.get_z(pos[index, 2])
             body.get_object().set(x=x, y=y, z=z)
+            if body.get_label() is not None and view is not None:
+                body.get_label().position = [x+(body.get_size()/2), y+(body.get_size()/2), z+(body.get_size()/2)]
+                body.get_label().scale = [view_distance/100, view_distance/100, view_distance/100]
 
         scene.disable_render = False
 
@@ -94,6 +101,9 @@ if __name__ == '__main__':
         size = body.get_size()
         pts = mlab.points3d(x, y, z, color=color, scale_factor=size)
         body.set_object(pts.mlab_source)
+        if config.show_names():
+            lbl = mlab.text3d(x, y, z, body.get_name(), color=color)
+            body.set_label(lbl)
 
     mlab.view(
         azimuth=config.get_azimuth(),

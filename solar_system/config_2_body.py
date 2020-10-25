@@ -53,6 +53,7 @@ class Config:
         self._azimuth = 0
         self._elevation = 90
         self._distance = 80
+        self._show_names = False
 
     def get_bodies(self):
         return self._bodies
@@ -74,3 +75,6 @@ class Config:
 
     def get_distance(self):
         return self._distance
+
+    def show_names(self):
+        return self._show_names

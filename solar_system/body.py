@@ -30,6 +30,7 @@ class SimulationBody(Body):
         self._displacer = displacer
         self._index = None
         self._object = None
+        self._label = None
 
     def get_sp(self):
         return self._sp
@@ -60,3 +61,9 @@ class SimulationBody(Body):
 
     def set_object(self, object):
         self._object = object
+
+    def get_label(self):
+        return self._label
+
+    def set_label(self, label):
+        self._label = label
