@@ -9,8 +9,7 @@ class Displacer:
         self._fact = fact
 
     def map(self, value):
-        result = (value*self._fact)
-        return result
+        return value * 0.001
 
 
 class Scaler:
@@ -23,8 +22,12 @@ class Scaler:
 
     @staticmethod
     def calc_size(body):
+        order_nr = body.get_order_nr()
         radius = body.get_r()
-        return 14 * math.log(radius / pow(10, 6), math.e)
+        if order_nr == 0:
+            return radius / 10
+        else:
+            return 2 * radius
 
     @staticmethod
     def create_displacer(body):
@@ -33,16 +36,17 @@ class Scaler:
         if order_nr == 0:
             mean_distance = pow(10, 9)
         distance_scale = Scaler.__calc_distance_scale(order_nr, mean_distance)
-        return Displacer(distance_scale)
+        return Displacer(0.00001)
 
 
 class Config:
 
     def __init__(self):
-        self._bodies = SolarSystemBodyFactory.sun_and_planets(Scaler())
+        self._bodies = SolarSystemBodyFactory.sun_earth_and_moon(Scaler())
         self._G = 6.6743*pow(10, -11)
-        self._speed = 1000000
+        # self._speed = 100
         # self._speed = 56560
+        self._speed = 1000000
         self._dt = 0.001
         self._azimuth = 45
         self._elevation = 66

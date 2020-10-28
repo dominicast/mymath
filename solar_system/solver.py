@@ -60,5 +60,5 @@ class Solver:
         self._deq = it.SciPy(DiffEq(G, bodies), sp, sv, None, logger)
 
     def process(self, t_delta):
-        pos, _, _, _ = self._deq.process_td(t_delta)
-        return pos
+        pos, vel, _, _ = self._deq.process_td(t_delta)
+        return pos, vel

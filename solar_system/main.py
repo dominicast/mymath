@@ -1,6 +1,7 @@
 
 from mayavi import mlab
-from config_solar_system import Config
+# from config_solar_system import Config
+from config_earth import Config
 # from config_2_body import Config
 from solver import Solver
 import time
@@ -45,7 +46,7 @@ def anim(bodies, solver, scene, speed):
 
         # ---
 
-        pos = solver.process(frame_dt)
+        pos, vel = solver.process(frame_dt)
 
         # ---
 
@@ -74,6 +75,11 @@ if __name__ == '__main__':
 
     config = Config()
     bodies = config.get_bodies()
+
+    index = 0
+    for body in bodies:
+        body.set_index(index)
+        index = index + 1
 
     for body in bodies:
         sp = body.get_sp()[0]
