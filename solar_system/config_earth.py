@@ -3,12 +3,12 @@ import math
 from solar_system import *
 
 
-class Displacer:
+class Projector:
 
     def __init__(self, fact):
         self._fact = fact
 
-    def map(self, value):
+    def project(self, value, bodies):
         return value * 0.001
 
 
@@ -30,13 +30,13 @@ class Scaler:
             return 2 * radius
 
     @staticmethod
-    def create_displacer(body):
+    def create_projector(body):
         mean_distance = body.get_mean_distance()
         order_nr = body.get_order_nr()
         if order_nr == 0:
             mean_distance = pow(10, 9)
         distance_scale = Scaler.__calc_distance_scale(order_nr, mean_distance)
-        return Displacer(0.00001)
+        return Projector(0.00001)
 
 
 class Config:

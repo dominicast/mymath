@@ -1,7 +1,7 @@
 
 from mayavi import mlab
-# from config_solar_system import Config
-from config_earth import Config
+from config_solar_system import Config
+# from config_earth import Config
 # from config_2_body import Config
 from solver import Solver
 import time
@@ -48,6 +48,10 @@ def anim(bodies, solver, scene, speed):
 
         pos, vel = solver.process(frame_dt)
 
+        for body in bodies:
+            body.set_pos(pos[body.get_index()])
+            body.set_vel(vel[body.get_index()])
+
         # ---
 
         view = mlab.view()
@@ -57,14 +61,23 @@ def anim(bodies, solver, scene, speed):
         scene.disable_render = True
 
         for body in bodies:
-            index = body.get_index()
-            x = body.get_x(pos[index, 0])
-            y = body.get_y(pos[index, 1])
-            z = body.get_z(pos[index, 2])
-            body.get_object().set(x=x, y=y, z=z)
+            pos_prime = body.get_pos_prime(bodies)
+            body.get_object().set(
+                x=pos_prime[0],
+                y=pos_prime[1],
+                z=pos_prime[2]
+            )
             if body.get_label() is not None and view is not None:
-                body.get_label().position = [x+(body.get_size()/2), y+(body.get_size()/2), z+(body.get_size()/2)]
-                body.get_label().scale = [view_distance/100, view_distance/100, view_distance/100]
+                body.get_label().position = [
+                    pos_prime[0]+(body.get_size()/2),
+                    pos_prime[1]+(body.get_size()/2),
+                    pos_prime[2]+(body.get_size()/2)
+                ]
+                body.get_label().scale = [
+                    view_distance/100,
+                    view_distance/100,
+                    view_distance/100
+                ]
 
         scene.disable_render = False
 
@@ -82,11 +95,8 @@ if __name__ == '__main__':
         index = index + 1
 
     for body in bodies:
-        sp = body.get_sp()[0]
-        x = body.get_x(sp[0])
-        y = body.get_y(sp[1])
-        z = body.get_z(sp[2])
-        distance = str(math.sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)))
+        pos_prime = body.get_pos_prime(bodies)[0]
+        distance = str(math.sqrt(pow(pos_prime[0], 2) + pow(pos_prime[1], 2) + pow(pos_prime[2], 2)))
         print('{name}: distance={distance} size={size}'.format(name=body.get_name(), distance=distance, size=body.get_size()))
 
     G = config.get_G()
@@ -99,16 +109,13 @@ if __name__ == '__main__':
     # fig.scene.anti_aliasing_frames = 0
 
     for body in bodies:
-        sp = body.get_sp()[0]
-        x = body.get_x(sp[0])
-        y = body.get_y(sp[1])
-        z = body.get_z(sp[2])
+        pos_prime = body.get_pos_prime(bodies)[0]
         color = body.get_color()
         size = body.get_size()
-        pts = mlab.points3d(x, y, z, color=color, scale_factor=size)
+        pts = mlab.points3d(pos_prime[0], pos_prime[1], pos_prime[1], color=color, scale_factor=size)
         body.set_object(pts.mlab_source)
         if config.show_names():
-            lbl = mlab.text3d(x, y, z, body.get_name(), color=color)
+            lbl = mlab.text3d(pos_prime[0], pos_prime[1], pos_prime[2], body.get_name(), color=color)
             body.set_label(lbl)
 
     mlab.view(

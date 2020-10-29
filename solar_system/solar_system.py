@@ -58,17 +58,17 @@ class SolarSystemBodyFactory:
 
     @staticmethod
     def __create_body_2(body, sp, sv, scaler):
-        displacer = None if scaler is None else scaler.create_displacer(body)
+        projector = None if scaler is None else scaler.create_projector(body)
         size = 2*body.get_r() if scaler is None else scaler.calc_size(body)
         return SimulationBody(
             name=body.get_name(),
             m=body.get_m(),
             r=body.get_r(),
-            sp=sp,
-            sv=sv,
+            pos=sp,
+            vel=sv,
             color=body.get_color(),
             size=size,
-            displacer=displacer
+            projector=projector
         )
 
     @staticmethod

@@ -22,33 +22,33 @@ class Body:
 
 class SimulationBody(Body):
 
-    def __init__(self, name, m, r, color, sp, sv, size, displacer=None):
+    def __init__(self, name, m, r, color, pos, vel, size, projector=None):
         Body.__init__(self, name, m, r, color)
-        self._sp = sp
-        self._sv = sv
+        self._pos = pos
+        self._vel = vel
         self._size = size
-        self._displacer = displacer
+        self._projector = projector
         self._index = None
         self._object = None
         self._label = None
 
-    def get_sp(self):
-        return self._sp
-
-    def get_sv(self):
-        return self._sv
-
     def get_size(self):
         return self._size
 
-    def get_x(self, x):
-        return x if self._displacer is None else self._displacer.map(x)
+    def get_pos(self):
+        return self._pos
 
-    def get_y(self, y):
-        return y if self._displacer is None else self._displacer.map(y)
+    def set_pos(self, pos):
+        self._pos = pos
 
-    def get_z(self, z):
-        return z if self._displacer is None else self._displacer.map(z)
+    def get_pos_prime(self, bodies):
+        return self._pos if self._projector is None else self._projector.project(self._pos, bodies)
+
+    def get_vel(self):
+        return self._vel
+
+    def set_vel(self, vel):
+        self._vel = vel
 
     def get_index(self):
         return self._index

@@ -53,8 +53,8 @@ class Solver:
         sv = np.zeros((len(bodies), 3))
 
         for body in bodies:
-            sp[body.get_index()] = body.get_sp()
-            sv[body.get_index()] = body.get_sv()
+            sp[body.get_index()] = body.get_pos()
+            sv[body.get_index()] = body.get_vel()
 
         # self._deq = it.RungeKutta4th(DiffEq(u.get_m(), v.get_m()), sp, sv, 10)
         self._deq = it.SciPy(DiffEq(G, bodies), sp, sv, None, logger)
