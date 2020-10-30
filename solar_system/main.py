@@ -8,18 +8,6 @@ import time
 import math
 
 
-class Logger:
-
-    def log(self, tag, *values, level):
-        pass
-
-    def inc_level(self):
-        pass
-
-    def dec_level(self):
-        pass
-
-
 @mlab.animate(ui=False, delay=100)
 def anim(bodies, solver, projector, scene, speed):
 
@@ -46,11 +34,7 @@ def anim(bodies, solver, projector, scene, speed):
 
         # ---
 
-        pos, vel = solver.process(frame_dt)
-
-        for body in bodies:
-            body.set_pos(pos[body.get_index()])
-            body.set_vel(vel[body.get_index()])
+        solver.process(bodies, frame_dt)
 
         # ---
 
@@ -91,11 +75,6 @@ if __name__ == '__main__':
     bodies = config.get_bodies()
     projector = config.get_projector()
 
-    index = 0
-    for body in bodies:
-        body.set_index(index)
-        index = index + 1
-
     for body in bodies:
         pos_p = projector.project(body, bodies)
         size_p = projector.scale(body, bodies)
@@ -110,7 +89,7 @@ if __name__ == '__main__':
     speed = config.get_speed()
     dt = config.get_dt()
 
-    solver = Solver(bodies, G, Logger())
+    solver = Solver(bodies, G)
 
     fig = mlab.figure(size=(1000,600), bgcolor=(0., 0., 0.))
     # fig.scene.anti_aliasing_frames = 0

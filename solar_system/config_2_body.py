@@ -28,18 +28,9 @@ class BodiesFactory:
 
     @staticmethod
     def create_bodies():
-
         u = BodiesFactory.create_u()
         v = BodiesFactory.create_v()
-
-        bodies = [u, v]
-
-        i = 0
-        for body in bodies:
-            body.set_index(i)
-            i = i + 1
-
-        return bodies
+        return [u, v]
 
 
 class Config:

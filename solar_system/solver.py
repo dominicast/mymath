@@ -52,13 +52,18 @@ class Solver:
         sp = np.zeros((len(bodies), 3))
         sv = np.zeros((len(bodies), 3))
 
+        index = 0
         for body in bodies:
+            body.set_index(index)
             sp[body.get_index()] = body.get_pos()
             sv[body.get_index()] = body.get_vel()
+            index += 1
 
         # self._deq = it.RungeKutta4th(DiffEq(u.get_m(), v.get_m()), sp, sv, 10)
         self._deq = it.SciPy(DiffEq(G, bodies), sp, sv, None, logger)
 
-    def process(self, t_delta):
+    def process(self, bodies, t_delta):
         pos, vel, _, _ = self._deq.process_td(t_delta)
-        return pos, vel
+        for body in bodies:
+            body.set_pos(pos[body.get_index()])
+            body.set_vel(vel[body.get_index()])
