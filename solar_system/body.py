@@ -1,10 +1,12 @@
 
 class Body:
 
-    def __init__(self, name, m, r, color):
+    def __init__(self, name, m, r, color, pos, vel):
         self._name = name
         self._m = m
         self._r = r
+        self._pos = pos
+        self._vel = vel
         self._color = color
 
     def get_name(self):
@@ -19,36 +21,27 @@ class Body:
     def get_color(self):
         return self._color
 
-
-class SimulationBody(Body):
-
-    def __init__(self, name, m, r, color, pos, vel, size, projector=None):
-        Body.__init__(self, name, m, r, color)
-        self._pos = pos
-        self._vel = vel
-        self._size = size
-        self._projector = projector
-        self._index = None
-        self._object = None
-        self._label = None
-
-    def get_size(self):
-        return self._size
-
     def get_pos(self):
         return self._pos
 
     def set_pos(self, pos):
         self._pos = pos
 
-    def get_pos_prime(self, bodies):
-        return self._pos if self._projector is None else self._projector.project(self._pos, bodies)
-
     def get_vel(self):
         return self._vel
 
     def set_vel(self, vel):
         self._vel = vel
+
+
+class SimulationBody(Body):
+
+    def __init__(self, name, m, r, color, pos, vel):
+        Body.__init__(self, name, m, r, color, pos, vel)
+        self._index = None
+        self._object = None
+        self._label = None
+        self._projection = None
 
     def get_index(self):
         return self._index
@@ -67,3 +60,9 @@ class SimulationBody(Body):
 
     def set_label(self, label):
         self._label = label
+
+    def get_projection(self):
+        return self._projection
+
+    def set_projection(self, projection):
+        self._projection = projection

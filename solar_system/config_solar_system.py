@@ -3,43 +3,58 @@ import math
 from solar_system import *
 
 
+class BodyProjection:
+
+    def __init__(self, size, factor):
+        self._size = size
+        self._factor = factor
+
+    def get_size(self):
+        return self._size
+
+    def get_factor(self):
+        return self._factor
+
+
 class Projector:
 
-    def __init__(self, fact):
-        self._fact = fact
+    def __init__(self, bodies):
+        for body in bodies:
+            self.__init_body(body)
 
-    def project(self, value, bodies):
-        result = (value*self._fact)
-        return result
-
-
-class Scaler:
-
-    @staticmethod
-    def __calc_distance_scale(order_nr, mean_distance):
-        if order_nr == 0:
-            order_nr = (1/100)
-        return order_nr * 100 * (1 / mean_distance)
+    def __init_body(self, body):
+        size = self.__calc_size(body)
+        factor = self.__calc_factor(body)
+        body.set_projection(BodyProjection(size, factor))
 
     @staticmethod
-    def calc_size(body):
+    def __calc_size(body):
         radius = body.get_r()
         return 14 * math.log(radius / pow(10, 6), math.e)
 
     @staticmethod
-    def create_projector(body):
+    def __calc_factor(body):
         mean_distance = body.get_mean_distance()
         order_nr = body.get_order_nr()
         if order_nr == 0:
             mean_distance = pow(10, 9)
-        distance_scale = Scaler.__calc_distance_scale(order_nr, mean_distance)
-        return Projector(distance_scale)
+            order_nr = (1 / 100)
+        return order_nr * 100 * (1 / mean_distance)
+
+    @staticmethod
+    def project(body, bodies):
+        return body.get_pos() * body.get_projection().get_factor()
+
+    @staticmethod
+    def scale(body, bodies):
+        return body.get_projection().get_size()
 
 
 class Config:
 
     def __init__(self):
-        self._bodies = SolarSystemBodyFactory.sun_and_planets(Scaler())
+        self._bodies = SolarSystemBodyFactory.sun_and_planets()
+        self._projector = Projector(self._bodies)
         self._G = 6.6743*pow(10, -11)
         self._speed = 1000000
         # self._speed = 56560
@@ -51,6 +66,9 @@ class Config:
 
     def get_bodies(self):
         return self._bodies
+
+    def get_projector(self):
+        return self._projector
 
     def get_G(self):
         return self._G
