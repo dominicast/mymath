@@ -3,19 +3,6 @@ import math
 from solar_system import *
 
 
-class BodyProjection:
-
-    def __init__(self, size, factor):
-        self._size = size
-        self._factor = factor
-
-    def get_size(self):
-        return self._size
-
-    def get_factor(self):
-        return self._factor
-
-
 class Projector:
 
     def __init__(self, bodies):
@@ -38,11 +25,11 @@ class Projector:
         return order_nr * 100 * (1 / mean_distance)
 
     @staticmethod
-    def project(body, bodies):
+    def get_pos(body):
         return body.get_pos() * body.proj_factor
 
     @staticmethod
-    def scale(body, bodies):
+    def get_size(body):
         return body.proj_size
 
 
@@ -50,7 +37,6 @@ class Config:
 
     def __init__(self):
         self._bodies = SolarSystemBodyFactory.sun_and_planets()
-        self._projector = Projector(self._bodies)
         self._G = 6.6743*pow(10, -11)
         self._speed = 1000000
         # self._speed = 56560
@@ -60,11 +46,11 @@ class Config:
         self._distance = 2000
         self._show_names = True
 
+    def create_projector(self):
+        return Projector(self._bodies)
+
     def get_bodies(self):
         return self._bodies
-
-    def get_projector(self):
-        return self._projector
 
     def get_G(self):
         return self._G

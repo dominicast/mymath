@@ -10,7 +10,7 @@ import math
 
 
 @mlab.animate(ui=False, delay=100)
-def anim(bodies, solver, projector, plotter, speed):
+def anim(solver, plotter, speed):
 
     ts_save = time.time()
     day_save = 0
@@ -33,9 +33,9 @@ def anim(bodies, solver, projector, plotter, speed):
             day -= 365 * year
             print("Year {year}, Day {day}".format(year=year, day=day))
 
-        solver.process(bodies, frame_dt)
+        solver.process(frame_dt)
 
-        plotter.update(bodies, projector)
+        plotter.update()
 
         yield
 
@@ -43,19 +43,14 @@ def anim(bodies, solver, projector, plotter, speed):
 if __name__ == '__main__':
 
     config = Config()
-
+    projector = config.create_projector()
     bodies = config.get_bodies()
-    projector = config.get_projector()
-    G = config.get_G()
-    speed = config.get_speed()
-
-    solver = Solver(bodies, G)
-
-    plotter = Plotter()
+    solver = Solver(bodies, config.get_G())
+    plotter = Plotter(bodies, projector)
 
     for body in bodies:
-        pos_p = projector.project(body, bodies)
-        size_p = projector.scale(body, bodies)
+        pos_p = projector.get_pos(body)
+        size_p = projector.get_size(body)
         distance = str(math.sqrt(pow(pos_p[0], 2) + pow(pos_p[1], 2) + pow(pos_p[2], 2)))
         print('{name}: distance={distance} size={size}'.format(
             name=body.get_name(),
@@ -63,8 +58,8 @@ if __name__ == '__main__':
             size=size_p
         ))
 
-    plotter.initialize(bodies, projector, config)
+    plotter.initialize(config)
 
-    a = anim(bodies, solver, projector, plotter, speed)
+    a = anim(solver, plotter, config.get_speed())
 
     mlab.show()
