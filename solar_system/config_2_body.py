@@ -1,6 +1,6 @@
 
 import numpy as np
-from body import SimulationBody
+from body import Body
 
 
 class BodiesFactory:
@@ -13,7 +13,7 @@ class BodiesFactory:
         velocity = np.array([[0., 0., 0.]])
         size = 1
         color = (1., 0., 0.)
-        return SimulationBody(name="u", m=mass, r=radius, sp=position, sv=velocity, color=color, size=size)
+        return Body(name="u", m=mass, r=radius, sp=position, sv=velocity, color=color, size=size)
 
     @staticmethod
     def create_v():
@@ -24,7 +24,7 @@ class BodiesFactory:
         #size = radius
         size = 1
         color = (0., 0., 1.)
-        return SimulationBody(name="v", m=mass, r=radius, sp=position, sv=velocity, color=color, size=size)
+        return Body(name="v", m=mass, r=radius, sp=position, sv=velocity, color=color, size=size)
 
     @staticmethod
     def create_bodies():

@@ -20,14 +20,14 @@ class DiffEq:
         for body_1 in self._bodies:
 
             m_b1 = body_1.get_m()
-            p_b1 = pos[body_1.get_index()]
+            p_b1 = pos[body_1.solver_idx]
 
             for body_2 in self._bodies:
-                if body_2.get_index() <= body_1.get_index():
+                if body_2.solver_idx <= body_1.solver_idx:
                     continue
 
                 m_b2 = body_2.get_m()
-                p_b2 = pos[body_2.get_index()]
+                p_b2 = pos[body_2.solver_idx]
 
                 r = p_b2 - p_b1
                 r_len = math.sqrt(r[0] ** 2 + r[1] ** 2 + r[2] ** 2)
@@ -36,11 +36,11 @@ class DiffEq:
 
                 F_b1 = factor * r
                 a_b1 = (F_b1 / m_b1)
-                result[body_1.get_index()] = result[body_1.get_index()] + a_b1
+                result[body_1.solver_idx] = result[body_1.solver_idx] + a_b1
 
                 F_b2 = factor * -r
                 a_b2 = (F_b2 / m_b2)
-                result[body_2.get_index()] = result[body_2.get_index()] + a_b2
+                result[body_2.solver_idx] = result[body_2.solver_idx] + a_b2
 
         return result
 
@@ -54,9 +54,9 @@ class Solver:
 
         index = 0
         for body in bodies:
-            body.set_index(index)
-            sp[body.get_index()] = body.get_pos()
-            sv[body.get_index()] = body.get_vel()
+            body.solver_idx = index
+            sp[body.solver_idx] = body.get_pos()
+            sv[body.solver_idx] = body.get_vel()
             index += 1
 
         # self._deq = it.RungeKutta4th(DiffEq(u.get_m(), v.get_m()), sp, sv, 10)
@@ -65,5 +65,5 @@ class Solver:
     def process(self, bodies, t_delta):
         pos, vel, _, _ = self._deq.process_td(t_delta)
         for body in bodies:
-            body.set_pos(pos[body.get_index()])
-            body.set_vel(vel[body.get_index()])
+            body.set_pos(pos[body.solver_idx])
+            body.set_vel(vel[body.solver_idx])

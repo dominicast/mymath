@@ -20,12 +20,8 @@ class Projector:
 
     def __init__(self, bodies):
         for body in bodies:
-            self.__init_body(body)
-
-    def __init_body(self, body):
-        size = self.__calc_size(body)
-        factor = self.__calc_factor(body)
-        body.set_projection(BodyProjection(size, factor))
+            body.proj_size = self.__calc_size(body)
+            body.proj_factor = self.__calc_factor(body)
 
     @staticmethod
     def __calc_size(body):
@@ -43,11 +39,11 @@ class Projector:
 
     @staticmethod
     def project(body, bodies):
-        return body.get_pos() * body.get_projection().get_factor()
+        return body.get_pos() * body.proj_factor
 
     @staticmethod
     def scale(body, bodies):
-        return body.get_projection().get_size()
+        return body.proj_size
 
 
 class Config:

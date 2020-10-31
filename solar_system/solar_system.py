@@ -1,11 +1,11 @@
 
 import numpy as np
 
-from body import SimulationBody
+from body import Body
 from solar_system_definitions import *
 
 
-class SolarSystemBody(SimulationBody):
+class SolarSystemBody(Body):
 
     def __init__(self, name, m, r, color, pos, vel, order_nr, mean_distance):
         super().__init__(name, m, r, color, pos, vel)
