@@ -22,6 +22,8 @@ class Plotter:
             body.plt_point = pts.mlab_source
             if config.show_names():
                 body.plt_label = mlab.text3d(pos_p[0], pos_p[1], pos_p[2], body.get_name(), color=color)
+            else:
+                body.plt_label = None
 
         mlab.view(
             azimuth=config.get_azimuth(),
