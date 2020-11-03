@@ -8,8 +8,19 @@ COLOR = 'color'
 MEAN_DISTANCE = 'mean-distance'  # [AU]
 ORDER_NR = 'order-nr'
 
+SUN_NAME = 'Sun'
+MERCURY_NAME = 'Mercury'
+VENUS_NAME = 'Venus'
+EARTH_NAME = 'Earth'
+MOON_NAME = 'Moon'
+MARS_NAME = 'Mars'
+JUPITER_NAME = 'Jupiter'
+SATURN_NAME = 'Saturn'
+URANUS_NAME = 'Uranus'
+NEPTUNE_NAME = 'Neptune'
+
 SUN = {
-    NAME: 'Sun',
+    NAME: SUN_NAME,
     MASS: 1.9885 * pow(10, 30),
     RADIUS: 6.957 * pow(10, 8),
     COLOR: (1., 0.847, 0.035),
@@ -18,7 +29,7 @@ SUN = {
 }
 
 MERCURY = {
-    NAME: 'Mercury',
+    NAME: MERCURY_NAME,
     MASS: 3.302 * pow(10, 23),
     RADIUS: 2.44 * pow(10, 6),
     COLOR: (0.675, 0.592, 0.416),
@@ -27,7 +38,7 @@ MERCURY = {
 }
 
 VENUS = {
-    NAME: 'Venus',
+    NAME: VENUS_NAME,
     MASS: 4.8685*pow(10, 24),
     RADIUS: 6.05184 * pow(10, 6),
     COLOR: (0.894, 0.773, 0.651),
@@ -36,7 +47,7 @@ VENUS = {
 }
 
 EARTH = {
-    NAME: 'Earth',
+    NAME: EARTH_NAME,
     MASS: 5.97219 * pow(10, 24),
     RADIUS: 6.37101 * pow(10, 6),
     COLOR: (0.259, 0.424, 0.996),
@@ -45,7 +56,7 @@ EARTH = {
 }
 
 MOON = {
-    NAME: 'Moon',
+    NAME: MOON_NAME,
     MASS: 7.349 * pow(10, 22) ,
     RADIUS: 1.73753 * pow(10, 6),
     COLOR: (0.588, 0.58, 0.584),
@@ -54,7 +65,7 @@ MOON = {
 }
 
 MARS = {
-    NAME: 'Mars',
+    NAME: MARS_NAME,
     MASS: 6.4171 * pow(10, 23),
     RADIUS: 3.38992 * pow(10, 6),
     COLOR: (0.941, 0.294, 0.114),
@@ -63,16 +74,15 @@ MARS = {
 }
 
 JUPITER = {
-    NAME: 'Jupiter',
+    NAME: JUPITER_NAME,
     MASS: 1.89813 * pow(10, 27),
     RADIUS: 6.9911 * pow(10, 7),
     COLOR: (0.792, 0.51, 0.416),
     MEAN_DISTANCE: 5.203,
     ORDER_NR: 5
 }
-
 SATURN = {
-    NAME: 'Saturn',
+    NAME: SATURN_NAME,
     MASS: 5.6834 * pow(10, 26),
     RADIUS: 5.8232 * pow(10, 7),
     COLOR: (0.706, 0.655, 0.388),
@@ -80,8 +90,9 @@ SATURN = {
     ORDER_NR: 6
 }
 
+
 URANUS = {
-    NAME: 'Uranus',
+    NAME: URANUS_NAME,
     MASS: 8.6813 * pow(10, 25),
     RADIUS: 2.5362 * pow(10, 7),
     COLOR: (0.749, 0.902, 0.918),
@@ -90,7 +101,7 @@ URANUS = {
 }
 
 NEPTUNE = {
-    NAME: 'Neptune',
+    NAME: NEPTUNE_NAME,
     MASS: 1.024 * pow(10, 26),
     RADIUS: 2.4624 * pow(10, 7),
     COLOR: (0.239, 0.267, 0.62),
