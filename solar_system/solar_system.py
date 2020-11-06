@@ -76,3 +76,29 @@ class SolarSystemBodyFactory:
             SolarSystemBodyFactory.__create_body(EARTH, EARTH_IC),
             SolarSystemBodyFactory.__create_body(MOON, MOON_IC)
         ]
+
+    @staticmethod
+    def inner_solar_system():
+        return [
+            SolarSystemBodyFactory.__create_body(SUN, SUN_IC),
+            SolarSystemBodyFactory.__create_body(MERCURY, MERCURY_IC),
+            SolarSystemBodyFactory.__create_body(VENUS, VENUS_IC),
+            SolarSystemBodyFactory.__create_body(EARTH, EARTH_IC),
+            SolarSystemBodyFactory.__create_body(MOON, MOON_IC),
+            SolarSystemBodyFactory.__create_body(MARS, MARS_IC)
+        ]
+
+    @staticmethod
+    def all():
+        return [
+            SolarSystemBodyFactory.__create_body(SUN, SUN_IC),
+            SolarSystemBodyFactory.__create_body(MERCURY, MERCURY_IC),
+            SolarSystemBodyFactory.__create_body(VENUS, VENUS_IC),
+            SolarSystemBodyFactory.__create_body(EARTH, EARTH_IC),
+            SolarSystemBodyFactory.__create_body(MOON, MOON_IC),
+            SolarSystemBodyFactory.__create_body(MARS, MARS_IC),
+            SolarSystemBodyFactory.__create_body(JUPITER, JUPITER_IC),
+            SolarSystemBodyFactory.__create_body(SATURN, SATURN_IC),
+            SolarSystemBodyFactory.__create_body(URANUS, URANUS_IC),
+            SolarSystemBodyFactory.__create_body(NEPTUNE, NEPTUNE_IC)
+        ]

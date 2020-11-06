@@ -33,14 +33,15 @@ class Projector:
 class Config:
 
     def __init__(self):
-        self._bodies = SolarSystemBodyFactory.sun_earth_and_moon()
+        self._bodies = SolarSystemBodyFactory.all()
         self._G = 6.6743*pow(10, -11)
         # self._speed = 100
         # self._speed = 56560
         self._speed = 1000000
         self._dt = 0.001
         self._azimuth = 0
-        self._elevation = 66
+        self._elevation = 60
+        self._focalpoint = (600., 0., 0.)
         self._distance = 5000
         self._show_names = True
 
@@ -64,6 +65,9 @@ class Config:
 
     def get_elevation(self):
         return self._elevation
+
+    def get_focalpoint(self):
+        return self._focalpoint
 
     def get_distance(self):
         return self._distance

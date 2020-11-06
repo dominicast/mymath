@@ -28,7 +28,8 @@ class Plotter:
         mlab.view(
             azimuth=config.get_azimuth(),
             elevation=config.get_elevation(),
-            distance=config.get_distance()
+            distance=config.get_distance(),
+            focalpoint=config.get_focalpoint()
         )
 
     def update(self):

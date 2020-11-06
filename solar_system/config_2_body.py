@@ -50,6 +50,7 @@ class Config:
         self._dt = 0.001
         self._azimuth = 270
         self._elevation = 20
+        self._focalpoint = 'auto'
         self._distance = 40
         self._show_names = True
 
@@ -74,6 +75,9 @@ class Config:
 
     def get_elevation(self):
         return self._elevation
+
+    def get_focalpoint(self):
+        return self._focalpoint
 
     def get_distance(self):
         return self._distance
