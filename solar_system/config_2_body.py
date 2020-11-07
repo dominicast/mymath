@@ -50,7 +50,7 @@ class Config:
         self._dt = 0.001
         self._azimuth = 270
         self._elevation = 20
-        self._focalpoint = 'auto'
+        self._focalpoint = (0., 0., 0.)
         self._distance = 40
         self._show_names = True
 

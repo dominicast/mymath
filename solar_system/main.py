@@ -1,7 +1,7 @@
 
 from mayavi import mlab
 # from config_solar_system import Config
-from config_earth import Config
+from config_inner_solar_system import Config
 # from config_2_body import Config
 from solver import Solver
 from plotter import Plotter

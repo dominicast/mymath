@@ -41,9 +41,9 @@ class Config:
         self._speed = 1000000
         # self._speed = 56560
         self._dt = 0.001
-        self._azimuth = 45
-        self._elevation = 66
-        self._focalpoint = 'auto'
+        self._azimuth = 0
+        self._elevation = 60
+        self._focalpoint = (100., 0., 0.)
         self._distance = 2000
         self._show_names = True
 
