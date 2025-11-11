@@ -51,16 +51,11 @@ class Plotter:
         ax = self._ax
 
         pos = mount_point.get_pos()
-        artist, = ax.plot([], [], [], "o", markersize=5, color=mount_point.get_color())
-        artist.set_data(pos[0], pos[1])
-        artist.set_3d_properties(pos[2])
-        artist.set_zorder(99)
+        ax.scatter(pos[0], pos[1], pos[2], color=mount_point.get_color(), s=5)
 
         for magnet in magnets:
             pos = magnet.get_pos()
-            artist, = ax.plot([], [], [], "x", markersize=(magnet.get_size()*200), color=magnet.get_color())
-            artist.set_data(pos[0], pos[1])
-            artist.set_3d_properties(pos[2])
+            ax.scatter(pos[0], pos[1], pos[2], color=magnet.get_color(), s=(magnet.get_size()*200))
 
     def plot_frame(self, data):
         if data is None:
@@ -75,8 +70,8 @@ class Plotter:
         if self._line is None:
             self._line, = ax.plot([], [], [], lw=0.5)
 
-        if self._mass is None:
-            self._mass, = ax.plot([], [], [], "o", markersize=(5*data.get_m()), color=(0,0,0))
+        if self._mass is not None:
+            self._mass.remove()
 
         for artist in self._artists:
             artist.remove()
@@ -98,9 +93,7 @@ class Plotter:
 
         # mass plot
 
-        self._mass.set_data(pos[0], pos[1])
-        self._mass.set_3d_properties(pos[2])
-        self._mass.set_zorder(99)
+        self._mass = ax.scatter(pos[0], pos[1], pos[2], color=(0,0,0), s=(5*data.get_m()))
 
         # path plot
 

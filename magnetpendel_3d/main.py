@@ -1,3 +1,10 @@
+import sys
+import os
+
+# Add the additional source directory to sys.path
+additional_src = os.path.join(os.path.dirname(__file__), '../common')
+if additional_src not in sys.path:
+    sys.path.append(additional_src)
 
 from plotter import *
 from pendulum import Pendulum
@@ -13,10 +20,9 @@ def animate(i, pendulum, plotter):
     data = pendulum.calculate_frame()
     plotter.plot_frame(data)
 
-
 if __name__ == '__main__':
 
-    #config = DlConfig().get_config(Action.SHOW)
+    # config = DlConfig().get_config(Action.SHOW)
     config = TriangleConfig().get_config(Action.SHOW)
 
     math_utils = config.get_math_utils()
@@ -25,7 +31,8 @@ if __name__ == '__main__':
 
     fig = plt.figure()
     # ax = fig.gca(projection='3d')
-    ax = fig.gca()
+    # ax = fig.gca()
+    ax = fig.add_subplot(111, projection='3d')
 
     plotter = Plotter(ax, config.get_mount_point().get_pos())
     plotter.setup(config.get_width(), config.get_height(), config.get_depth())
