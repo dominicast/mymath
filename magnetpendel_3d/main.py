@@ -24,7 +24,8 @@ if __name__ == '__main__':
     # -- setup plot
 
     fig = plt.figure()
-    ax = fig.gca(projection='3d')
+    # ax = fig.gca(projection='3d')
+    ax = fig.gca()
 
     plotter = Plotter(ax, config.get_mount_point().get_pos())
     plotter.setup(config.get_width(), config.get_height(), config.get_depth())

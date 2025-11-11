@@ -1,3 +1,10 @@
+import sys
+import os
+
+# Add the additional source directory to sys.path
+additional_src = os.path.join(os.path.dirname(__file__), '../common')
+if additional_src not in sys.path:
+    sys.path.append(additional_src)
 
 from utils import *
 from plotter import *
@@ -10,7 +17,6 @@ from mpl_toolkits.mplot3d.art3d import juggle_axes
 from matplotlib import animation
 import numpy as np
 
-
 def animate(i, pendulum, plotter):
     data = pendulum.calculate_frame()
     plotter.plot_frame(data)
@@ -18,8 +24,9 @@ def animate(i, pendulum, plotter):
 
 # by Dominic Ast D! dominic_ast@gmx.ch
 if __name__ == '__main__':
-
+        
     config = NoFrictionConfig().get_config(Impl.ANGLE_INTEG, Action.SHOW)
+    # config = FrictionConfig().get_config(Impl.ANGLE_INTEG, Action.SHOW)    
 
     radius = config.get_radius()
     rho_max = config.get_rho_max()
@@ -38,7 +45,8 @@ if __name__ == '__main__':
     # -- setup plot
 
     fig = plt.figure()
-    ax = fig.gca(projection='3d')
+    ax = fig.add_subplot(111, projection='3d')
+    # ax = fig.gca(projection='3d')
 
     plotter = Plotter(ax, mp)
     plotter.setup(radius)
@@ -62,6 +70,8 @@ if __name__ == '__main__':
     # -- run
 
     anim = animation.FuncAnimation(fig, animate, interval=config.get_interval(), fargs=(pendulum,plotter,), blit=False, frames=config.get_frames())
+
+    # anim = animation.FuncAnimation(fig, animate, frames=config.get_frames())
 
     if config.get_action() == Action.SHOW:
         plt.show()

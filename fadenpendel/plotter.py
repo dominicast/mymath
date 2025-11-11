@@ -62,8 +62,8 @@ class Plotter:
         if self._line is None:
             self._line, = ax.plot([], [], [], lw=0.5)
 
-        if self._mass is None:
-            self._mass, = ax.plot([], [], [], "o", markersize=(5*data.get_m()), color=(0,0,0))
+        if self._mass is not None:
+            self._mass.remove()
 
         for artist in self._artists:
             artist.remove()
@@ -92,50 +92,49 @@ class Plotter:
 
         # mass plot
 
-        self._mass.set_data(pos[0], pos[1])
-        self._mass.set_3d_properties(pos[2])
+        self._mass = ax.scatter(pos[0], pos[1], pos[2], color=(0,0,0), s=(5*data.get_m()))
 
-        if E_pot is not None and E_kin is not None:
+        # if E_pot is not None and E_kin is not None:
 
-            c_pot = np.array([0.725, 0.522, 0.27])
-            c_kin = np.array([0, 0, 0])
+        #     c_pot = np.array([0.725, 0.522, 0.27])
+        #     c_kin = np.array([0, 0, 0])
 
-            E_pot_norm = (E_pot/(E_pot+E_kin))
-            E_kin_norm = 1-E_pot_norm
+        #     E_pot_norm = (E_pot/(E_pot+E_kin))
+        #     E_kin_norm = 1-E_pot_norm
 
-            c_r = E_pot_norm*c_pot[0] + E_kin_norm*c_kin[0]
-            c_g = E_pot_norm*c_pot[1] + E_kin_norm*c_kin[1]
-            c_b = E_pot_norm*c_pot[2] + E_kin_norm*c_kin[2]
+        #     c_r = E_pot_norm*c_pot[0] + E_kin_norm*c_kin[0]
+        #     c_g = E_pot_norm*c_pot[1] + E_kin_norm*c_kin[1]
+        #     c_b = E_pot_norm*c_pot[2] + E_kin_norm*c_kin[2]
 
-            c = (c_r, c_g, c_b)
-        else:
-            c = 'r'
+        #     c = (c_r, c_g, c_b)
+        # else:
+        #     c = 'r'
 
-        self._mass.set_color(color=c)
+        # self._mass.set_color(color=c)
 
-        self._mass.set_zorder(20)
+        # self._mass.set_zorder(20)
 
         # forces
 
-        if F_zen is not None:
-            artist = ax.quiver(pos[0], pos[1], pos[2], F_zen[0], F_zen[1], F_zen[2], alpha=0.7)
-            artist.set_zorder(18)
-            artists.append(artist)
+        # if F_zen is not None:
+        #     artist = ax.quiver(pos[0], pos[1], pos[2], F_zen[0], F_zen[1], F_zen[2], alpha=0.7)
+        #     artist.set_zorder(18)
+        #     artists.append(artist)
 
-        if F_tan is not None:
-            artist = ax.quiver(pos[0], pos[1], pos[2], F_tan[0], F_tan[1], F_tan[2], alpha=0.7)
-            artist.set_zorder(18)
-            artists.append(artist)
+        # if F_tan is not None:
+        #     artist = ax.quiver(pos[0], pos[1], pos[2], F_tan[0], F_tan[1], F_tan[2], alpha=0.7)
+        #     artist.set_zorder(18)
+        #     artists.append(artist)
 
-        if F_d is not None:
-            artist = ax.quiver(pos[0], pos[1], pos[2], F_d[0], F_d[1], F_d[2], alpha=0.7)
-            artist.set_zorder(18)
-            artists.append(artist)
+        # if F_d is not None:
+        #     artist = ax.quiver(pos[0], pos[1], pos[2], F_d[0], F_d[1], F_d[2], alpha=0.7)
+        #     artist.set_zorder(18)
+        #     artists.append(artist)
 
-        if F_tot is not None:
-            artist = ax.quiver(pos[0], pos[1], pos[2], F_tot[0], F_tot[1], F_tot[2], color='darkgoldenrod', alpha=1)
-            artist.set_zorder(19)
-            artists.append(artist)
+        # if F_tot is not None:
+        #     artist = ax.quiver(pos[0], pos[1], pos[2], F_tot[0], F_tot[1], F_tot[2], color='darkgoldenrod', alpha=1)
+        #     artist.set_zorder(19)
+        #     artists.append(artist)
 
         # done
-        self._artists = artists
+        # self._artists = artists
